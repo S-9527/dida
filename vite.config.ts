@@ -5,4 +5,9 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   test: { environment: 'happy-dom' },
   plugins: [vue()],
+  resolve: {
+    alias: {
+      '@': '/src'
+    }
+  }
 })
