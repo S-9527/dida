@@ -5,6 +5,9 @@ settings:
   excludeLinksFromLockfile: false
 
 dependencies:
+  '@imengyu/vue3-context-menu':
+    specifier: ^1.4.0
+    version: 1.4.0
   naive-ui:
     specifier: ^2.38.1
     version: 2.38.1(vue@3.4.21)
@@ -353,6 +356,10 @@ packages:
     requiresBuild: true
     dev: true
     optional: true
+
+  /@imengyu/vue3-context-menu@1.4.0:
+    resolution: {integrity: sha512-tb3664I5ETW50kSg6WiSF2NBxIh3pX+BTf4Ra3wfiLSc22e1qVWPRvU06uI3PbxSEir9JIHc3YGRWjD4sJurwg==}
+    dev: false
 
   /@isaacs/cliui@8.0.2:
     resolution: {integrity: sha512-O8jcjabXaleOG9DQ0+ARXWZBTfnP4WNAqzuiJK7ll44AmxGKv/J2M4TPjxjY3znBCfvBXFzucm1twdyFybFqEA==}
