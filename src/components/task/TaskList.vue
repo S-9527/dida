@@ -1,10 +1,18 @@
 <template>
   <div>
     <div>
-      <input type="text" placeholder="添加任务，回车即可创建" @keydown.enter="addTask" v-model="taskTitle"/>
+      <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
     </div>
     <div>
-      <ul v-for="task in taskStore.taskList">
+      <input
+          type="text"
+          placeholder="添加任务，回车即可创建"
+          @keydown.enter="addTask"
+          v-model="taskTitle"
+      />
+    </div>
+    <div>
+      <ul v-for="task in taskStore.currentActiveProject?.taskList">
         <TaskItem :task="task"></TaskItem>
       </ul>
     </div>

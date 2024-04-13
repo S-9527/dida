@@ -5,8 +5,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Task } from '@/store/task.ts'
-import { useTaskStore } from "@/store/task.ts";
+import { Task, useTaskStore } from "@/store/task.ts";
 import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
 
 const { changeActiveTask } = useTaskStore()
