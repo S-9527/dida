@@ -3,19 +3,20 @@ import { reactive, ref } from "vue";
 
 export interface Task {
     title: string;
+    content: string;
 }
 
-function createTask(title: string): Task {
-    return { title }
+function createTask(title: string, content: string = ""): Task {
+    return { title, content }
 }
 
 export const useTaskStore = defineStore("task", () => {
     const currentActiveTask = ref<Task | null>();
     const taskList = reactive<Task[]>([]);
 
-    taskList.push(createTask("吃饭"));
-    taskList.push(createTask("睡觉"));
-    taskList.push(createTask("写代码"));
+    taskList.push(createTask("吃饭", "今天想吃肉"));
+    taskList.push(createTask("睡觉", "今天要早点睡觉"));
+    taskList.push(createTask("写代码", "写代码2个小时"));
 
     function changeActiveTask(task: Task) {
         currentActiveTask.value = task;
