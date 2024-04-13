@@ -1,12 +1,30 @@
 import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 
+enum TaskState {
+    ACTIVE,
+    COMPLETED,
+    GIVE_UP,
+    REMOVED,
+}
+
 export class Task {
     public title: string;
     content: string;
-    constructor(title: string, content: string) {
+    project: Project;
+    state: TaskState = TaskState.ACTIVE;
+    constructor(title: string, content: string, project: Project) {
         this.title = title;
         this.content = content;
+        this.project = project;
+    }
+
+    setState(state: TaskState) {
+        this.state = state;
+    }
+
+    removeSelfFromProject() {
+        this.project.removeTask(this);
     }
 }
 
@@ -32,6 +50,9 @@ class Project {
 }
 
 // mock
+const projectList: Project[] = [];
+const completedProject = new Project("已完成");
+
 const data = {
     projectList: [
         {
@@ -40,14 +61,17 @@ const data = {
                 {
                     title: "吃饭",
                     content: "## 吃饭 \n 吃什么好呢",
+                    state: TaskState.ACTIVE,
                 },
                 {
                     title: "睡觉",
                     content: "## 睡觉 \n 早睡早起 身体好",
+                    state: TaskState.ACTIVE,
                 },
                 {
                     title: "写代码",
                     content: "## 写代码 \n 日常写码2个点",
+                    state: TaskState.COMPLETED,
                 },
             ],
         },
@@ -57,24 +81,35 @@ const data = {
                 {
                     title: "哈哈哈",
                     content: "hahaha",
+                    state: TaskState.ACTIVE,
                 },
                 {
                     title: "嘿嘿嘿",
                     content: "heiheihei",
+                    state: TaskState.ACTIVE,
                 },
             ],
         },
     ],
 };
+
 export const useTaskStore = defineStore("task", () => {
     const currentActiveTask = ref<Task | null>();
-    const projectList = reactive<Project[]>([]);
     const currentActiveProject = ref<Project>();
+    const projectNames = reactive<string[]>(["快捷", "集草器"]);
 
     data.projectList.forEach((projectListData) => {
         const project = new Project(projectListData.name);
-        projectListData.taskList.forEach(({title, content}) => {
-            project.taskList.push(new Task(title, content));
+        projectListData.taskList.forEach(({title, content, state}) => {
+            const task = new Task(title, content, project);
+            switch (state) {
+                case TaskState.ACTIVE:
+                    project.taskList.push(task);
+                    break;
+                case TaskState.COMPLETED:
+                    completedProject.taskList.push(task);
+                    break;
+            }
         });
 
         projectList.push(project);
@@ -86,9 +121,11 @@ export const useTaskStore = defineStore("task", () => {
     }
 
     function addTask(title: string) {
-        const task = new Task(title, "");
-        currentActiveProject.value?.addTask(task);
-        changeActiveTask(task);
+        if (currentActiveProject.value) {
+            const task = new Task(title, "", currentActiveProject.value);
+            currentActiveProject.value?.addTask(task);
+            changeActiveTask(task);
+        }
     }
 
     function removeCurrentActiveTask() {
@@ -101,8 +138,12 @@ export const useTaskStore = defineStore("task", () => {
         const project = projectList.find((project) => {
             return project.name === projectName;
         });
-        if (project) {
-            currentActiveProject.value = project;
+
+        if (!project) return;
+        currentActiveProject.value = project;
+
+        if (projectName === "已完成") {
+            currentActiveProject.value = completedProject;
         }
 
         changeActiveTask(null)
@@ -114,11 +155,17 @@ export const useTaskStore = defineStore("task", () => {
         }
     }
 
+    function completeTask(task: Task) {
+        task.removeSelfFromProject()
+        completedProject.addTask(task)
+    }
+
     return {
-        projectList,
+        projectNames,
         currentActiveTask,
         currentActiveProject,
         addTask,
+        completeTask,
         changeActiveTask,
         removeCurrentActiveTask,
         changeCurrentActiveProject,

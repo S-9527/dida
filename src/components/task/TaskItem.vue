@@ -5,9 +5,12 @@
       @click.right="handleRightClickTask($event, task)"
       @input="handleInput"
   >
-    <span>
-      {{ task.title }}
-    </span>
+    <div class="flex">
+      <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
+      <div class="w-full" contenteditable="true" @input="handleInput">
+        {{ task.title }}
+      </div>
+    </div>
   </div>
 </template>
 
@@ -15,14 +18,14 @@
 import { Task, useTaskStore } from "@/store/task.ts";
 import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
 
-const { changeActiveTask, setCurrentActiveTaskTitle } = useTaskStore()
+const { changeActiveTask, setCurrentActiveTaskTitle, completeTask } = useTaskStore()
 const { showContextMenu } = useTaskRightContextMenu()
 
 interface Props {
   task: Task
 }
 
-defineProps<Props>();
+const props = defineProps<Props>();
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   changeActiveTask(task)
@@ -34,6 +37,10 @@ function handleClickTask(task: Task) {
 
 function handleInput (e:Event) {
   setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+}
+
+function handleCompleteTodo () {
+  completeTask(props.task)
 }
 </script>
 
