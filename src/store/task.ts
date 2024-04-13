@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { reactive, ref } from "vue";
 
 export class Task {
-    title: string;
+    public title: string;
     content: string;
     constructor(title: string, content: string) {
         this.title = title;
@@ -19,7 +19,7 @@ class Project {
     }
 
     addTask(task: Task) {
-        this.taskList.push(task);
+        this.taskList.unshift(task);
     }
 
     removeTask(task: Task) {
@@ -108,6 +108,12 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask(null)
     }
 
+    function setCurrentActiveTaskTitle(title: string) {
+        if (currentActiveTask.value) {
+            currentActiveTask.value.title = title;
+        }
+    }
+
     return {
         projectList,
         currentActiveTask,
@@ -115,6 +121,7 @@ export const useTaskStore = defineStore("task", () => {
         addTask,
         changeActiveTask,
         removeCurrentActiveTask,
-        changeCurrentActiveProject
+        changeCurrentActiveProject,
+        setCurrentActiveTaskTitle
     }
 })

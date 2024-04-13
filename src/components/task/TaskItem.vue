@@ -1,6 +1,13 @@
 <template>
-  <div @click="handleClickTask(task)" @click.right="handleRightClickTask($event, task)">
-    {{ task.title }}
+  <div
+      contenteditable="true"
+      @click="handleClickTask(task)"
+      @click.right="handleRightClickTask($event, task)"
+      @input="handleInput"
+  >
+    <span>
+      {{ task.title }}
+    </span>
   </div>
 </template>
 
@@ -8,7 +15,7 @@
 import { Task, useTaskStore } from "@/store/task.ts";
 import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
 
-const { changeActiveTask } = useTaskStore()
+const { changeActiveTask, setCurrentActiveTaskTitle } = useTaskStore()
 const { showContextMenu } = useTaskRightContextMenu()
 
 interface Props {
@@ -23,6 +30,10 @@ function handleRightClickTask(e: MouseEvent, task: Task) {
 }
 function handleClickTask(task: Task) {
   changeActiveTask(task)
+}
+
+function handleInput (e:Event) {
+  setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="currentActiveTask">
-      <h1>
+      <h1 contenteditable="true" @input="handleInput">
         {{ currentActiveTask.title }}
       </h1>
       <div>
@@ -20,6 +20,11 @@ import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
+const { setCurrentActiveTaskTitle } = useTaskStore()
+
+function handleInput (e:Event) {
+  setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+}
 
 </script>
 
