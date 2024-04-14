@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState, useTaskStore } from "@/store/task.ts";
+import { Task, TaskState, useTaskStore } from "@/store/task";
 import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 

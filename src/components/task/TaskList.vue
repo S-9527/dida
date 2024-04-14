@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import TaskItem from "./TaskItem.vue";
 import { ref } from "vue";
-import { useTaskStore } from "@/store/task.ts";
+import { useTaskStore } from "@/store/task";
 
 const taskStore = useTaskStore()
 const taskTitle = ref("")

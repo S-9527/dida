@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from "@/store/task.ts";
+import { useTaskStore } from "@/store/task";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
 
