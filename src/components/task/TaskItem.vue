@@ -22,7 +22,6 @@
             class="w-full"
             contenteditable="true"
             @input="handleInput"
-            @click="handleClickTask(task)"
             @focus="handleClickTask(task)"
         >
           {{ task.title }}

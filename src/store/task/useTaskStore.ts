@@ -37,8 +37,9 @@ export const useTaskStore = defineStore("task", () => {
             return project.name === projectName;
         });
 
-        if (!project) return;
-        currentActiveProject.value = project;
+        if (project){
+            currentActiveProject.value = project;
+        }
 
         if (projectName === "已完成") {
             currentActiveProject.value = completedProject;
