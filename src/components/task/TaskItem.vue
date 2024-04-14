@@ -1,9 +1,7 @@
 <template>
   <div
-      contenteditable="true"
       @click="handleClickTask(task)"
       @click.right="handleRightClickTask($event, task)"
-      @input="handleInput"
   >
     <div class="flex">
       <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
@@ -15,10 +13,10 @@
 </template>
 
 <script setup lang="ts">
-import { Task, useTaskStore } from "@/store/task.ts";
+import { Task, TaskState, useTaskStore } from "@/store/task.ts";
 import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
 
-const { changeActiveTask, setCurrentActiveTaskTitle, completeTask } = useTaskStore()
+const { changeActiveTask, setCurrentActiveTaskTitle, completeTask, restoreTask } = useTaskStore()
 const { showContextMenu } = useTaskRightContextMenu()
 
 interface Props {
@@ -40,7 +38,9 @@ function handleInput (e:Event) {
 }
 
 function handleCompleteTodo () {
-  completeTask(props.task)
+  props.task.state === TaskState.ACTIVE
+      ? completeTask(props.task)
+      : restoreTask(props.task)
 }
 </script>
 
