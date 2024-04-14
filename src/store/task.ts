@@ -68,6 +68,7 @@ class Project {
 // mock
 const projectList: Project[] = [];
 const completedProject = new Project("已完成");
+const trashProject = new Project("垃圾桶");
 
 const data = {
     projectList: [
@@ -107,6 +108,16 @@ const data = {
             ],
         },
     ],
+    trash: {
+        name: "垃圾桶",
+        taskList: [
+            {
+                title: "我是被删除的 task",
+                content: "",
+                state: 4,
+            },
+        ],
+    },
 };
 
 export const useTaskStore = defineStore("task", () => {
@@ -123,12 +134,22 @@ export const useTaskStore = defineStore("task", () => {
                     project.taskList.push(task);
                     break;
                 case TaskState.COMPLETED:
+                    task.previousProject = project
+                    task.previousState = TaskState.ACTIVE
+                    task.project = completedProject
+                    task.setState(TaskState.COMPLETED)
                     completedProject.taskList.push(task);
                     break;
             }
         });
 
         projectList.push(project);
+    });
+
+    data.trash.taskList.forEach(({ title, content }) => {
+        const task = new Task(title, content, trashProject);
+        task.setState(TaskState.REMOVED)
+        trashProject.addTask(task);
     });
 
     currentActiveProject.value = projectList[0];
@@ -162,6 +183,10 @@ export const useTaskStore = defineStore("task", () => {
             currentActiveProject.value = completedProject;
         }
 
+        if (projectName === "垃圾桶") {
+            currentActiveProject.value = trashProject;
+        }
+
         changeActiveTask(null)
     }
 
@@ -178,6 +203,7 @@ export const useTaskStore = defineStore("task", () => {
 
     function restoreTask(task: Task) {
         task.restore();
+        changeActiveTask(null);
     }
 
     return {
