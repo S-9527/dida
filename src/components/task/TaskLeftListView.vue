@@ -9,12 +9,6 @@
           :node-props="nodeProps"
       />
     </div>
-    <div>
-      <ul>
-        <li @click="handleShowCompletedProject">已完成</li>
-        <li @click="handleShowTrashProject">垃圾桶</li>
-      </ul>
-    </div>
   </div>
 </template>
 
@@ -27,7 +21,7 @@ const taskStore = useTaskStore();
 
 const data = ref<any[]>([
   {
-    key: 1,
+    key: 100,
     label: "清单",
     checkboxDisabled: false,
     isLeaf: false,
@@ -39,6 +33,14 @@ const data = ref<any[]>([
       };
     }),
   },
+  {
+    key: 200,
+    label: "已完成",
+  },
+  {
+    key: 300,
+    label: "垃圾桶"
+  }
 ]);
 
 const nodeProps = (treeOption: any) => {
@@ -49,14 +51,6 @@ const nodeProps = (treeOption: any) => {
     },
   };
 };
-
-function handleShowCompletedProject () {
-  taskStore.changeCurrentActiveProject("已完成")
-}
-
-function handleShowTrashProject () {
-  taskStore.changeCurrentActiveProject("垃圾桶")
-}
 </script>
 
 <style scoped></style>
