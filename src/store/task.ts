@@ -131,14 +131,12 @@ export const useTaskStore = defineStore("task", () => {
             const task = new Task(title, content, project);
             switch (state) {
                 case TaskState.ACTIVE:
-                    project.taskList.push(task);
+                    task.addToProject(project)
                     break;
                 case TaskState.COMPLETED:
-                    task.previousProject = project
                     task.previousState = TaskState.ACTIVE
-                    task.project = completedProject
                     task.setState(TaskState.COMPLETED)
-                    completedProject.taskList.push(task);
+                    task.addToProject(completedProject)
                     break;
             }
         });
@@ -168,7 +166,8 @@ export const useTaskStore = defineStore("task", () => {
     function removeCurrentActiveTask() {
         if (!currentActiveTask.value) return;
         currentActiveProject.value?.removeTask(currentActiveTask.value);
-        changeActiveTask(null);
+        currentActiveTask.value.setState(TaskState.REMOVED)
+        currentActiveTask.value.addToProject(trashProject)
     }
 
     function changeCurrentActiveProject(projectName: string) {

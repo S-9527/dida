@@ -23,6 +23,7 @@
             contenteditable="true"
             @input="handleInput"
             @click="handleClickTask(task)"
+            @focus="handleClickTask(task)"
         >
           {{ task.title }}
         </div>
