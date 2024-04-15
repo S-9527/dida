@@ -7,7 +7,7 @@ import {
     removeTaskToTrashProject, SpecialProjectNames
 } from "./project";
 import { Project } from "./project";
-import { Task, restoreTask as restoreTaskHandler, createTask } from "./Task";
+import { Task, restoreTask as restoreTaskHandler, createTask } from "./task";
 
 export const useTaskStore = defineStore("task", () => {
     const projects = reactive(projectListData)

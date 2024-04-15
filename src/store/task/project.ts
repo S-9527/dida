@@ -1,4 +1,4 @@
-import { createTask, Task, TaskState } from "./Task";
+import { createTask, Task, TaskState } from "./task";
 import type { fetchData } from "@/store/task/data.ts";
 
 export enum SpecialProjectNames {
