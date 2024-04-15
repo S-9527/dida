@@ -2,14 +2,14 @@
   <div @click.right="handleRightClickTask($event, task)">
     <div class="flex justify-start items-center gap-5px">
       <template v-if="task.state === TaskState.REMOVED">
-        <div class="flex">
+        <div class="flex justify-center items-center gap-5px">
           <div>
-            <n-popover trigger="hover">
+            <NPopover trigger="hover">
               <template #trigger>
-                <div class="w-4 h-4 bg-blue-400"></div>
+                <div class="w-5 h-5 bg-blue-400 rounded-1 cursor-pointer"></div>
               </template>
               <span>在垃圾桶里面的 Task 是不可以直接被恢复的哦</span>
-            </n-popover>
+            </NPopover>
           </div>
           <div class="w-full" @click="handleClickTask(task)">
             {{ task.title }}
@@ -17,7 +17,10 @@
         </div>
       </template>
       <template v-else>
-        <div class="w-5 h-5 bg-#ccc rounded-1 cursor-pointer" @click="handleCompleteTodo"></div>
+        <div :class="[checkboxColors[task.state]]"
+             class="w-5 h-5 rounded-1 cursor-pointer"
+             @click="handleCompleteTodo">
+        </div>
         <div
             class="w-full"
             contenteditable="true"
@@ -44,6 +47,13 @@ interface Props {
 }
 
 const props = defineProps<Props>();
+
+const checkboxColors: Record<TaskState, string> = {
+  [TaskState.ACTIVE]: "bg-#ccc",
+  [TaskState.COMPLETED]: "bg-#007A78",
+  [TaskState.GIVE_UP]: "bg-#FF2200",
+  [TaskState.REMOVED]: "bg-#ccc",
+};
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   changeActiveTask(task)

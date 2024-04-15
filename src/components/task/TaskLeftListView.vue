@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <n-tree
+      <NTree
           block-line
           :data="data"
           :default-expanded-keys="[1]"
