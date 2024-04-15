@@ -4,8 +4,8 @@
       <NTree
           block-line
           :data="data"
-          :default-expanded-keys="[100]"
-          :default-selected-keys="statusStore.selectedKey"
+          :default-expanded-keys="listDefaultSelectedKey"
+          :default-selected-keys="selectedKey"
           :node-props="nodeProps"
           @update:selected-keys="changeSelectedKey"
       />
@@ -17,7 +17,7 @@
             hover:bg-[#F6F8FF] pl-4 pr-2 cursor-pointer"
             dark="color-white hover:color-white hover:rounded
             hover:bg-lightblue-700 transition duration-400 ease-in-out"
-            :class="statusStore.selectedKey[0] === item.key ? selected : ''"
+            :class="selectedKey[0] === item.key ? selected : ''"
             @click="changeSelectedKeyAndActiveProject(item.title,item.key)"
         >
           <div class="flex">
@@ -26,7 +26,7 @@
           </div>
 
           <Icon icon="material-symbols:more-horiz" width="20"
-                v-show="statusStore.selectedKey[0] === item.key"
+                v-show="selectedKey[0] === item.key"
                 class="dark:color-white color-[#9D9FA3]"/>
         </li>
       </ul>
@@ -39,7 +39,6 @@ import { reactive, ref } from "vue";
 import { NTree } from "naive-ui";
 import { Icon } from '@iconify/vue'
 import { SpecialProjectNames, useTaskStore } from "@/store/task";
-import { useStatusStore } from "@/store/task/status.ts";
 
 interface TaskListType {
   key: number
@@ -48,7 +47,9 @@ interface TaskListType {
 }
 
 const taskStore = useTaskStore();
-const statusStore = useStatusStore();
+
+const selectedKey = ref([101])
+const listDefaultSelectedKey = ref([100])
 
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
@@ -93,11 +94,11 @@ const taskList = reactive<TaskListType[]>([
 
 const changeSelectedKeyAndActiveProject = (projectName: string, key: number) => {
   taskStore.changeCurrentActiveProject(projectName)
-  statusStore.setSelectedKey([key])
+  selectedKey.value = [key]
 }
 
 const changeSelectedKey = (key: number[]) => {
-  statusStore.setSelectedKey(key)
+  selectedKey.value = key
 }
 
 const nodeProps = (treeOption: any) => {
