@@ -1,4 +1,4 @@
-import { addTaskToProject, Project, removeTaskFromProject } from "./Project";
+import { addTaskToProject, Project, removeTaskFromProject } from "./project";
 import { nanoid } from "nanoid";
 
 export enum TaskState {

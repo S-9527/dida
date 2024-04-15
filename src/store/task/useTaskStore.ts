@@ -5,8 +5,8 @@ import {
     addTaskToProject, findProjectByName,
     projects as projectListData,
     removeTaskToTrashProject, SpecialProjectNames
-} from "./Project";
-import { Project } from "./Project";
+} from "./project";
+import { Project } from "./project";
 import { Task, restoreTask as restoreTaskHandler, createTask } from "./Task";
 
 export const useTaskStore = defineStore("task", () => {
