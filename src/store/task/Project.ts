@@ -1,5 +1,5 @@
 import { createTask, Task, TaskState } from "./Task";
-import { fetchData } from "@/store/task/data.ts";
+import type { fetchData } from "@/store/task/data.ts";
 
 export enum SpecialProjectNames {
     Complete = '已完成',
@@ -73,12 +73,6 @@ export function findProjectByName(projectName: string) {
     }
 }
 
-fetchData.trash.tasks.forEach(({ title, content, id }) => {
-    const task = createTask(title, id);
-    task.content = content;
-    addTaskToProject(task, trashProject)
-});
-
 export function initProjects(data: typeof fetchData) {
     data.projectList.forEach((projectListData) => {
         const project = createProject(projectListData.name)
@@ -97,5 +91,11 @@ export function initProjects(data: typeof fetchData) {
         });
 
         projects.push(project);
+    });
+
+    data.trash.tasks.forEach(({ title, content, id }) => {
+        const task = createTask(title, id);
+        task.content = content;
+        addTaskToProject(task, trashProject)
     });
 }
