@@ -3,6 +3,7 @@ import { fetchData } from "./data";
 import { Project } from "./Project";
 import { Task } from "./Task";
 import { TaskState } from "./const";
+import { nanoid } from "nanoid";
 
 // 1. 先请求后端接口获取数据  这里暂时使用 fetchData 来模拟后端返回的数据
 // 2. 基于数据构建 model 层
@@ -16,8 +17,8 @@ export const trashProject = new Project("垃圾桶");
 // 基于后端返回的数据做初始化
 fetchData.projectList.forEach((projectListData) => {
     const project = new Project(projectListData.name);
-    projectListData.taskList.forEach(({ title, content, state }) => {
-        const task = new Task(title, content, project);
+    projectListData.taskList.forEach(({ title, content, state, id }) => {
+        const task = new Task(title, content, project, id, state);
         switch (state) {
             case TaskState.ACTIVE:
                 task.addToProject(project)
@@ -34,7 +35,7 @@ fetchData.projectList.forEach((projectListData) => {
 });
 
 fetchData.trash.taskList.forEach(({ title, content }) => {
-    const task = new Task(title, content, trashProject);
+    const task = new Task(title, content, trashProject, nanoid());
     task.setState(TaskState.REMOVED);
     trashProject.addTask(task);
 });

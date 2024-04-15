@@ -3,16 +3,19 @@ import { TaskState } from "./const";
 
 export class Task {
     public title: string;
+    public id: string;
     content: string;
     project: Project;
     state: TaskState = TaskState.ACTIVE;
     previousProject?: Project | null;
     previousState?: TaskState | null;
 
-    constructor(title: string, content: string, project: Project) {
+    constructor(title: string, content: string, project: Project, id: string, state = TaskState.ACTIVE) {
         this.title = title;
         this.content = content;
         this.project = project;
+        this.state = state
+        this.id = id;
     }
 
     setState(state: TaskState) {

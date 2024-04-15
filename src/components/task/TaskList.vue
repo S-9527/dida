@@ -12,11 +12,11 @@
           class="w-300px h-30px rounded-6px p-4px pl-12px outline-none
           border-none box-content bg-gray-200 dark:bg-#3B3B3B"/>
     </div>
-    <div class="flex flex-col gap-10px">
-      <ul v-for="task in taskStore.currentActiveProject?.taskList">
+    <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
+      <ul v-for="task in taskStore.currentActiveProject?.taskList" :key="task.id">
         <TaskItem :task="task"></TaskItem>
       </ul>
-    </div>
+    </TransitionGroup>
     <!-- 暂时性修复 contenteditable 的 bug -->
     <div class="w-full h-1px" contenteditable="false" />
   </div>
@@ -37,4 +37,15 @@ const addTask = () => {
 
 </script>
 
-<style scoped></style>
+<style scoped>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+</style>
