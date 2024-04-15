@@ -6,7 +6,7 @@ import { TaskState } from "./const";
 
 // 1. 先请求后端接口获取数据  这里暂时使用 fetchData 来模拟后端返回的数据
 // 2. 基于数据构建 model 层
-export const projectList: Project[] = [];
+export const projects: Project[] = [];
 
 // 完成的任务列表
 export const completedProject = new Project("已完成");
@@ -30,7 +30,7 @@ fetchData.projectList.forEach((projectListData) => {
         }
     });
 
-    projectList.push(project);
+    projects.push(project);
 });
 
 fetchData.trash.taskList.forEach(({ title, content }) => {
