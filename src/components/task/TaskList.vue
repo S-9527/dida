@@ -17,6 +17,8 @@
         <TaskItem :task="task"></TaskItem>
       </ul>
     </div>
+    <!-- 暂时性修复 contenteditable 的 bug -->
+    <div class="w-full h-1px" contenteditable="false" />
   </div>
 </template>
 
