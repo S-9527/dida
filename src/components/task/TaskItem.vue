@@ -6,7 +6,12 @@
           <div>
             <NPopover trigger="hover">
               <template #trigger>
-                <div class="w-5 h-5 bg-blue-400 rounded-1 cursor-pointer"></div>
+                <div
+                    class="w-5 h-5 rounded-1 cursor-pointer"
+                    :class="[checkboxColors[task.state]]"
+                    @click="handleCompleteTodo"
+                >
+                </div>
               </template>
               <span>在垃圾桶里面的 Task 是不可以直接被恢复的哦</span>
             </NPopover>

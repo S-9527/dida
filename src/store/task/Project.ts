@@ -1,29 +1,101 @@
-import { Task } from "./Task";
-import { TaskState } from "@/store/task/const.ts";
+import { createTask, Task, TaskState } from "./Task";
+import { fetchData } from "@/store/task/data.ts";
 
-export class Project {
-    public name: string;
-    public tasks: Task[];
-    public state: TaskState;
+export enum SpecialProjectNames {
+    Complete = '已完成',
+    Failed = '已放弃',
+    Trash = '垃圾桶',
+    Abstract = '摘要',
+}
 
-    constructor(name: string, state: TaskState = TaskState.ACTIVE) {
-        this.tasks = [];
-        this.name = name;
-        this.state = state;
+export interface Project {
+    name: string;
+    tasks: Task[];
+    state: TaskState;
+}
+
+export const projects: Project[] = [];
+
+// 完成的任务列表
+export const completedProject = createProject(
+    SpecialProjectNames.Complete,
+    TaskState.COMPLETED,
+)
+// 删除的任务列表
+export const trashProject = createProject(
+    SpecialProjectNames.Trash,
+    TaskState.REMOVED,
+)
+
+function createProject(name: string, state: TaskState = TaskState.ACTIVE,): Project {
+    return {
+        name,
+        state,
+        tasks: [],
     }
+}
 
-    addTask(task: Task) {
-        this.tasks.unshift(task);
-        task.project = this
-        task.state = this.state
+export function addTaskToProject(task: Task, project: Project) {
+    project.tasks.unshift(task);
+    task.project = project
+    task.state = project.state
+}
+
+export function addTaskToCompleteProject(task: Task) {
+    removeTaskFromProject(task, task.project!)
+    addTaskToProject(task, completedProject)
+}
+
+export function removeTaskToTrashProject(task: Task) {
+    removeTaskFromProject(task, task.project!)
+    addTaskToProject(task, trashProject)
+}
+
+export function removeTaskFromProject(task: Task, project: Project) {
+    const index = project.tasks.indexOf(task)
+    if (index !== -1) {
+        project.tasks.splice(index, 1)
+        task.previousProject = task.project
+        task.project = undefined
     }
+}
 
-    removeTask(task: Task) {
-        const index = this.tasks.indexOf(task);
-        if (index !== -1) {
-            this.tasks.splice(index, 1);
-            task.previousProject = task.project
-            task.project = undefined
+export function findProjectByName(projectName: string) {
+    switch (projectName) {
+        case SpecialProjectNames.Complete:
+            return completedProject
+        case SpecialProjectNames.Trash:
+            return trashProject
+        default: {
+            const project = projects.find((project) => project.name === projectName)
+            if (project) return project
         }
     }
+}
+
+fetchData.trash.tasks.forEach(({ title, content, id }) => {
+    const task = createTask(title, id);
+    task.content = content;
+    addTaskToProject(task, trashProject)
+});
+
+export function initProjects(data: typeof fetchData) {
+    data.projectList.forEach((projectListData) => {
+        const project = createProject(projectListData.name)
+        projectListData.tasks.forEach(({ title, content, state, id }) => {
+            const task = createTask(title, id)
+            task.content = content;
+            switch (state) {
+                case TaskState.ACTIVE:
+                    addTaskToProject(task, project)
+                    break;
+                case TaskState.COMPLETED:
+                    task.previousProject = project
+                    addTaskToProject(task, completedProject)
+                    break;
+            }
+        });
+
+        projects.push(project);
+    });
 }

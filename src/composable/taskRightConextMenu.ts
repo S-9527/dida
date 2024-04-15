@@ -3,7 +3,7 @@ import { useTaskStore } from "@/store/task";
 import { toRefs } from "vue";
 
 export function useTaskRightContextMenu() {
-    const { putTaskToTrash } = useTaskStore();
+    const { removeTask } = useTaskStore();
     const { currentActiveTask } = toRefs(useTaskStore());
 
     function showContextMenu(e: MouseEvent) {
@@ -14,7 +14,7 @@ export function useTaskRightContextMenu() {
             items: [
                 {
                     label: "remove",
-                    onClick: () => putTaskToTrash(currentActiveTask.value!),
+                    onClick: () => removeTask(currentActiveTask.value!),
                 },
             ],
         });

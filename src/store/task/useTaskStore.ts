@@ -1,48 +1,50 @@
 import { defineStore } from "pinia";
-import { computed, ref } from "vue";
-import { projects as projectsData, trashProject, completedProject, findProjectByName } from "./model";
+import { computed, reactive, ref } from "vue";
+import {
+    addTaskToCompleteProject,
+    addTaskToProject, findProjectByName,
+    projects as projectListData,
+    removeTaskToTrashProject, SpecialProjectNames
+} from "./Project";
 import { Project } from "./Project";
-import { Task } from "./Task";
-import { SpecialProjectNames } from "./const";
+import { Task, restoreTask as restoreTaskHandler, createTask } from "./Task";
 
 export const useTaskStore = defineStore("task", () => {
-    const projects = ref<Project[]>(projectsData)
-    const currentActiveTask = ref<Task | null>();
-    const currentActiveProject = ref<Project>();
+    const projects = reactive(projectListData)
+    const currentActiveTask = ref<Task>();
+    const currentActiveProject = ref<Project | undefined>();
     const projectNames = computed(() => {
-        return projects.value.map(project => project.name)
+        return projects.map(project => project.name)
     })
 
-    currentActiveProject.value = projects.value[0];
-
-    function changeActiveTask(task: Task | null) {
-        currentActiveTask.value = task;
-    }
-
     function addTask(title: string) {
-        if (currentActiveProject.value) {
-            const task = new Task(title);
-            currentActiveProject.value?.addTask(task);
-            changeActiveTask(task);
-        }
+        const task = createTask(title)
+        addTaskToProject(task, currentActiveProject.value!)
+        changeActiveTask(task)
     }
 
-    function putTaskToTrash(task: Task) {
-        task.moveToProject(trashProject)
+    function changeActiveTask(task: Task | undefined) {
+        currentActiveTask.value = task
+    }
+
+    function removeTask(task: Task) {
+        removeTaskToTrashProject(task)
+        changeActiveTask(undefined)
     }
 
     function changeCurrentActiveProject(projectName: string) {
-        changeActiveTask(null);
+        changeActiveTask(undefined);
         currentActiveProject.value = findProjectByName(projectName)
     }
 
     function completeTask(task: Task) {
-        task.moveToProject(completedProject);
+        addTaskToCompleteProject(task)
+        changeActiveTask(undefined)
     }
 
     function restoreTask(task: Task) {
-        task.restore();
-        changeActiveTask(null);
+        restoreTaskHandler(task);
+        changeActiveTask(undefined);
     }
 
     function shouldShowTodoAdd() {
@@ -62,7 +64,7 @@ export const useTaskStore = defineStore("task", () => {
         completeTask,
         shouldShowTodoAdd,
         changeActiveTask,
-        putTaskToTrash,
+        removeTask,
         changeCurrentActiveProject,
     };
 });

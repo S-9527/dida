@@ -38,8 +38,7 @@
 import { reactive, ref } from "vue";
 import { NTree } from "naive-ui";
 import { Icon } from '@iconify/vue'
-import { useTaskStore } from "@/store/task";
-import { SpecialProjectNames } from "@/store/task/const.ts";
+import { SpecialProjectNames, useTaskStore } from "@/store/task";
 import { useStatusStore } from "@/store/task/status.ts";
 
 interface TaskListType {

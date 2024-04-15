@@ -1,4 +1,4 @@
-import { TaskState } from "@/store/task/const.ts";
+import { TaskState } from "@/store/task/Task.ts";
 import { nanoid } from "nanoid";
 
 export const fetchData = {
