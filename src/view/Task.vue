@@ -10,7 +10,7 @@
         :collapsed-width="0"
         :width="240"
         show-trigger="bar"
-        content-style="padding: 24px;"
+        content-style="padding: 10px 0 10px 10px;"
         bordered
     >
       <TaskLeftListView></TaskLeftListView>

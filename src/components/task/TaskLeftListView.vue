@@ -9,14 +9,36 @@
           :node-props="nodeProps"
       />
     </div>
+    <div class="mt-2px pl-6 pr-2">
+      <ul>
+        <li v-for="item in taskList" :key="item.key"
+            class="flex justify-between items-center h-8 hover:bg-[#F6F8FF]"
+            @click="taskStore.changeCurrentActiveProject(item.title)"
+        >
+          <div class="flex">
+            <Icon :icon="item.icon" width="20" color="#9D9FA3"/>
+            <span class="ml-2">{{ item.title }}</span>
+          </div>
+
+          <Icon icon="material-symbols:more-horiz" color="#9D9FA3" width="20" class="isVisible"/>
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { NTree } from "naive-ui";
+import { Icon } from '@iconify/vue'
 import { useTaskStore } from "@/store/task";
 import { SpecialProjectNames } from "@/store/task/const.ts";
+
+interface TaskListType {
+  key: string
+  icon: string
+  title: SpecialProjectNames
+}
 
 const taskStore = useTaskStore();
 
@@ -33,16 +55,31 @@ const data = ref<any[]>([
         isLeaf: true,
       };
     }),
-  },
-  {
-    key: 200,
-    label: SpecialProjectNames.Complete,
-  },
-  {
-    key: 300,
-    label: SpecialProjectNames.Trash
   }
 ]);
+
+const taskList = reactive<TaskListType[]>([
+  {
+    key: 'complete',
+    icon: 'material-symbols:check-box',
+    title: SpecialProjectNames.Complete,
+  },
+  {
+    key: 'failed',
+    icon: 'mdi:close-box',
+    title: SpecialProjectNames.Failed,
+  },
+  {
+    key: 'trash',
+    icon: 'material-symbols:delete',
+    title: SpecialProjectNames.Trash,
+  },
+  {
+    key: 'abstract',
+    icon: 'material-symbols:text-snippet-rounded',
+    title: SpecialProjectNames.Abstract,
+  },
+])
 
 const nodeProps = (treeOption: any) => {
   return {
@@ -54,4 +91,12 @@ const nodeProps = (treeOption: any) => {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+.isVisible {
+  display: none;
+}
+
+li:hover .isVisible {
+  display: block;
+}
+</style>
