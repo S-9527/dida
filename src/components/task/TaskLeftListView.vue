@@ -13,14 +13,17 @@
       <ul>
         <li v-for="item in taskList" :key="item.key"
             class="flex justify-between items-center h-8 hover:bg-[#F6F8FF]"
+            dark="color-white hover:color-white hover:rounded
+            hover:bg-lightblue-700 transition duration-400 ease-in-out"
             @click="taskStore.changeCurrentActiveProject(item.title)"
         >
           <div class="flex">
-            <Icon :icon="item.icon" width="20" color="#9D9FA3"/>
+            <Icon :icon="item.icon" width="20" class="dark:color-white-b  color-[#9D9FA3]"/>
             <span class="ml-2">{{ item.title }}</span>
           </div>
 
-          <Icon icon="material-symbols:more-horiz" color="#9D9FA3" width="20" class="isVisible"/>
+          <Icon icon="material-symbols:more-horiz" width="20"
+                class="isVisible dark:color-white color-[#9D9FA3]"/>
         </li>
       </ul>
     </div>
