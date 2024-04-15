@@ -1,6 +1,6 @@
 <template>
   <div @click.right="handleRightClickTask($event, task)">
-    <div class="flex">
+    <div class="flex justify-start items-center gap-5px">
       <template v-if="task.state === TaskState.REMOVED">
         <div class="flex">
           <div>
@@ -17,7 +17,7 @@
         </div>
       </template>
       <template v-else>
-        <div class="w-4 h-4 bg-blue-400" @click="handleCompleteTodo"></div>
+        <div class="w-5 h-5 bg-#ccc rounded-1 cursor-pointer" @click="handleCompleteTodo"></div>
         <div
             class="w-full"
             contenteditable="true"

@@ -1,11 +1,15 @@
 <template>
   <div>
     <div v-if="currentActiveTask">
-      <h1 contenteditable="true" @input="handleInput">
+      <h1 contenteditable="true" @input="handleInput" class="text-3xl">
         {{ currentActiveTask.title }}
       </h1>
-      <div>
-        <InkMde v-model="currentActiveTask.content" />
+      <div class="mt-2">
+        <InkMde v-model="currentActiveTask.content" :options="{
+          interface: {
+            appearance: isDark ? 'dark' : 'light'
+          }
+        }" />
       </div>
     </div>
     <div v-else>
@@ -18,6 +22,7 @@
 import { useTaskStore } from "@/store/task";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
+import { isDark } from "@/composable/dark.ts";
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
 const { setCurrentActiveTaskTitle } = useTaskStore()
