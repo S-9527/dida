@@ -25,10 +25,11 @@ import InkMde from 'ink-mde/vue'
 import { isDark } from "@/composable/dark.ts";
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
-const { setCurrentActiveTaskTitle } = useTaskStore()
 
 function handleInput (e:Event) {
-  setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+  if (currentActiveTask) {
+    currentActiveTask.value!.title = (e.target as HTMLElement).innerText
+  }
 }
 
 </script>

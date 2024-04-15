@@ -9,11 +9,12 @@
           placeholder="添加任务，回车即可创建"
           @keydown.enter="addTask"
           v-model="taskTitle"
+          v-show="taskStore.shouldShowTodoAdd()"
           class="w-300px h-30px rounded-6px p-4px pl-12px outline-none
           border-none box-content bg-gray-200 dark:bg-#3B3B3B"/>
     </div>
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
-      <ul v-for="task in taskStore.currentActiveProject?.taskList" :key="task.id">
+      <ul v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
         <TaskItem :task="task"></TaskItem>
       </ul>
     </TransitionGroup>

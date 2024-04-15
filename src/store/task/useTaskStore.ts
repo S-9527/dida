@@ -1,19 +1,19 @@
 import { defineStore } from "pinia";
-import { computed, reactive, ref } from "vue";
-import { projects as projectsData, trashProject, completedProject } from "./model";
+import { computed, ref } from "vue";
+import { projects as projectsData, trashProject, completedProject, findProjectByName } from "./model";
 import { Project } from "./Project";
 import { Task } from "./Task";
-import { TaskState } from "./const";
+import { SpecialProjectNames } from "./const";
 
 export const useTaskStore = defineStore("task", () => {
-    const projects = reactive(projectsData)
+    const projects = ref<Project[]>(projectsData)
     const currentActiveTask = ref<Task | null>();
     const currentActiveProject = ref<Project>();
     const projectNames = computed(() => {
-        return projects.map(project => project.name)
+        return projects.value.map(project => project.name)
     })
 
-    currentActiveProject.value = projects[0];
+    currentActiveProject.value = projects.value[0];
 
     function changeActiveTask(task: Task | null) {
         currentActiveTask.value = task;
@@ -21,54 +21,36 @@ export const useTaskStore = defineStore("task", () => {
 
     function addTask(title: string) {
         if (currentActiveProject.value) {
-            const task = new Task(title, "", currentActiveProject.value);
+            const task = new Task(title);
             currentActiveProject.value?.addTask(task);
             changeActiveTask(task);
         }
     }
 
-    function removeCurrentActiveTask() {
-        if (currentActiveTask.value) {
-            currentActiveProject.value?.removeTask(currentActiveTask.value);
-            currentActiveTask.value?.setState(TaskState.REMOVED);
-            currentActiveTask.value?.addToProject(trashProject);
-        }
+    function putTaskToTrash(task: Task) {
+        task.moveToProject(trashProject)
     }
 
     function changeCurrentActiveProject(projectName: string) {
-        const project = projects.find((project) => {
-            return project.name === projectName;
-        });
-
-        if (project){
-            currentActiveProject.value = project;
-        }
-
-        if (projectName === "已完成") {
-            currentActiveProject.value = completedProject;
-        }
-
-        if (projectName === "垃圾桶") {
-            currentActiveProject.value = trashProject;
-        }
-
         changeActiveTask(null);
-    }
-
-    function setCurrentActiveTaskTitle(title: string) {
-        if (currentActiveTask.value) {
-            currentActiveTask.value.title = title;
-        }
+        currentActiveProject.value = findProjectByName(projectName)
     }
 
     function completeTask(task: Task) {
-        task.setState(TaskState.COMPLETED);
-        task.addToProject(completedProject);
+        task.moveToProject(completedProject);
     }
 
     function restoreTask(task: Task) {
         task.restore();
         changeActiveTask(null);
+    }
+
+    function shouldShowTodoAdd() {
+        const name = currentActiveProject.value?.name
+        return (
+            name !== (SpecialProjectNames.Complete as string) &&
+            name !== SpecialProjectNames.Trash
+        )
     }
 
     return {
@@ -78,9 +60,9 @@ export const useTaskStore = defineStore("task", () => {
         addTask,
         restoreTask,
         completeTask,
+        shouldShowTodoAdd,
         changeActiveTask,
-        removeCurrentActiveTask,
+        putTaskToTrash,
         changeCurrentActiveProject,
-        setCurrentActiveTaskTitle,
     };
 });

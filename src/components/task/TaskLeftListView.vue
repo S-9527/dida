@@ -16,6 +16,7 @@
 import { ref } from "vue";
 import { NTree } from "naive-ui";
 import { useTaskStore } from "@/store/task";
+import { SpecialProjectNames } from "@/store/task/const.ts";
 
 const taskStore = useTaskStore();
 
@@ -35,11 +36,11 @@ const data = ref<any[]>([
   },
   {
     key: 200,
-    label: "已完成",
+    label: SpecialProjectNames.Complete,
   },
   {
     key: 300,
-    label: "垃圾桶"
+    label: SpecialProjectNames.Trash
   }
 ]);
 

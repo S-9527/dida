@@ -36,10 +36,12 @@
 
 <script setup lang="ts">
 import { Task, TaskState, useTaskStore } from "@/store/task";
-import {useTaskRightContextMenu} from "@/composable/taskRightConextMenu.ts";
+import { useTaskRightContextMenu } from "@/composable/taskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
+import { storeToRefs } from "pinia";
 
-const { changeActiveTask, setCurrentActiveTaskTitle, completeTask, restoreTask } = useTaskStore()
+const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
+const { currentActiveTask } = storeToRefs(useTaskStore());
 const { showContextMenu } = useTaskRightContextMenu()
 
 interface Props {
@@ -64,7 +66,9 @@ function handleClickTask(task: Task) {
 }
 
 function handleInput (e:Event) {
-  setCurrentActiveTaskTitle((e.target as HTMLElement).innerText)
+  if (currentActiveTask) {
+    currentActiveTask.value!.title = (e.target as HTMLElement).innerText
+  }
 }
 
 function handleCompleteTodo () {

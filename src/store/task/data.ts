@@ -1,11 +1,11 @@
-import {TaskState} from "@/store/task/const.ts";
+import { TaskState } from "@/store/task/const.ts";
 import { nanoid } from "nanoid";
 
 export const fetchData = {
     projectList: [
         {
             name: "快捷",
-            taskList: [
+            tasks: [
                 {
                     title: "吃饭",
                     content: "## 吃饭 \n 吃什么好呢",
@@ -28,7 +28,7 @@ export const fetchData = {
         },
         {
             name: "集草器",
-            taskList: [
+            tasks: [
                 {
                     title: "哈哈哈",
                     content: "hahaha",
@@ -46,7 +46,7 @@ export const fetchData = {
     ],
     trash: {
         name: "垃圾桶",
-        taskList: [
+        tasks: [
             {
                 title: "我是被删除的 task",
                 content: "",
