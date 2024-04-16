@@ -3,15 +3,31 @@
     <div>
       <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
     </div>
-    <div>
+    <div
+        class="relative cursor-pointer"
+        @click="onFocus"
+        v-show="taskStore.shouldShowTodoAdd()"
+    >
       <input
+          ref="inputRef"
           type="text"
-          placeholder="添加任务，回车即可创建"
           @keydown.enter="addTask"
           v-model="taskTitle"
           v-show="taskStore.shouldShowTodoAdd()"
-          class="w-300px h-30px rounded-6px p-4px pl-12px outline-none
-          border-none box-content bg-gray-200 dark:bg-#3B3B3B"/>
+          class="w-full min-w-300px h-38px rounded-6px p-4px mx-12px outline-none
+          border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"/>
+      <div
+          v-show="isPlaceholder"
+          class="w-full min-w-300px absolute top-0 flex items-center
+          h-38px p-4px mx-12px border-1 b-transparent select-none color-gray:50"
+      >
+        <Icon
+            icon="ic:baseline-plus"
+            width="20"
+            class="color-gray:50 pr-4px box-content"
+        />
+        添加任务至"收集箱"，回车即可保存
+      </div>
     </div>
     <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
       <ul v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
@@ -25,16 +41,55 @@
 
 <script setup lang="ts">
 import TaskItem from "./TaskItem.vue";
-import { ref } from "vue";
+import { computed, Ref, ref } from "vue";
+import { Icon } from '@iconify/vue'
 import { useTaskStore } from "@/store/task";
+import { useEventListener } from "@vueuse/core";
 
 const taskStore = useTaskStore()
 const taskTitle = ref("")
+
+const inputRef: Ref<HTMLInputElement | null> = ref(null);
+
+const isPlaceholder = computed(() => {
+  return taskTitle.value.length === 0;
+});
 
 const addTask = () => {
   taskStore.addTask(taskTitle.value)
   taskTitle.value = ""
 }
+
+function onFocus() {
+  inputRef.value!.focus();
+}
+
+useEventListener(
+    () => inputRef.value,
+    "focus",
+    () => {
+      const classList = inputRef.value!.classList;
+
+      classList.add("border-blue");
+      classList.add("dark:color-black");
+      classList.remove("bg-gray-100");
+      classList.remove("dark:bg-#3B3B3B");
+    }
+);
+
+useEventListener(
+    () => inputRef.value,
+    "blur",
+    () => {
+      const classList = inputRef.value!.classList;
+
+      classList.add("bg-gray-100");
+      classList.add("dark:bg-#3B3B3B");
+
+      classList.remove("border-blue");
+      classList.remove("dark:color-black");
+    }
+);
 
 </script>
 
