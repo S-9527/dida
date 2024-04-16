@@ -1,12 +1,6 @@
 import { createTask, Task, TaskState } from "./task";
 import type { fetchData } from "@/store/task/data.ts";
-
-export enum SpecialProjectNames {
-    Complete = '已完成',
-    Failed = '已放弃',
-    Trash = '垃圾桶',
-    Abstract = '摘要',
-}
+import { completedProject, findSpecialProjectByName, trashProject } from "@/service/task/specialProject.ts";
 
 export interface Project {
     name: string;
@@ -16,28 +10,7 @@ export interface Project {
 
 export const projects: Project[] = [];
 
-// 完成的任务列表
-export const completedProject = createProject(
-    SpecialProjectNames.Complete,
-    TaskState.COMPLETED,
-)
-// 删除的任务列表
-export const trashProject = createProject(
-    SpecialProjectNames.Trash,
-    TaskState.REMOVED,
-)
-
-export const failedProject = createProject(
-    SpecialProjectNames.Failed,
-    TaskState.REMOVED,
-)
-
-export const abstractProject = createProject(
-    SpecialProjectNames.Abstract,
-    TaskState.REMOVED,
-)
-
-function createProject(name: string, state: TaskState = TaskState.ACTIVE,): Project {
+export function createProject(name: string, state: TaskState = TaskState.ACTIVE,): Project {
     return {
         name,
         state,
@@ -71,20 +44,17 @@ export function removeTaskFromProject(task: Task, project: Project) {
 }
 
 export function findProjectByName(projectName: string) {
-    switch (projectName) {
-        case SpecialProjectNames.Complete:
-            return completedProject
-        case SpecialProjectNames.Trash:
-            return trashProject
-        case SpecialProjectNames.Failed:
-            return failedProject
-        case SpecialProjectNames.Abstract:
-            return abstractProject
-        default: {
-            const project = projects.find((project) => project.name === projectName)
-            if (project) return project
-        }
-    }
+    const project = findNormalProjectByName(projectName)
+    if (project)
+        return project
+
+    return findSpecialProjectByName(projectName)
+}
+
+function findNormalProjectByName(projectName: string) {
+    return projects.find((project) => {
+        return project.name === projectName
+    })
 }
 
 export function initProjects(data: typeof fetchData) {
