@@ -53,13 +53,50 @@ interface Props {
   task: Task
 }
 
-const { message } = createDiscreteApi(
-    ['message']
-)
-
-let messageReactive: MessageReactive | null = null
-
 const props = defineProps<Props>();
+
+function useMessage() {
+  const { message } = createDiscreteApi(['message'])
+
+  let messageReactive: MessageReactive | null = null
+
+  function createMessageView(title: string, onClick: () => void) {
+    return () => h('p', null, [
+      h('span', null, `${title} ${SpecialProjectNames.Complete}`),
+      h('i',
+          {
+            style: 'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
+            onClick,
+          },
+          '撤销',
+      ),
+    ])
+  }
+  function removeMessage() {
+    if (messageReactive) {
+      messageReactive.destroy()
+      messageReactive = null
+    }
+  }
+
+  function showCompleteMessage(task: Task) {
+    const onClick = () => {
+      restoreTask(task)
+      removeMessage()
+    }
+
+    messageReactive = message.info(createMessageView(task.title, onClick), {
+      icon: () => null,
+      duration: 1000,
+    })
+  }
+
+  return {
+    showCompleteMessage,
+  }
+}
+
+const { showCompleteMessage } = useMessage();
 
 const checkboxColors: Record<TaskState, string> = {
   [TaskState.ACTIVE]: "bg-#ccc",
@@ -86,7 +123,7 @@ function handleCompleteTodo () {
   switch (props.task.state) {
     case TaskState.ACTIVE:
       completeTask(props.task)
-      completeMessage(props.task)
+      showCompleteMessage(props.task)
       break;
     case TaskState.COMPLETED:
       restoreTask(props.task)
@@ -94,32 +131,6 @@ function handleCompleteTodo () {
     case TaskState.REMOVED:
       console.log("在垃圾桶里面的 task 不可以直接恢复")
       break;
-  }
-}
-
-function completeMessage(task: Task) {
-  messageReactive = message.info(
-      () => h('p', null, [
-        h('span', null, `${task.title} ${SpecialProjectNames.Complete}`),
-        h('i', {
-          style: 'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
-          onClick: () => {
-            restoreTask(task)
-            removeMessage()
-          }
-        }, '撤销'),
-      ]),
-      {
-        icon: () => null,
-        duration: 1000,
-      }
-  )
-}
-
-function removeMessage() {
-  if (messageReactive) {
-    messageReactive.destroy()
-    messageReactive = null
   }
 }
 </script>
