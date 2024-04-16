@@ -29,11 +29,25 @@
         {{ placeholderText }}
       </div>
     </div>
-    <TransitionGroup name="list" tag="ul" class="flex flex-col gap-10px">
-      <ul v-for="task in taskStore.currentActiveProject?.tasks" :key="task.id">
-        <TaskItem :task="task"></TaskItem>
-      </ul>
-    </TransitionGroup>
+    <draggable
+        :list="taskStore.currentActiveProject?.tasks ?? []"
+        :ghost-class="isDark ? 'dark-ghost' : 'ghost'"
+        :drag-class="isDark ? 'dark-drag' : 'drag'"
+        item-key="id"
+        :animation="200"
+        :component-data="{
+        tag: 'div',
+        type: 'transition-group',
+        name: !dragging ? 'flip-list' : null,
+      }"
+        class="flex flex-col gap-10px"
+        @start="dragging = true"
+        @end="dragging = false"
+    >
+      <template #item="{ element, index }">
+        <TaskItem :task="element" :index="index" class="item" />
+      </template>
+    </draggable>
     <!-- 暂时性修复 contenteditable 的 bug -->
     <div class="w-full h-1px" contenteditable="false" />
   </div>
@@ -45,6 +59,8 @@ import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
 import { SpecialProjectNames, useTaskStore } from "@/store/task";
 import { useEventListener } from "@vueuse/core";
+import draggable from 'vuedraggable'
+import { isDark } from '@/composable/dark'
 
 const taskStore = useTaskStore()
 const taskTitle = ref("")
@@ -112,6 +128,8 @@ function useInput(){
 }
 
 const { inputRef, onFocus } = useInput()
+
+const dragging = ref<boolean>(false)
 </script>
 
 <style scoped>
@@ -122,5 +140,26 @@ const { inputRef, onFocus } = useInput()
 .list-enter-from {
   opacity: 0;
   transform: translateX(30px);
+}
+
+
+.ghost {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.dark-ghost {
+  opacity: 0.4;
+  background: #2f2f2f;
+}
+
+.drag {
+  opacity: 0.5;
+  background: #c8ebfb;
+}
+
+.dark-drag {
+  opacity: 0.4;
+  background: #2f2f2f;
 }
 </style>
