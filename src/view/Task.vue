@@ -18,8 +18,8 @@
     <NLayoutContent>
       <NLayoutContent content-style="padding: 24px">
         <div class="flex w-full h-full">
-          <TaskList class="flex-1"></TaskList>
-          <TaskEditor class="flex-1"></TaskEditor>
+          <TaskList class="flex-1 w-0"></TaskList>
+          <TaskEditor class="flex-1 w-0"></TaskEditor>
         </div>
       </NLayoutContent>
     </NLayoutContent>
