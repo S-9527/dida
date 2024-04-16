@@ -6,14 +6,14 @@
     <div
         class="relative cursor-pointer"
         @click="onFocus"
-        v-show="taskStore.shouldShowTodoAdd()"
+        v-show="shouldShowTodoAdd()"
     >
       <input
           ref="inputRef"
           type="text"
           @keydown.enter="addTask"
           v-model="taskTitle"
-          v-show="taskStore.shouldShowTodoAdd()"
+          v-show="shouldShowTodoAdd()"
           class="w-full min-w-300px h-38px rounded-6px p-4px mx-12px outline-none
           border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"/>
       <div
@@ -43,7 +43,7 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { useTaskStore } from "@/store/task";
+import { SpecialProjectNames, useTaskStore } from "@/store/task";
 import { useEventListener } from "@vueuse/core";
 
 const taskStore = useTaskStore()
@@ -66,6 +66,16 @@ const addTask = () => {
 
 function onFocus() {
   inputRef.value!.focus();
+}
+
+function shouldShowTodoAdd() {
+  const name = taskStore.currentActiveProject?.name
+  return (
+      name !== (SpecialProjectNames.Complete as string) &&
+      name !== SpecialProjectNames.Trash &&
+      name !== SpecialProjectNames.Failed &&
+      name !== SpecialProjectNames.Abstract
+  )
 }
 
 useEventListener(

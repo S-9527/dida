@@ -4,7 +4,7 @@ import {
     addTaskToCompleteProject,
     addTaskToProject, findProjectByName,
     projects as projectListData,
-    removeTaskToTrashProject, SpecialProjectNames
+    removeTaskToTrashProject
 } from "@/service/task/project";
 import { Project } from "@/service/task/project";
 import { Task, restoreTask as restoreTaskHandler, createTask } from "@/service/task/task";
@@ -47,16 +47,6 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask(undefined);
     }
 
-    function shouldShowTodoAdd() {
-        const name = currentActiveProject.value?.name
-        return (
-            name !== (SpecialProjectNames.Complete as string) &&
-            name !== SpecialProjectNames.Trash &&
-            name !== SpecialProjectNames.Failed &&
-            name !== SpecialProjectNames.Abstract
-        )
-    }
-
     return {
         projectNames,
         currentActiveTask,
@@ -64,7 +54,6 @@ export const useTaskStore = defineStore("task", () => {
         addTask,
         restoreTask,
         completeTask,
-        shouldShowTodoAdd,
         changeActiveTask,
         removeTask,
         changeCurrentActiveProject,
