@@ -14,20 +14,20 @@
     </div>
     <div
         ref="leftResizeRef"
-        class="border-solid cursor-w-resize h-screen border-1"
+        class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
         style="flex: 0 0 1px"
         title="收缩侧边栏"
-        @mousedown.prevent="handleLeftDrag"
+        @mousedown.prevent="e => handleDrag(e, 'left')"
     />
     <div class="flex-1 flex w-full h-full p-24px">
       <TaskList class="w-full"/>
     </div>
     <div
         ref="rightResizeRef"
-        class="border-solid cursor-w-resize h-screen border-1"
+        class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
         style="flex: 0 0 1px"
         title="收缩侧边栏"
-        @mousedown.prevent="handleRightDrag"
+        @mousedown.prevent="e => handleDrag(e, 'right')"
     />
     <div
         ref="rightContainerRef"
@@ -44,7 +44,7 @@ import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import TheHeader from "@/components/header/TheHeader.vue";
-import { ref } from "vue";
+import { Ref, ref } from "vue";
 
 const AREA_MIN_WIDTH = 240
 const LEFT_AREA_MAX_WIDTH = 360
@@ -56,51 +56,64 @@ const boxContainerRef = ref()
 const leftContainerRef = ref()
 const rightContainerRef = ref()
 
-function handleRightDrag(e: MouseEvent) {
-  const startX = e.clientX
-  const offsetLeft = rightResizeRef.value.offsetLeft
+function getContainerHorizontalPadding(handler: Ref) {
+  const computedStyle = getComputedStyle(handler.value)
+  return (
+      parseFloat(computedStyle.getPropertyValue('padding-left'))
+      + parseFloat(computedStyle.getPropertyValue('padding-right'))
+  )
+}
 
-  document.onmousemove = (event: MouseEvent) => {
-    document.body.style.cursor = 'w-resize'
-    const endX = event.clientX
-    let moveDistance = offsetLeft + (endX - startX)
-    // container - padding - divider
+function useCalculateMoveDistance(
+    offsetLeft: number,
+    startX: number,
+    endX: number,
+    direction: 'left' | 'right',
+) {
+  let moveDistance = offsetLeft + (endX - startX)
+  if (direction === 'left') {
+    if (moveDistance < AREA_MIN_WIDTH)
+      moveDistance = AREA_MIN_WIDTH
+    if (moveDistance > LEFT_AREA_MAX_WIDTH)
+      moveDistance = LEFT_AREA_MAX_WIDTH
+  }
+  else {
     const space
         = boxContainerRef.value.clientWidth
-        - 10
-        - leftResizeRef.value.offsetWidth
-        - rightResizeRef.value.offsetWidth
+        - getContainerHorizontalPadding(boxContainerRef) / 2
 
     if (moveDistance > space - AREA_MIN_WIDTH)
       moveDistance = space - AREA_MIN_WIDTH
 
     if (moveDistance < space - RIGHT_AREA_MAX_WIDTH)
       moveDistance = space - RIGHT_AREA_MAX_WIDTH
-    rightContainerRef.value.style = `flex: 0 0 ${space - moveDistance - 48}px`
+    moveDistance = space - moveDistance
   }
-  // release
-  document.onmouseup = () => {
-    document.onmousemove = null
-    document.onmouseup = null
-    document.body.style.cursor = 'default'
-  }
+  return moveDistance
 }
 
-function handleLeftDrag(e: MouseEvent) {
+function handleDrag(e: MouseEvent, direction: 'left' | 'right') {
   const startX = e.clientX
-  const offsetLeft = leftResizeRef.value.offsetLeft
+  let offsetLeft: number
+
+  direction === 'left'
+      ? offsetLeft = leftResizeRef.value.offsetLeft
+      : offsetLeft = rightResizeRef.value.offsetLeft
 
   document.onmousemove = (event: MouseEvent) => {
-    document.body.style.cursor = 'w-resize'
+    document.body.style.cursor = 'ew-resize'
     const endX = event.clientX
-    let moveDistance = offsetLeft + (endX - startX)
+    const moveDistance = useCalculateMoveDistance(
+        offsetLeft,
+        startX,
+        endX,
+        direction,
+    )
+    const expression = `flex: 0 0 ${moveDistance}px`
 
-    if (moveDistance < AREA_MIN_WIDTH)
-      moveDistance = AREA_MIN_WIDTH
-    if (moveDistance > LEFT_AREA_MAX_WIDTH)
-      moveDistance = LEFT_AREA_MAX_WIDTH
-
-    leftContainerRef.value.style = `flex: 0 0 ${moveDistance}px`
+    direction === 'left'
+        ? (leftContainerRef.value.style = expression)
+        : (rightContainerRef.value.style = expression)
   }
   // release
   document.onmouseup = () => {
