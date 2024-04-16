@@ -39,10 +39,11 @@
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState, useTaskStore } from "@/store/task";
+import { SpecialProjectNames, Task, TaskState, useTaskStore } from "@/store/task";
 import { useTaskRightContextMenu } from "@/composable/taskRightConextMenu.ts";
-import { NPopover } from "naive-ui";
+import { createDiscreteApi, MessageReactive, NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
+import { h } from "vue";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
@@ -51,6 +52,12 @@ const { showContextMenu } = useTaskRightContextMenu()
 interface Props {
   task: Task
 }
+
+const { message } = createDiscreteApi(
+    ['message']
+)
+
+let messageReactive: MessageReactive | null = null
 
 const props = defineProps<Props>();
 
@@ -79,6 +86,7 @@ function handleCompleteTodo () {
   switch (props.task.state) {
     case TaskState.ACTIVE:
       completeTask(props.task)
+      completeMessage(props.task)
       break;
     case TaskState.COMPLETED:
       restoreTask(props.task)
@@ -86,6 +94,32 @@ function handleCompleteTodo () {
     case TaskState.REMOVED:
       console.log("在垃圾桶里面的 task 不可以直接恢复")
       break;
+  }
+}
+
+function completeMessage(task: Task) {
+  messageReactive = message.info(
+      () => h('p', null, [
+        h('span', null, `${task.title} ${SpecialProjectNames.Complete}`),
+        h('i', {
+          style: 'color: teal;font-style:unset;cursor:pointer;margin-left: 20px',
+          onClick: () => {
+            restoreTask(task)
+            removeMessage()
+          }
+        }, '撤销'),
+      ]),
+      {
+        icon: () => null,
+        duration: 1000,
+      }
+  )
+}
+
+function removeMessage() {
+  if (messageReactive) {
+    messageReactive.destroy()
+    messageReactive = null
   }
 }
 </script>
