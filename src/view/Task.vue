@@ -17,7 +17,7 @@
         class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
         style="flex: 0 0 1px"
         title="收缩侧边栏"
-        @mousedown.prevent="e => handleDrag(e, 'left')"
+        @mousedown.prevent="e => useDividerDrag(e, 'left')"
     />
     <div class="flex-1 flex w-full h-full p-24px">
       <TaskList class="w-full"/>
@@ -27,7 +27,7 @@
         class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
         style="flex: 0 0 1px"
         title="收缩侧边栏"
-        @mousedown.prevent="e => handleDrag(e, 'right')"
+        @mousedown.prevent="e => useDividerDrag(e, 'right')"
     />
     <div
         ref="rightContainerRef"
@@ -45,26 +45,40 @@ import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import TheHeader from "@/components/header/TheHeader.vue";
 import { Ref, ref } from "vue";
+import { useEventListener } from "@vueuse/core";
 
 const AREA_MIN_WIDTH = 240
 const LEFT_AREA_MAX_WIDTH = 360
 const RIGHT_AREA_MAX_WIDTH = 800
 
-const leftResizeRef = ref()
-const rightResizeRef = ref()
-const boxContainerRef = ref()
-const leftContainerRef = ref()
-const rightContainerRef = ref()
+const { leftResizeRef, rightResizeRef, leftContainerRef, rightContainerRef, boxContainerRef } = useGetContainerRef()
 
-function getContainerHorizontalPadding(handler: Ref) {
-  const computedStyle = getComputedStyle(handler.value)
+function useGetContainerRef() {
+  const leftResizeRef = ref()
+  const rightResizeRef = ref()
+  const boxContainerRef = ref()
+  const leftContainerRef = ref()
+  const rightContainerRef = ref()
+
+  return {
+    leftResizeRef,
+    rightResizeRef,
+    boxContainerRef,
+    leftContainerRef,
+    rightContainerRef,
+  }
+}
+
+function getContainerHorizontalPadding(containerRef: Ref<HTMLDivElement | undefined>) {
+  if (!containerRef.value) return 0
+  const computedStyle = getComputedStyle(containerRef.value)
   return (
       parseFloat(computedStyle.getPropertyValue('padding-left'))
       + parseFloat(computedStyle.getPropertyValue('padding-right'))
   )
 }
 
-function useCalculateMoveDistance(
+function calculateMoveDistance(
     offsetLeft: number,
     startX: number,
     endX: number,
@@ -92,18 +106,18 @@ function useCalculateMoveDistance(
   return moveDistance
 }
 
-function handleDrag(e: MouseEvent, direction: 'left' | 'right') {
+function useDividerDrag(e: MouseEvent, direction: 'left' | 'right') {
   const startX = e.clientX
   let offsetLeft: number
 
   direction === 'left'
-      ? offsetLeft = leftResizeRef.value.offsetLeft
-      : offsetLeft = rightResizeRef.value.offsetLeft
+      ? offsetLeft = leftResizeRef.value!.offsetLeft
+      : offsetLeft = rightResizeRef.value!.offsetLeft
 
-  document.onmousemove = (event: MouseEvent) => {
+  const cleanupMouseMove = useEventListener(document, 'mousemove', (event: MouseEvent) => {
     document.body.style.cursor = 'ew-resize'
     const endX = event.clientX
-    const moveDistance = useCalculateMoveDistance(
+    const moveDistance = calculateMoveDistance(
         offsetLeft,
         startX,
         endX,
@@ -112,15 +126,15 @@ function handleDrag(e: MouseEvent, direction: 'left' | 'right') {
     const expression = `flex: 0 0 ${moveDistance}px`
 
     direction === 'left'
-        ? (leftContainerRef.value.style = expression)
-        : (rightContainerRef.value.style = expression)
-  }
-  // release
-  document.onmouseup = () => {
-    document.onmousemove = null
-    document.onmouseup = null
+        ? (leftContainerRef.value!.setAttribute('style', expression))
+        : (rightContainerRef.value!.setAttribute('style', expression))
+  })
+
+  const cleanupMouseUp = useEventListener(document, 'mouseup', () => {
+    cleanupMouseMove()
+    cleanupMouseUp()
     document.body.style.cursor = 'default'
-  }
+  })
 }
 </script>
 
