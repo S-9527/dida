@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="currentActiveTask">
-      <h1 contenteditable="true" @input="handleInput" class="text-3xl">
+      <h1 contenteditable="true" class="text-3xl break-all" @input="handleInput">
         {{ currentActiveTask.title }}
       </h1>
       <div class="mt-2">
