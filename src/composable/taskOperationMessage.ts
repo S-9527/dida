@@ -52,7 +52,17 @@ export function useTaskOperationMessage() {
         })
     }
 
+    function showRemoveMessage(task: Task) {
+        const content = `${task.title} ${TaskOperationStatus.Remove}`
+
+        messageReactive = message.info(createMessageView(content), {
+            icon: () => null,
+            duration: 1000,
+        })
+    }
+
     return {
-        showCompleteMessage
+        showCompleteMessage,
+        showRemoveMessage
     }
 }
