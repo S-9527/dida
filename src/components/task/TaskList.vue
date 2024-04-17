@@ -55,15 +55,16 @@
 
 <script setup lang="ts">
 import TaskItem from "./TaskItem.vue";
-import { computed, Ref, ref } from "vue";
+import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
 import { SpecialProjectNames, useTaskStore } from "@/store/task";
-import { useEventListener } from "@vueuse/core";
 import draggable from 'vuedraggable'
 import { isDark } from '@/composable/dark'
+import { useInput } from "@/composable/useInput";
 
 const taskStore = useTaskStore()
 const taskTitle = ref("")
+const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
   return `添加任务至"${taskStore.currentActiveProject?.name}"，回车即可保存`;
@@ -72,6 +73,8 @@ const placeholderText = computed(() => {
 const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0;
 });
+
+const { inputRef, onFocus } = useInput()
 
 const addTask = () => {
   taskStore.addTask(taskTitle.value)
@@ -87,49 +90,6 @@ function shouldShowTodoAdd() {
       name !== SpecialProjectNames.Abstract
   )
 }
-
-function useInput(){
-  const inputRef: Ref<HTMLInputElement | null> = ref(null);
-  useEventListener(
-      () => inputRef.value,
-      "focus",
-      () => {
-        const classList = inputRef.value!.classList;
-
-        classList.add("border-blue");
-        classList.add("dark:color-black");
-        classList.remove("bg-gray-100");
-        classList.remove("dark:bg-#3B3B3B");
-      }
-  );
-
-  useEventListener(
-      () => inputRef.value,
-      "blur",
-      () => {
-        const classList = inputRef.value!.classList;
-
-        classList.add("bg-gray-100");
-        classList.add("dark:bg-#3B3B3B");
-
-        classList.remove("border-blue");
-        classList.remove("dark:color-black");
-      }
-  );
-
-  function onFocus() {
-    inputRef.value!.focus();
-  }
-
-  return {
-    inputRef,
-    onFocus,
-  }
-}
-
-const { inputRef, onFocus } = useInput()
-
-const dragging = ref<boolean>(false)
 </script>
 
 <style scoped>
