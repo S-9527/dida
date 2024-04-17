@@ -1,114 +1,17 @@
 <template>
   <div>
     <div>
-      <NTree
-          block-line
-          :data="data"
-          :default-expanded-keys="listDefaultSelectedKey"
-          :default-selected-keys="selectedKey"
-          :node-props="nodeProps"
-          @update:selected-keys="changeSelectedKey"
-      />
+      <TaskLeftListNTree />
     </div>
     <div class="mt-2px">
-      <ul>
-        <li v-for="item in taskList" :key="item.key"
-            class="flex justify-between items-center h-7
-            hover:bg-[#F6F8FF] pl-4 pr-2 cursor-pointer"
-            dark="color-white hover:color-white hover:rounded
-            hover:bg-lightblue-700 transition duration-400 ease-in-out"
-            :class="selectedKey[0] === item.key ? selected : ''"
-            @click="changeSelectedKeyAndActiveProject(item.title,item.key)"
-        >
-          <div class="flex">
-            <Icon :icon="item.icon" width="20" class="dark:color-white-b  color-[#9D9FA3]"/>
-            <span class="ml-2">{{ item.title }}</span>
-          </div>
-
-          <Icon icon="material-symbols:more-horiz" width="20"
-                v-show="selectedKey[0] === item.key"
-                class="dark:color-white color-[#9D9FA3]"/>
-        </li>
-      </ul>
+      <TaskLeftListProject />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { reactive, ref } from "vue";
-import { NTree } from "naive-ui";
-import { Icon } from '@iconify/vue'
-import { SpecialProjectNames, useTaskStore } from "@/store/task";
-
-interface TaskListType {
-  key: number
-  icon: string
-  title: SpecialProjectNames
-}
-
-const taskStore = useTaskStore();
-
-const selectedKey = ref([101])
-const listDefaultSelectedKey = ref([100])
-
-const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
-
-const data = ref<any[]>([
-  {
-    key: 100,
-    label: "清单",
-    checkboxDisabled: false,
-    isLeaf: false,
-    children: taskStore.projectNames.map((projectName, index) => {
-      return {
-        key: 200 + index,
-        label: projectName,
-        isLeaf: true,
-      };
-    }),
-  }
-]);
-
-const taskList = reactive<TaskListType[]>([
-  {
-    key: 1,
-    icon: 'material-symbols:check-box',
-    title: SpecialProjectNames.Complete,
-  },
-  {
-    key: 2,
-    icon: 'mdi:close-box',
-    title: SpecialProjectNames.Failed,
-  },
-  {
-    key: 3,
-    icon: 'material-symbols:delete',
-    title: SpecialProjectNames.Trash,
-  },
-  {
-    key: 4,
-    icon: 'material-symbols:text-snippet-rounded',
-    title: SpecialProjectNames.Abstract,
-  },
-])
-
-const changeSelectedKeyAndActiveProject = (projectName: string, key: number) => {
-  taskStore.changeCurrentActiveProject(projectName)
-  selectedKey.value = [key]
-}
-
-const changeSelectedKey = (key: number[]) => {
-  selectedKey.value = key
-}
-
-const nodeProps = (treeOption: any) => {
-  return {
-    onClick() {
-      const projectName = treeOption.option.label;
-      taskStore.changeCurrentActiveProject(projectName);
-    },
-  };
-};
+import TaskLeftListNTree from "@/components/task/TaskLeftListNTree.vue";
+import TaskLeftListProject from "@/components/task/TaskLeftListProject.vue";
 </script>
 
 <style scoped></style>
