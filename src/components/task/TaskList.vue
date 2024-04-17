@@ -59,8 +59,8 @@ import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
 import { SpecialProjectNames, useTaskStore } from "@/store/task";
 import draggable from 'vuedraggable'
-import { isDark } from '@/composable/dark'
-import { useInput } from "@/composable/useInput";
+import { isDark } from '@/composable/useDark.ts'
+import { useTaskListInput } from "@/composable/useTaskListInput.ts";
 
 const taskStore = useTaskStore()
 const taskTitle = ref("")
@@ -74,7 +74,7 @@ const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0;
 });
 
-const { inputRef, onFocus } = useInput()
+const { inputRef, onFocus } = useTaskListInput()
 
 const addTask = () => {
   taskStore.addTask(taskTitle.value)

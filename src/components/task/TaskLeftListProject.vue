@@ -5,7 +5,7 @@
         hover:bg-[#F6F8FF] pl-4 pr-2 cursor-pointer"
         dark="color-white hover:color-white hover:rounded
         hover:bg-lightblue-700 transition duration-400 ease-in-out"
-        :class="taskStatusStore.selectedKey[0] === item.key ? selected : ''"
+        :class="projectSelectedStatusStore.selectedKey[0] === item.key ? selected : ''"
         @click="changeSelectedKeyAndActiveProject(item.title,item.key)"
     >
       <div class="flex">
@@ -13,7 +13,7 @@
         <span class="ml-2">{{ item.title }}</span>
       </div>
 
-      <Icon v-show="taskStatusStore.selectedKey[0] === item.key"
+      <Icon v-show="projectSelectedStatusStore.selectedKey[0] === item.key"
           icon="material-symbols:more-horiz" width="20"
           class="dark:color-white color-[#9D9FA3]"
       />
@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import {SpecialProjectNames, useTaskStatusStore, useTaskStore,} from '@/store/task'
+import {SpecialProjectNames, useProjectSelectedStatusStore, useTaskStore,} from '@/store/task'
 import { Icon } from '@iconify/vue'
 import { reactive } from 'vue'
 
@@ -57,11 +57,11 @@ const taskList = reactive<TaskListType[]>([
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const taskStore = useTaskStore()
-const taskStatusStore = useTaskStatusStore()
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
 
 const changeSelectedKeyAndActiveProject = (projectName: string, key: number) => {
   taskStore.changeCurrentActiveProject(projectName)
-  taskStatusStore.changeSelectedKey([key])
+  projectSelectedStatusStore.changeSelectedKey([key])
 }
 </script>
 

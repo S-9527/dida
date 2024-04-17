@@ -1,7 +1,7 @@
 <template>
   <NTree
-      v-model:selected-keys="taskStatusStore.selectedKey"
-      :default-expanded-keys="taskStatusStore.listDefaultSelectedKey"
+      v-model:selected-keys="projectSelectedStatusStore.selectedKey"
+      :default-expanded-keys="projectSelectedStatusStore.listDefaultSelectedKey"
       block-line
       :data="data"
       :node-props="nodeProps"
@@ -10,11 +10,11 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStatusStore, useTaskStore } from '@/store/task'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store/task'
 import { NTree } from 'naive-ui'
 import { ref } from 'vue'
 
-const taskStatusStore = useTaskStatusStore()
+const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
 
 const data = ref<any[]>([
@@ -24,13 +24,12 @@ const data = ref<any[]>([
     checkboxDisabled: false,
     isLeaf: false,
     children: taskStore.projectNames.map((projectName, index) => {
-          return {
-            key: 100 + index + 1,
-            label: projectName,
-            isLeaf: true,
-          }
-        }
-    ),
+      return {
+        key: 100 + index + 1,
+        label: projectName,
+        isLeaf: true,
+      }
+    }),
   },
 ])
 const nodeProps = (treeOption: any) => {
@@ -43,7 +42,7 @@ const nodeProps = (treeOption: any) => {
 }
 
 const changeSelectedKey = (key: number[]) => {
-  taskStatusStore.changeSelectedKey(key)
+  projectSelectedStatusStore.changeSelectedKey(key)
 }
 </script>
 

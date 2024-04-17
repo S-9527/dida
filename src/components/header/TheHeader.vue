@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { toggleDark } from '@/composable/dark';
+import { toggleDark } from '@/composable/useDark.ts';
 
 const goToGithub = () => {
   window.open("https://github.com/S-9527/dida")

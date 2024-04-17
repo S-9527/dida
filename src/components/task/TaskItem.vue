@@ -40,10 +40,10 @@
 
 <script setup lang="ts">
 import { Task, TaskState, useTaskStore } from "@/store/task";
-import { useTaskRightContextMenu } from "@/composable/taskRightConextMenu.ts";
+import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
-import { useTaskOperationMessage } from "@/composable/taskOperationMessage.ts";
+import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
