@@ -12,7 +12,8 @@ import { Task, restoreTask as restoreTaskHandler, createTask } from "@/service/t
 export const useTaskStore = defineStore("task", () => {
     const projects = reactive(projectListData)
     const currentActiveTask = ref<Task>();
-    const currentActiveProject = ref<Project | undefined>();
+    const currentActiveProject = ref<Project | undefined>(projects[0]);
+
     const projectNames = computed(() => {
         return projects.map(project => project.name)
     })
