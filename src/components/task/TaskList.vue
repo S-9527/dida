@@ -4,16 +4,16 @@
       <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
     </div>
     <div
+        v-show="shouldShowTodoAdd"
         class="relative cursor-pointer"
         @click="onFocus"
-        v-show="shouldShowTodoAdd()"
     >
       <input
           ref="inputRef"
           type="text"
-          @keydown.enter="addTask"
           v-model="taskTitle"
-          v-show="shouldShowTodoAdd()"
+          v-show="shouldShowTodoAdd"
+          @keydown.enter="addTask"
           class="w-full min-w-300px h-38px rounded-6px p-4px mx-12px outline-none
           border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"/>
       <div
@@ -81,7 +81,7 @@ const addTask = () => {
   taskTitle.value = ""
 }
 
-function shouldShowTodoAdd() {
+const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name
   return (
       name !== (SpecialProjectNames.Complete as string) &&
@@ -89,7 +89,7 @@ function shouldShowTodoAdd() {
       name !== SpecialProjectNames.Failed &&
       name !== SpecialProjectNames.Abstract
   )
-}
+})
 </script>
 
 <style scoped>
