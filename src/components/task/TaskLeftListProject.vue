@@ -22,7 +22,7 @@
 </template>
 
 <script setup lang="ts">
-import {SpecialProjectNames, useProjectSelectedStatusStore, useTaskStore,} from '@/store/task'
+import { SpecialProjectNames, useProjectSelectedStatusStore, useTaskStore } from '@/store/task'
 import { Icon } from '@iconify/vue'
 import { reactive } from 'vue'
 

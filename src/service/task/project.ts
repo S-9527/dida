@@ -1,6 +1,6 @@
 import { createTask, Task, TaskState } from "./task";
-import type { fetchData } from "@/store/task/data.ts";
-import { completedProject, findSpecialProjectByName, trashProject } from "@/service/task/specialProject.ts";
+import type { fetchData } from "./data";
+import { completedProject, findSpecialProjectByName, trashProject } from "./specialProject";
 
 export interface Project {
     name: string;

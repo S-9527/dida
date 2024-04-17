@@ -6,7 +6,6 @@ export const useProjectSelectedStatusStore = defineStore('taskStatus', () => {
         const listDefaultSelectedKey = ref([100])
 
         function changeSelectedKey(key: number[]) {
-            console.log('changeSelectedKey', key)
             selectedKey.value = key
         }
 
