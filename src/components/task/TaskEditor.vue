@@ -22,7 +22,7 @@
 import { useTaskStore } from "@/store/task";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
-import { isDark } from "@/composable/useDark.ts";
+import { isDark } from "@/composable/useTheme.ts";
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
 

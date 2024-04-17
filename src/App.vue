@@ -5,11 +5,8 @@
 </template>
 
 <script setup lang="ts">
-import { NConfigProvider, darkTheme } from 'naive-ui';
-import { computed } from 'vue';
-import { isDark } from './composable/useDark.ts';
-
-const naiveTheme = computed(() => isDark.value ? darkTheme : null);
+import { NConfigProvider } from 'naive-ui';
+import { naiveTheme } from "@/composable/useTheme.ts";
 </script>
 
 <style scoped></style>

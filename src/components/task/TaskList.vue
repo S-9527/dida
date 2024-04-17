@@ -59,7 +59,7 @@ import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
 import { SpecialProjectNames, useTaskStore } from "@/store/task";
 import draggable from 'vuedraggable'
-import { isDark } from '@/composable/useDark.ts'
+import { isDark } from '@/composable/useTheme.ts'
 import { useTaskListInput } from "@/composable/useTaskListInput.ts";
 
 const taskStore = useTaskStore()
