@@ -1,7 +1,11 @@
 <template>
-  <div class="flex flex-row gap-10px w-full items-center" @click.right="handleRightClickTask($event, task)">
+  <div class="flex flex-row w-full items-center" @click.right="handleRightClickTask($event, task)">
     <i class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm" />
-    <div class="flex justify-start items-center gap-5px h-40px py-5px flex-1">
+    <div
+        class="flex justify-start items-center gap-5px h-40px py-5px flex-1 pl-10"
+        :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
+        currentActiveTask?.id === task.id ? isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']"
+    >
       <template v-if="task.state === TaskState.REMOVED">
         <div class="flex justify-center items-center gap-5px">
           <NPopover trigger="hover">
@@ -26,7 +30,7 @@
              @click="handleCompleteTodo">
         </div>
         <div
-            class="w-full"
+            class="w-full cursor-pointer focus:outline-0"
             contenteditable="true"
             @input="handleInput"
             @focus="handleClickTask(task)"
@@ -44,6 +48,7 @@ import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts"
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
+import { isDark } from "@/composable/useTheme.ts";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
