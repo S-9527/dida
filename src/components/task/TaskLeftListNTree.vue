@@ -36,6 +36,7 @@ const data = ref<any[]>([
 const nodeProps = (treeOption: any) => {
   return {
     onClick() {
+      if (treeOption.option.key === 100) return
       const projectName = treeOption.option.label
       taskStore.changeCurrentActiveProject(projectName)
     },
