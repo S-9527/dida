@@ -1,5 +1,6 @@
-import { addTaskToProject, Project, removeTaskFromProject } from "./project";
+import type { Project } from "./project";
 import { nanoid } from "nanoid";
+import { completedProject, trashProject } from "./smartProject";
 
 export enum TaskState {
     ACTIVE,
@@ -8,25 +9,53 @@ export enum TaskState {
     REMOVED,
 }
 export interface Task {
-    title: string;
     id: string;
+    title: string;
+    state: TaskState;
     content: string;
     project?: Project;
-    state: TaskState;
     previousProject?: Project;
 }
 
-export function createTask(title: string, id: string = nanoid()): Task {
+export function createTask(title: string, id: string = nanoid(), content: string = ""): Task {
     return {
         id,
         title,
-        content: '',
+        content,
         state: TaskState.ACTIVE,
     }
 }
 
+export function addTask(task: Task, project: Project) {
+    task.project = project
+    task.state = TaskState.ACTIVE
+    project.tasks.unshift(task)
+}
+
+export function removeTask(task: Task) {
+    _removeTaskFromProject(task)
+    addTask(task, trashProject)
+    task.state = TaskState.REMOVED
+}
+
+export function completeTask(task: Task) {
+    _removeTaskFromProject(task)
+    addTask(task, completedProject)
+    task.state = TaskState.COMPLETED
+}
+
 export function restoreTask(task: Task) {
-    const previousProject = task.previousProject!
-    removeTaskFromProject(task, task.project!)
-    addTaskToProject(task, previousProject)
+    const previousProject = task.previousProject
+    _removeTaskFromProject(task)
+    if (previousProject){
+        addTask(task, previousProject)
+    }
+}
+
+function _removeTaskFromProject(task: Task) {
+    const { project } = task
+    if (project) {
+        task.previousProject = project
+        project.tasks = project.tasks.filter(item => task.id !== item.id)
+    }
 }

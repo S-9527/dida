@@ -2,7 +2,7 @@ import { TaskState } from "./task";
 import { nanoid } from "nanoid";
 
 export const fetchData = {
-    projectList: [
+    projects: [
         {
             name: "快捷",
             tasks: [

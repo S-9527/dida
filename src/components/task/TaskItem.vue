@@ -39,7 +39,7 @@
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState, useTaskStore } from "@/store/task";
+import { Task, TaskState, useTaskStore } from "@/store";
 import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";

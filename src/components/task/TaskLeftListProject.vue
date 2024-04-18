@@ -22,36 +22,36 @@
 </template>
 
 <script setup lang="ts">
-import { SpecialProjectNames, useProjectSelectedStatusStore, useTaskStore } from '@/store/task'
+import { SmartProjectNames, useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { Icon } from '@iconify/vue'
 import { reactive } from 'vue'
 
 interface TaskListType {
   key: number
   icon: string
-  title: `${SpecialProjectNames}`
+  title: `${SmartProjectNames}`
 }
 
 const taskList = reactive<TaskListType[]>([
   {
     key: 1,
     icon: 'material-symbols:check-box',
-    title: SpecialProjectNames.Complete,
+    title: SmartProjectNames.Complete,
   },
   {
     key: 2,
     icon: 'mdi:close-box',
-    title: SpecialProjectNames.Failed,
+    title: SmartProjectNames.Failed,
   },
   {
     key: 3,
     icon: 'material-symbols:delete',
-    title: SpecialProjectNames.Trash,
+    title: SmartProjectNames.Trash,
   },
   {
     key: 4,
     icon: 'material-symbols:text-snippet-rounded',
-    title: SpecialProjectNames.Abstract,
+    title: SmartProjectNames.Abstract,
   },
 ])
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'

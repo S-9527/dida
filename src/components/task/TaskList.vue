@@ -57,7 +57,7 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { SpecialProjectNames, useTaskStore } from "@/store/task";
+import { SmartProjectNames, useTaskStore } from "@/store";
 import draggable from 'vuedraggable'
 import { isDark } from '@/composable/useTheme.ts'
 import { useTaskListInput } from "@/composable/useTaskListInput.ts";
@@ -84,10 +84,10 @@ const addTask = () => {
 const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name
   return (
-      name !== (SpecialProjectNames.Complete as string) &&
-      name !== SpecialProjectNames.Trash &&
-      name !== SpecialProjectNames.Failed &&
-      name !== SpecialProjectNames.Abstract
+      name !== (SmartProjectNames.Complete as string) &&
+      name !== SmartProjectNames.Trash &&
+      name !== SmartProjectNames.Failed &&
+      name !== SmartProjectNames.Abstract
   )
 })
 </script>

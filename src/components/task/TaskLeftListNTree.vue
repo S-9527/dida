@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { useProjectSelectedStatusStore, useTaskStore } from '@/store/task'
+import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { NTree } from 'naive-ui'
 import { ref } from 'vue'
 

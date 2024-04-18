@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from "@/store/task";
+import { useTaskStore } from "@/store";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
 import { isDark } from "@/composable/useTheme.ts";
