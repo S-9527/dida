@@ -9,10 +9,15 @@
       class="!h-[calc(100vh-40px)] flex p-10px pt-0
       overflow-hidden dark:bg-#18181c dark:text-white"
   >
-    <div ref="leftContainerElement" :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }">
+    <div
+        v-if="visible"
+        ref="leftContainerElement"
+        :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
+    >
       <TaskLeftListView/>
     </div>
     <div
+        v-if="visible"
         ref="leftResizeElement"
         class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
         style="flex: 0 0 1px"
@@ -46,6 +51,8 @@ import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import TheHeader from "@/components/header/TheHeader.vue";
 import { ref } from "vue";
 import { useTaskSidebarDrag } from "@/composable/useTaskSidebarDrag.ts";
+import { useTaskLeftMenuStatusStore } from '@/store'
+import { storeToRefs } from "pinia";
 
 const AREA_MIN_WIDTH = 240
 
@@ -64,6 +71,7 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     rightContainerElement,
 )
 
+const { visible } = storeToRefs(useTaskLeftMenuStatusStore());
 </script>
 
 <style scoped></style>

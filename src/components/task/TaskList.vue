@@ -1,6 +1,8 @@
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
-    <div>
+    <div class="flex items-center">
+      <Icon :icon="visible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'"
+             width="30" @click="toggleLeftMenu()" />
       <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
     </div>
     <div
@@ -57,12 +59,16 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { SmartProjectNames, useTaskStore } from "@/store";
+import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore } from "@/store";
 import draggable from 'vuedraggable'
 import { isDark } from '@/composable/useTheme.ts'
 import { useTaskListInput } from "@/composable/useTaskListInput.ts";
+import { storeToRefs } from "pinia";
 
 const taskStore = useTaskStore()
+const { toggle } = useTaskLeftMenuStatusStore()
+const { visible } = storeToRefs(useTaskLeftMenuStatusStore())
+
 const taskTitle = ref("")
 const dragging = ref<boolean>(false)
 
@@ -79,6 +85,10 @@ const { inputRef, onFocus } = useTaskListInput()
 const addTask = () => {
   taskStore.addTask(taskTitle.value)
   taskTitle.value = ""
+}
+
+function toggleLeftMenu() {
+  toggle()
 }
 
 const shouldShowTodoAdd = computed(() => {
