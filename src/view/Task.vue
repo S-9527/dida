@@ -1,9 +1,4 @@
 <template>
-  <div class="w-full bg-gray-100 text-black dark:bg-#18181c dark:text-white
-  h-40px px-1% flex justify-between items-center text-16px">
-    <div>Vue3 Todo App Real-World</div>
-    <TheHeader />
-  </div>
   <div
       ref="boxContainerElement"
       class="!h-[calc(100vh-40px)] flex p-10px pt-0

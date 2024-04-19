@@ -43,16 +43,16 @@
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState, useTaskStore } from "@/store";
+import { Task, TaskState, useTaskStore, useThemeStore } from "@/store";
 import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
-import { isDark } from "@/composable/useTheme.ts";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
 const { showContextMenu } = useTaskRightContextMenu()
+const { isDark } = storeToRefs(useThemeStore());
 
 interface Props {
   task: Task

@@ -1,20 +1,37 @@
-<template>
-  <div class="flex items-center justify-start">
-    <button class="mx-2 !outline-none" @click="toggleDark()">
-      <div i="carbon-sun dark:carbon-moon"></div>
-    </button>
-    <button class="mx-2 !outline-none" @click="goToGithub()">
-      <div class="i-carbon:logo-github"></div>
-    </button>
-  </div>
-</template>
-
 <script setup lang="ts">
-import { toggleDark } from '@/composable/useTheme.ts';
+import { useRouter } from 'vue-router'
+import { useThemeStore } from '@/store'
 
-const goToGithub = () => {
-  window.open("https://github.com/S-9527/dida")
-}
+const router = useRouter()
+
+const { toggleDark } = useThemeStore()
+
+const goTo = {
+  home: () => router.push({
+    path: '/',
+  }),
+  settings: () => router.push({
+    name: 'Settings',
+  }),
+  github: () => window.open('https://github.com/cuixiaorui/vue3-dida'),
+} as const
 </script>
 
-<style scoped></style>
+<template>
+  <div class="w-full base-color h-40px px-1% flex justify-between items-center text-16px">
+    <div class="cursor-pointer" aria-label="Go Home" @click="goTo.home()">
+      Vue3 DiDa Todo List
+    </div>
+    <div class="flex items-center justify-start">
+      <button class="mx-2 !outline-none" @click="goTo.settings()">
+        <div i="carbon-settings" />
+      </button>
+      <button class="mx-2 !outline-none" @click="toggleDark()">
+        <div i="carbon-sun dark:carbon-moon" />
+      </button>
+      <button class="mx-2 !outline-none" @click="goTo.github()">
+        <div i="mdi-github" />
+      </button>
+    </div>
+  </div>
+</template>

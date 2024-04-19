@@ -19,12 +19,12 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore } from "@/store";
+import { useTaskStore, useThemeStore } from "@/store";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
-import { isDark } from "@/composable/useTheme.ts";
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
+const { isDark } = storeToRefs(useThemeStore());
 
 function handleInput (e:Event) {
   if (currentActiveTask) {

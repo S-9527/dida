@@ -11,7 +11,8 @@ import {
 export default defineConfig({
     shortcuts: [
         ['btn', ''],
-        ['item-hover', '']
+        ['item-hover', ''],
+        ['base-color', 'bg-gray-100 dark:bg-#18181c dark:text-white text-black']
     ],
     presets: [
         presetUno(),

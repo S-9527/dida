@@ -59,15 +59,15 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore } from "@/store";
+import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
-import { isDark } from '@/composable/useTheme.ts'
 import { useTaskListInput } from "@/composable/useTaskListInput.ts";
 import { storeToRefs } from "pinia";
 
 const taskStore = useTaskStore()
 const { toggle } = useTaskLeftMenuStatusStore()
 const { visible } = storeToRefs(useTaskLeftMenuStatusStore())
+const { isDark } = storeToRefs(useThemeStore());
 
 const taskTitle = ref("")
 const dragging = ref<boolean>(false)
