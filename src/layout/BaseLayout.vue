@@ -1,12 +1,18 @@
 <template>
   <div>
     <TheHeader />
-    <slot />
+    <div class="flex">
+      <Navbar />
+      <div class="grow">
+        <slot />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import TheHeader from '@/components/header/TheHeader.vue'
+import Navbar from "@/components/navbar/Navbar.vue";
 </script>
 
 <style scoped></style>
