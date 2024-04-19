@@ -57,11 +57,10 @@
 
 <script setup lang="ts">
 import TaskItem from "./TaskItem.vue";
-import { computed, ref } from "vue";
+import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
 import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
-import { useTaskListInput } from "@/composable/useTaskListInput.ts";
 import { storeToRefs } from "pinia";
 
 const taskStore = useTaskStore()
@@ -80,7 +79,20 @@ const isPlaceholder = computed(() => {
   return taskTitle.value.length === 0;
 });
 
-const { inputRef, onFocus } = useTaskListInput()
+function useInput() {
+  const inputRef: Ref<HTMLInputElement | null> = ref(null)
+
+  function onFocus() {
+    inputRef.value!.focus()
+  }
+
+  return {
+    inputRef,
+    onFocus,
+  }
+}
+
+const { inputRef, onFocus } = useInput()
 
 const addTask = () => {
   taskStore.addTask(taskTitle.value)
