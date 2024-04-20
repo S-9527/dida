@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { findProjectByName, initProjects, projects } from '../task/project'
-import { completedProject, trashProject } from '../task/smartProject'
+import { completedSmartProject, trashProject } from '../task/smartProject'
 
 describe('project', () => {
     it('initProjects ', () => {
@@ -55,7 +55,7 @@ describe('project', () => {
         const project = findProjectByName('first')
 
         expect(project?.name).toBe('first')
-        expect(findProjectByName(completedProject.name)).toBeTruthy()
+        expect(findProjectByName(completedSmartProject.name)).toBeTruthy()
         expect(findProjectByName(trashProject.name)).toBeTruthy()
     })
 

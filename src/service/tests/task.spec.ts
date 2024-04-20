@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import { addTask, completeTask, createTask, removeTask, restoreTask, TaskState } from "@/service/task/task.ts";
-import { createProject, resetCompletedProject, resetTrashProject } from "@/service/task/project.ts";
-import { completedProject, trashProject } from "@/service/task/smartProject.ts";
+import { createProject, resetTrashProject } from "@/service/task/project.ts";
+import { completedSmartProject, trashProject, initCompletedSmartProject } from "@/service/task/smartProject.ts";
 
 
 describe('task', () => {
@@ -46,24 +46,31 @@ describe('task', () => {
         const project = createProject('one')
         const task = createTask('coding')
         addTask(task, project)
+        initCompletedSmartProject({
+            name: '已完成',
+            tasks: [],
+        })
 
         completeTask(task)
 
         expect(project.tasks.length).toBe(0)
-        expect(completedProject!.tasks[0].title).toBe('coding')
-
-        resetCompletedProject()
+        expect(completedSmartProject!.tasks[0].title).toBe('coding')
     })
 
     it('restore task', () => {
         const project = createProject('one')
         const task = createTask('coding')
+        initCompletedSmartProject({
+            name: '已完成',
+            tasks: [],
+        })
+
         addTask(task, project)
         completeTask(task)
 
         restoreTask(task)
 
-        expect(completedProject.tasks.length).toBe(0)
+        expect(completedSmartProject.tasks.length).toBe(0)
         expect(project!.tasks[0].title).toBe('coding')
     })
 

@@ -1,14 +1,15 @@
 import { createTask, addTask } from "./task";
-import { completedProject, trashProject } from "./smartProject.ts";
+import { completedSmartProject, trashProject } from "./smartProject.ts";
 import type { Task } from "./task.ts";
 
-interface FetchTaskData {
+export interface FetchTaskData {
     title: string
     content: string
     id: string
+    previousProjectName?: string
 }
 
-interface FetchProjectData {
+export interface FetchProjectData {
     name: string
     tasks: FetchTaskData[]
 }
@@ -32,9 +33,11 @@ export function addProject(project: Project) {
 }
 
 export function findProjectByName(name: string) {
+    if (!name) return
+
     switch (name) {
-        case completedProject.name:
-            return completedProject
+        case completedSmartProject.name:
+            return completedSmartProject
         case trashProject.name:
             return trashProject
         default:
@@ -58,8 +61,4 @@ export function initProjects(projectsData: FetchProjectData[]) {
 
 export function resetTrashProject() {
     trashProject.tasks = []
-}
-
-export function resetCompletedProject() {
-    completedProject.tasks = []
 }
