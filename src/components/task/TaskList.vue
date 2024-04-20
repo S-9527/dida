@@ -13,8 +13,9 @@
       <input
           ref="inputRef"
           type="text"
-          v-model="taskTitle"
+          :value="taskTitle"
           v-show="shouldShowTodoAdd"
+          @input="handleInputChange"
           @keydown.enter="addTask"
           class="w-full min-w-300px h-38px rounded-6px p-4px mx-12px outline-none
           border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"/>
@@ -103,6 +104,10 @@ const addTask = () => {
 
 function toggleLeftMenu() {
   toggle()
+}
+
+function handleInputChange(event: any) {
+  taskTitle.value = event.target.value
 }
 
 const shouldShowTodoAdd = computed(() => {
