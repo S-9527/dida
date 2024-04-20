@@ -1,5 +1,4 @@
 import type { Project } from "./project";
-import { nanoid } from "nanoid";
 import { completedProject, trashProject } from "./smartProject";
 
 export enum TaskState {
@@ -17,7 +16,7 @@ export interface Task {
     previousProject?: Project;
 }
 
-export function createTask(title: string, id: string = nanoid(), content: string = ""): Task {
+export function createTask(title: string, id: string = crypto.randomUUID(), content: string = ""): Task {
     return {
         id,
         title,
