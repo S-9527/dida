@@ -95,7 +95,9 @@ function useInput() {
 const { inputRef, onFocus } = useInput()
 
 const addTask = () => {
-  taskStore.addTask(taskTitle.value)
+  if (taskTitle.value) {
+    taskStore.addTask(taskTitle.value)
+  }
   taskTitle.value = ""
 }
 
