@@ -7,7 +7,7 @@
     <div
         v-if="visible"
         ref="leftContainerElement"
-        :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
+        :style="leftWidthFlex"
     >
       <TaskLeftListView/>
     </div>
@@ -32,7 +32,7 @@
     <div
         ref="rightContainerElement"
         class="flex w-full h-full p-24px"
-        :style="{ flex: `0 0 ${AREA_MIN_WIDTH}px` }"
+        :style="rightWidthFlex"
     >
       <TaskEditor class="w-full h-full" />
     </div>
@@ -43,7 +43,6 @@
 import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
-import TheHeader from "@/components/header/TheHeader.vue";
 import { ref } from "vue";
 import { useTaskSidebarDrag } from "@/composable/useTaskSidebarDrag.ts";
 import { useTaskLeftMenuStatusStore } from '@/store'
@@ -56,6 +55,8 @@ const rightResizeElement = ref()
 const boxContainerElement = ref()
 const leftContainerElement = ref()
 const rightContainerElement = ref()
+const leftWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
+const rightWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
 
 const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     AREA_MIN_WIDTH,
@@ -64,6 +65,8 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     boxContainerElement,
     leftContainerElement,
     rightContainerElement,
+    leftWidthFlex,
+    rightWidthFlex
 )
 
 const { visible } = storeToRefs(useTaskLeftMenuStatusStore());
