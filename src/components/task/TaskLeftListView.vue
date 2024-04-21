@@ -3,9 +3,7 @@
     <div>
       <TaskLeftListProject />
     </div>
-    <div class="mt-2px">
-      <TaskLeftListSmartProject />
-    </div>
+    <TaskLeftListSmartProject />
   </div>
 </template>
 
