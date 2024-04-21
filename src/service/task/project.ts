@@ -37,6 +37,8 @@ export function findProjectByName(name: string) {
 
     const targetProject = findSmartProjectByName(name)
     if (targetProject) return targetProject
+
+    return projects.find(project => project.name === name)
 }
 
 export function initProjects(projectsData: FetchProjectData[]) {
