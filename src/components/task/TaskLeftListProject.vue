@@ -2,6 +2,7 @@
   <NTree
       v-model:selected-keys="projectSelectedStatusStore.selectedKey"
       :default-expanded-keys="defaultExpandedKeys"
+      :render-suffix="projectRender"
       block-line
       expand-on-click
       :data="data"
@@ -9,16 +10,32 @@
       @update:expanded-keys="onExpandedKey"
       @update:selected-keys="changeSelectedKey"
   />
+  <ProjectCreatedView ref="projectViewRef" />
 </template>
 
 <script setup lang="ts">
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { NTree, TreeOption } from 'naive-ui'
-import {ref, watchEffect} from 'vue'
+import { onMounted, ref, watchEffect } from 'vue'
+import ProjectCreatedView from "@/components/task/ProjectCreatedView.vue";
+import 'vue3-emoji-picker/css'
 
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
+}
+
+const { projectViewRef, projectRender } = useCreateProjectButton()
+
+function useCreateProjectButton() {
+  const projectViewRef = ref()
+  const projectRender = ref(undefined)
+  onMounted(() => {
+    projectRender.value = projectViewRef.value.renderCreateProjectButton
+  })
+  return {
+    projectRender, projectViewRef,
+  }
 }
 
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
