@@ -50,10 +50,11 @@ import { Icon } from '@iconify/vue'
 import { NPopover } from "naive-ui";
 import { reactive } from 'vue'
 
-interface TaskListType {
+export interface TaskListType {
   key: number
   icon: string
   title: `${SmartProjectNames}`
+  option?: string
 }
 
 const taskList = reactive<TaskListType[]>([
