@@ -53,6 +53,7 @@
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug -->
     <div class="w-full h-1px" contenteditable="false" />
+    <Command />
   </div>
 </template>
 
@@ -63,6 +64,7 @@ import { Icon } from '@iconify/vue'
 import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
+import Command from "@/components/command/Command.vue";
 
 const taskStore = useTaskStore()
 const { toggle } = useTaskLeftMenuStatusStore()

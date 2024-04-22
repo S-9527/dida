@@ -4,6 +4,8 @@ export { useTaskStore } from "./useTaskStore";
 export { useProjectSelectedStatusStore } from './useProjectSelectedStatusStore.ts'
 export { useTaskLeftMenuStatusStore } from './useTaskLeftMenuStatusStore'
 export { useThemeStore, getGlobalThemeStore } from './useTheme'
+export { useCommandStore } from './useCommandStore'
+export { useSearchStore } from './useSearch'
 export { TaskState } from "@/service/task/task";
 export { SmartProjectNames } from "@/service/task/smartProject.ts";
 export type { Task } from "@/service/task/task";

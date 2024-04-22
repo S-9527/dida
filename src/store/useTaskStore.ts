@@ -42,7 +42,13 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask(undefined);
     }
 
+    function changeCurrentActiveProjectAndCurrentTask(projectName: string, taskId: string) {
+        changeCurrentActiveProject(projectName)
+        changeActiveTask(currentActiveProject.value?.tasks.find(item => item.id === taskId))
+    }
+
     return {
+        projects,
         projectNames,
         currentActiveTask,
         currentActiveProject,
@@ -52,5 +58,6 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask,
         removeTask,
         changeCurrentActiveProject,
+        changeCurrentActiveProjectAndCurrentTask
     };
 });
