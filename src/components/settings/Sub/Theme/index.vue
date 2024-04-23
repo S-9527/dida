@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Item from './Item.vue'
-import { Themes } from '@/service/settings/sub'
+import { Themes } from '@/service/settings'
 </script>
 
 <template>
