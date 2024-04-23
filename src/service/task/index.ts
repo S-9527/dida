@@ -1,6 +1,6 @@
 import { fetchData } from './data'
 import { initProjects } from './project'
-import { initCompletedSmartProject } from "@/service/task/smartProject.ts";
+import { initCompletedSmartProject, initTrashSmartProject } from "@/service/task/smartProject.ts";
 export { SmartProjectNames } from './smartProject'
 export { projects, findProjectByName } from './project'
 export {
@@ -16,3 +16,4 @@ export type { Project } from './project'
 
 initProjects(fetchData.projects)
 initCompletedSmartProject(fetchData.completed)
+initTrashSmartProject(fetchData.trash)

@@ -61,10 +61,11 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
+import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
 import Command from "@/components/command/Command.vue";
+import { isSmartProject } from "@/service/task/smartProject.ts";
 
 const taskStore = useTaskStore()
 const { toggle } = useTaskLeftMenuStatusStore()
@@ -113,13 +114,8 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  const name = taskStore.currentActiveProject?.name
-  return (
-      name !== (SmartProjectNames.Complete as string) &&
-      name !== SmartProjectNames.Trash &&
-      name !== SmartProjectNames.Failed &&
-      name !== SmartProjectNames.Abstract
-  )
+  const name = taskStore.currentActiveProject?.name || ""
+  return !isSmartProject(name)
 })
 </script>
 

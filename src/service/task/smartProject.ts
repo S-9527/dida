@@ -25,7 +25,7 @@ interface AbstractProject extends Project {
     name: '摘要'
 }
 
-export const trashProject = createTrashProject()
+export const trashSmartProject = createTrashSmartProject()
 export const completedSmartProject = createCompletedSmartProject()
 export const failedSmartProject = createFailedSmartProject()
 export const abstractProject = createAbstractProject()
@@ -37,7 +37,7 @@ export function createCompletedSmartProject(): CompletedSmartProject {
     }
 }
 
-export function createTrashProject(): TrashProject {
+export function createTrashSmartProject(): TrashProject {
     return {
         name: '垃圾桶',
         tasks: [],
@@ -58,24 +58,39 @@ export function createAbstractProject(): AbstractProject {
     }
 }
 
-export function initCompletedSmartProject({ tasks }: FetchProjectData) {
+export function initCompletedSmartProject({ tasks = [] }: FetchProjectData = {}) {
     completedSmartProject.tasks = []
 
     tasks.reverse().forEach(({ id, title, content, previousProjectName }) => {
         const task = createTask(title, id, content)
-        task.previousProject = findProjectByName(previousProjectName!)
+        task.previousProject = findProjectByName(previousProjectName)
         addTask(task, completedSmartProject)
         task.state = TaskState.COMPLETED
     })
 }
 
+export function initTrashSmartProject({ tasks = [] }: FetchProjectData = {}) {
+    trashSmartProject.tasks = []
+
+    tasks.reverse().forEach(({ id, title, content, previousProjectName }) => {
+        const task = createTask(title, id, content)
+        task.previousProject = findProjectByName(previousProjectName)
+        addTask(task, trashSmartProject)
+        task.state = TaskState.REMOVED
+    })
+}
+
 const smartProjects = {
     [SmartProjectNames.Complete]: completedSmartProject,
-    [SmartProjectNames.Trash]: trashProject,
+    [SmartProjectNames.Trash]: trashSmartProject,
     [SmartProjectNames.Failed]: failedSmartProject,
     [SmartProjectNames.Abstract]: abstractProject,
 }
 
 export function findSmartProjectByName(name: string) {
     return smartProjects[name as keyof typeof smartProjects]
+}
+
+export function isSmartProject(projectName: string) {
+    return !!smartProjects[projectName as keyof typeof smartProjects]
 }
