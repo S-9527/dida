@@ -69,7 +69,7 @@ export function changeTaskContent(task: Task, content: string) {
     task.content = content
 }
 
-export function addTask(task: Task, projectId: number) {
+export function addTask(task: Task, projectId: number = -1) {
     repository?.addTask(task.title, task.content, task.state, projectId)
     tasks.unshift(task)
 }
@@ -110,5 +110,10 @@ export function findTaskById(id: number) {
 }
 
 function _removeTask(task: Task) {
-    tasks = tasks.filter(t => t.id !== task.id);
+    const len = tasks.length - 1
+    for (let i = len; i >= 0; i--) {
+        if (task.id === tasks[i].id) {
+            tasks.splice(i, 1)
+        }
+    }
 }
