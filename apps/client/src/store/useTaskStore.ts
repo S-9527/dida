@@ -21,6 +21,28 @@ export async function initTask() {
     }
 }
 
+function changeActiveTask(task: Task | undefined) {
+    currentActiveTask.value = task
+}
+
+async function selectProject(project: Project) {
+    await taskService.loadTasks(project)
+    currentActiveProject.value = project
+    changeActiveTask(undefined)
+}
+
+function useProject() {
+    async function addProject(name: string) {
+        const project = taskService.createProject(name)
+        await taskService.addProject(project)
+        await selectProject(project)
+    }
+
+    return {
+        addProject,
+    }
+}
+
 export const useTaskStore = defineStore("task", () => {
     function addTask(title: string) {
         if (currentActiveProject.value) {
@@ -30,16 +52,8 @@ export const useTaskStore = defineStore("task", () => {
         }
     }
 
-    function changeActiveTask(task: Task | undefined) {
-        currentActiveTask.value = task
-    }
-
     function removeTask(task: Task) {
         taskService.removeTask(task)
-        changeActiveTask(undefined)
-    }
-    async function selectProject(project: Project) {
-        await taskService.loadTasks(project)
         changeActiveTask(undefined)
     }
 
@@ -54,6 +68,7 @@ export const useTaskStore = defineStore("task", () => {
     }
 
     return {
+        ...useProject(),
         tasks,
         projects,
         projectNames,

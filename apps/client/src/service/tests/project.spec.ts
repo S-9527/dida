@@ -1,63 +1,67 @@
-import { describe, expect, it } from 'vitest'
-import { findProjectByName, initProjects, projects } from '../task/project'
-import {completedSmartProject, trashSmartProject} from '../task/smartProject'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import {
+    addProject,
+    createProject,
+    findProjectById,
+    findProjectByName,
+    initProjects,
+    loadProjects,
+} from '@/service/task/project'
+import type { Project } from '@/service/task/project'
 
 describe('project', () => {
-    it('initProjects ', () => {
-        initProjects([
-            {
-                name: 'live',
-                tasks: [
-                    {
-                        title: '吃饭',
-                        content: '## 吃饭 \n 吃什么好呢',
-                        id: crypto.randomUUID(),
-                    },
-                    {
-                        title: '睡觉',
-                        content: '## 睡觉 \n 早睡早起 身体好',
-                        id: crypto.randomUUID(),
-                    },
-                ],
-            },
-            {
-                name: 'work',
-                tasks: [
-                    {
-                        title: '不想上班',
-                        content: '我不想 我不想 我不想上班',
-                        id: crypto.randomUUID(),
-                    },
-                ],
-            },
-        ])
-
-        expect(projects.length).toBe(2)
-
-        expect(projects[0].name).toBe('live')
-        expect(projects[0].tasks.length).toBe(2)
-
-        expect(projects[1].name).toBe('work')
-        expect(projects[1].tasks.length).toBe(1)
+    let listProjects: Project[]
+    let repository: any
+    beforeEach(() => {
+        listProjects = []
+        repository = {}
+        initProjects(listProjects, repository)
     })
-    it('should find a project when the project is created', () => {
-        initProjects([
-            {
-                name: 'first',
-                tasks: [],
-            },
-            {
-                name: 'second',
-                tasks: [],
-            },
-        ])
+    it('should get project by project name', () => {
+        listProjects.push(
+            createProject('生活', 1),
+            createProject('工作', 2),
+        )
 
-        const project = findProjectByName('first')
+        expect(findProjectByName('生活')?.name).toBeTruthy()
+        expect(findProjectByName('工作')?.name).toBeTruthy()
+    })
+    it('should get project by project id', () => {
+        listProjects.push(
+            createProject('生活', 1),
+            createProject('工作', 2),
+        )
 
-        expect(project?.name).toBe('first')
-        expect(findProjectByName(completedSmartProject.name)).toBeTruthy()
-        expect(findProjectByName(trashSmartProject.name)).toBeTruthy()
+        expect(findProjectById(1)?.name).toBeTruthy()
+        expect(findProjectById(2)?.name).toBeTruthy()
+    })
+    it('should load projects', async () => {
+        repository.loadProjects = vi.fn(() =>
+            Promise.resolve([
+                {
+                    name: '生活',
+                    id: 1,
+                },
+                {
+                    id: 2,
+                    name: '工作',
+                },
+            ]),
+        )
+
+        await loadProjects()
+
+        expect(listProjects.length).toBe(2)
     })
 
-    it.todo('should exist when project is created', () => {})
+    it('add project', async () => {
+        const pIndex = 1
+        repository.addProject = vi.fn(() => Promise.resolve(pIndex))
+        const listProject = createProject('过年')
+
+        await addProject(listProject)
+
+        expect(listProjects.length).toBe(1)
+        expect(listProjects[0].id).toBe(pIndex)
+    })
 })

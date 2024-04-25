@@ -3,7 +3,7 @@ import { initSmartProject } from "@/service/task/smartProject.ts";
 import { initProjects, Project } from "@/service/task/project.ts";
 import { initTask, Task } from "@/service/task/task.ts";
 export type { SmartProjectNames, SmartProject } from './smartProject'
-export { loadProjects } from './project'
+export { loadProjects, createProject, addProject } from './project'
 export {
     TaskState,
     addTask,

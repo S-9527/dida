@@ -22,7 +22,7 @@ export async function loadProjects() {
     })
 }
 
-export function createProject(name: string, id: number): Project {
+export function createProject(name: string, id: number = 0): Project {
     return {
         id,
         name,
@@ -32,7 +32,13 @@ export function createProject(name: string, id: number): Project {
     }
 }
 
-export function addProject(project: Project) {
+export async function addProject(project: Project) {
+    const pIndex = await repository?.addProject(project.name)
+
+    if (pIndex) {
+        project.id = pIndex
+    }
+
     projects.push(project)
 }
 

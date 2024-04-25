@@ -1,5 +1,6 @@
 import { TaskState } from './task'
 import { getDB } from '@/db'
+import { PromiseExtended } from "dexie";
 
 export interface Task {
     id?: number
@@ -26,9 +27,14 @@ export interface Repository {
         projectId: number
     ) => void
     updateTask: (id: number, changes: any) => void
+    addProject: (name: string) => PromiseExtended<number>
 }
 
 export const dbRepository: Repository = {
+    addProject(name: string) {
+        return getDB().projects.add({ name })
+    },
+
     async loadProjects() {
         return getDB().projects.toArray()
     },
