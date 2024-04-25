@@ -1,4 +1,4 @@
-import { initTask } from "@/service/task/task.ts";
+import { initTask } from "@/store/useTaskStore.ts";
 export { useTaskStore } from "./useTaskStore";
 export { useProjectSelectedStatusStore } from './useProjectSelectedStatusStore.ts'
 export { useTaskLeftMenuStatusStore } from './useTaskLeftMenuStatusStore'

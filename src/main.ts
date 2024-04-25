@@ -10,7 +10,7 @@ import { initDB } from "@/db";
 import { initStore } from "@/store";
 
 async function setupApp() {
-    initDB()
+    await initDB()
     const app = createApp(App)
     const pinia = createPinia()
     app.use(pinia)
