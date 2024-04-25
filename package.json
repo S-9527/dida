@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@imengyu/vue3-context-menu": "^1.4.0",
+    "dexie": "^4.0.4",
     "ink-mde": "^0.32.0",
     "naive-ui": "^2.38.1",
     "pinia": "^2.1.7",

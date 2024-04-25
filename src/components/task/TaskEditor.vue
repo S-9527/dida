@@ -8,7 +8,10 @@
         <InkMde v-model="currentActiveTask.content" :options="{
           interface: {
             appearance: isDark ? 'dark' : 'light'
-          }
+          },
+          hooks: {
+            afterUpdate: handleAfterUpdate,
+          },
         }" />
       </div>
     </div>
@@ -22,6 +25,7 @@
 <script setup lang="ts">
 import { useTaskStore, useThemeStore } from "@/store";
 import { storeToRefs } from "pinia";
+import {changeTaskContent, changeTaskTitle} from "@/service/task/task.ts";
 import InkMde from 'ink-mde/vue'
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
@@ -29,8 +33,13 @@ const { isDark } = storeToRefs(useThemeStore());
 
 function handleInput (e:Event) {
   if (currentActiveTask) {
-    currentActiveTask.value!.title = (e.target as HTMLElement).innerText
+    changeTaskTitle(currentActiveTask.value!, (e.target as HTMLElement).innerText)
   }
+}
+
+function handleAfterUpdate(doc: string) {
+  if (currentActiveTask)
+    changeTaskContent(currentActiveTask.value!, doc)
 }
 
 </script>

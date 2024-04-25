@@ -33,7 +33,7 @@
       </div>
     </div>
     <draggable
-        :list="taskStore.currentActiveProject?.tasks ?? []"
+        :list="taskStore.tasks"
         :ghost-class="isDark ? 'dark-ghost' : 'ghost'"
         :drag-class="isDark ? 'dark-drag' : 'drag'"
         item-key="id"

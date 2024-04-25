@@ -3,19 +3,29 @@ import { computed, reactive, ref } from "vue";
 import type { Project, Task } from '@/service/task'
 import * as taskService from '@/service/task'
 
+const projects = reactive<Project[]>([])
+const tasks = reactive<Task[]>([])
+const currentActiveTask = ref<Task>();
+const currentActiveProject = ref<Project | undefined>(projects[0]);
+
+const projectNames = computed(() => {
+    return projects.map(project => project.name)
+})
+
+export async function initTask() {
+    taskService.init(projects, tasks)
+    await taskService.loadProjects()
+    currentActiveProject.value = projects[0]
+    await taskService.loadTasks(currentActiveProject.value)
+}
+
 export const useTaskStore = defineStore("task", () => {
-    const projects = reactive(taskService.projects)
-    const currentActiveTask = ref<Task>();
-    const currentActiveProject = ref<Project | undefined>(projects[0]);
-
-    const projectNames = computed(() => {
-        return projects.map(project => project.name)
-    })
-
     function addTask(title: string) {
-        const task = taskService.createTask(title)
-        taskService.addTask(task, currentActiveProject.value!)
-        changeActiveTask(task)
+        if (currentActiveProject.value) {
+            const task = taskService.createTask(title)
+            taskService.addTask(task, currentActiveProject.value?.id!)
+            changeActiveTask(task)
+        }
     }
 
     function changeActiveTask(task: Task | undefined) {
@@ -26,10 +36,9 @@ export const useTaskStore = defineStore("task", () => {
         taskService.removeTask(task)
         changeActiveTask(undefined)
     }
-
-    function changeCurrentActiveProject(projectName: string) {
-        currentActiveProject.value = taskService.findProjectByName(projectName)
-        changeActiveTask(undefined);
+    async function selectProject(project: Project) {
+        await taskService.loadTasks(project)
+        changeActiveTask(undefined)
     }
 
     function completeTask(task: Task) {
@@ -42,12 +51,8 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask(undefined);
     }
 
-    function changeCurrentActiveProjectAndCurrentTask(projectName: string, taskId: string) {
-        changeCurrentActiveProject(projectName)
-        changeActiveTask(currentActiveProject.value?.tasks.find(item => item.id === taskId))
-    }
-
     return {
+        tasks,
         projects,
         projectNames,
         currentActiveTask,
@@ -57,7 +62,6 @@ export const useTaskStore = defineStore("task", () => {
         completeTask,
         changeActiveTask,
         removeTask,
-        changeCurrentActiveProject,
-        changeCurrentActiveProjectAndCurrentTask
+        selectProject
     };
 });

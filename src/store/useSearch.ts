@@ -1,19 +1,18 @@
 import { defineStore } from 'pinia'
 import { ref, watch } from 'vue'
 import Fuse, { FuseResult } from 'fuse.js'
-import { useTaskStore } from './useTaskStore'
+import { Project, SmartProject } from "@/service/task";
+import { loadAllTasksNotRemoved } from "@/service/task/task.ts";
 
 interface SearchTaskItem {
-    id: string
+    id: number
     title: string
     desc: string
     done: boolean
-    from: string
+    from: Project | SmartProject | undefined
 }
 
 export const useSearchStore = defineStore('searchStore', () => {
-    const taskStore = useTaskStore()
-
     const allTasks = ref<SearchTaskItem[]>([])
 
     const searchTasks = ref<FuseResult<SearchTaskItem>[]>([])
@@ -29,16 +28,17 @@ export const useSearchStore = defineStore('searchStore', () => {
     }, { immediate: true })
     function collectAllTasks() {
         allTasks.value = []
-        taskStore.projects.forEach((project) => {
-            project.tasks.forEach((task) => {
+        loadAllTasksNotRemoved().then((tasks) => {
+            tasks.forEach((task) => {
                 allTasks.value.push({
-                    id: task.id,
+                    id: task.id!,
                     title: task.title,
                     desc: task.content,
-                    done: false,
-                    from: project.name,
+                    done: task.state === TaskState.COMPLETED,
+                    from: getTaskFromProject(task),
                 })
             })
+            fuse.setCollection(allTasks.value)
         })
     }
 

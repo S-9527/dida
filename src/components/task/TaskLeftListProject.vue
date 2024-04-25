@@ -19,6 +19,7 @@ import { NTree, TreeOption } from 'naive-ui'
 import { onMounted, ref, watchEffect } from 'vue'
 import ProjectCreatedView from "@/components/task/ProjectCreatedView.vue";
 import 'vue3-emoji-picker/css'
+import {findProjectByName} from "@/service/task/project.ts";
 
 enum TreeRootKeys {
   PROJECT = 100,
@@ -85,8 +86,10 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
       if (option.key === TreeRootKeys.PROJECT || option.key === TreeRootKeys.TAG) return
-      const projectName = option.label
-      projectName && taskStore.changeCurrentActiveProject(projectName)
+      const project = findProjectByName(option.label)
+      if (project) {
+        taskStore.selectProject(project)
+      }
     },
     class: option.placeholder ? 'placeholder' : '',
   }

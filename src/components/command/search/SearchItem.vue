@@ -2,20 +2,25 @@
 import { NCheckbox, NEllipsis } from 'naive-ui'
 import { inject } from 'vue'
 import { useTaskStore } from '@/store/useTaskStore'
+import type { Project, SmartProject} from "@/service/task";
+import { findTaskById } from "@/service/task/task.ts";
 
 const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: string
-  id: string
+  from: Project | SmartProject | undefined
+  id: number
 }>()
 
 const taskStore = useTaskStore()
 const closeModal = inject('closeModal') as () => void
 
-const goTo = () => {
-  taskStore.changeCurrentActiveProjectAndCurrentTask(props.from, props.id)
+const goTo = async () => {
+  if (props.from) {
+    await taskStore.selectProject(props.from)
+    taskStore.changeActiveTask(findTaskById(props.id))
+  }
   closeModal()
 }
 </script>
@@ -29,7 +34,7 @@ const goTo = () => {
         {{ title }}
       </NEllipsis>
       <div class="w-80px flex justify-center items-center text-gray-500">
-        {{ from }}
+        {{ from?.name }}
       </div>
     </div>
     <NEllipsis style="width: 660px" :tooltip="false" class="w-full mt-5px ml-30px pr-80px">

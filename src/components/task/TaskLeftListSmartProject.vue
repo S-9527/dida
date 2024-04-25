@@ -47,6 +47,7 @@ import { SmartProjectNames, useProjectSelectedStatusStore, useSettingsStore, use
 import { Icon } from '@iconify/vue'
 import { NPopover } from "naive-ui";
 import { ref } from 'vue'
+import {findSmartProjectByName} from "@/service/task/smartProject.ts";
 
 export interface TaskListType {
   key: number
@@ -78,7 +79,7 @@ const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const { showMoreIconIndex, showWitchPopover, openPopover } = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
-  taskStore.changeCurrentActiveProject(projectName)
+  taskStore.selectProject(findSmartProjectByName(projectName))
   projectSelectedStatusStore.changeSelectedKey([key])
 }
 </script>

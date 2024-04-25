@@ -6,11 +6,15 @@ import { setupRouter } from "./router";
 import ContextMenu from '@imengyu/vue3-context-menu'
 import "@unocss/reset/tailwind.css"
 import "uno.css"
+import { initDB } from "@/db";
+import { initStore } from "@/store";
 
 async function setupApp() {
+    initDB()
     const app = createApp(App)
     const pinia = createPinia()
     app.use(pinia)
+    await initStore()
     await setupRouter(app)
     app.use(ContextMenu)
 

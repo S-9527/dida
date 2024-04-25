@@ -11,6 +11,9 @@ importers:
       '@imengyu/vue3-context-menu':
         specifier: ^1.4.0
         version: 1.4.0
+      dexie:
+        specifier: ^4.0.4
+        version: 4.0.4
       ink-mde:
         specifier: ^0.32.0
         version: 0.32.0(vue@3.4.21(typescript@5.4.5))
@@ -1203,6 +1206,9 @@ packages:
 
   destr@2.0.3:
     resolution: {integrity: sha512-2N3BOUU4gYMpTP24s5rF5iP7BDr7uNTCs4ozw3kf/eKfvWSIu93GEBi5m427YoyJoeOzQ5smuu4nNAPGb8idSQ==}
+
+  dexie@4.0.4:
+    resolution: {integrity: sha512-wFzwWSUdi+MC3jiFeQcCp9nInR7EaX8edzYY+4wmiITkQAiSnHpe4Wo2o5Ce5tJZe2nqt7mLW91MsW4GYx3ziQ==}
 
   diff-sequences@29.6.3:
     resolution: {integrity: sha512-EjePK1srD3P08o2j4f0ExnylqRs5B9tJjcp9t1krH2qRi8CCdsYfwe9JgSLurFBWwq4uOlipzfk5fHNvwFKr8Q==}
@@ -3680,6 +3686,8 @@ snapshots:
   delayed-stream@1.0.0: {}
 
   destr@2.0.3: {}
+
+  dexie@4.0.4: {}
 
   diff-sequences@29.6.3: {}
 

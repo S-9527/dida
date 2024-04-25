@@ -1,30 +1,34 @@
-import { createTask, addTask } from "./task";
-import { findSmartProjectByName } from "./smartProject.ts";
-import type { Task } from "./task.ts";
-
-export interface FetchTaskData {
-    title: string
-    content: string
-    id: string
-    previousProjectName?: string
-}
-
-export interface FetchProjectData {
-    name?: string
-    tasks?: FetchTaskData[]
-}
+import { Repository } from "@/service/task/dbRepository.ts";
 
 export interface Project {
+    id: number;
     name: string;
-    tasks: Task[];
+    loadTasks: () => any
 }
 
-export const projects: Project[] = [];
+let repository: Repository | undefined
+let projects: Project[]
 
-export function createProject(name: string): Project {
+export function initProjects(projectsReactive: Project[] = [], _repository: Repository) {
+    repository = _repository
+    projects = projectsReactive
+}
+
+export async function loadProjects() {
+    return repository!.loadProjects().then((projects) => {
+        projects.forEach((project: any) => {
+            projects.push(createProject(project.name, project.id))
+        })
+    })
+}
+
+export function createProject(name: string, id: number): Project {
     return {
+        id,
         name,
-        tasks: [],
+        loadTasks: () => {
+            return repository!.getTasks(id)
+        },
     }
 }
 
@@ -35,22 +39,9 @@ export function addProject(project: Project) {
 export function findProjectByName(name: string | undefined) {
     if (!name) return
 
-    const targetProject = findSmartProjectByName(name)
-    if (targetProject) return targetProject
-
     return projects.find(project => project.name === name)
 }
 
-export function initProjects(projectsData: FetchProjectData[]) {
-    projects.length = 0
-
-    projectsData.forEach((projectData) => {
-        const project = createProject(projectData.name!)
-        addProject(project)
-
-        projectData.tasks!.forEach(({ id, title, content }) => {
-            const task = createTask(title, id, content)
-            addTask(task, project)
-        })
-    })
+export function findProjectById(id: number) {
+    return projects.find(project => project.id === id)
 }

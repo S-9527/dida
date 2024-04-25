@@ -32,7 +32,7 @@
         <div
             class="w-full cursor-pointer focus:outline-0"
             contenteditable="true"
-            @input="handleInput"
+            @input="handleInput($event, task)"
             @focus="handleClickTask(task)"
         >
           {{ task.title }}
@@ -48,6 +48,7 @@ import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts"
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
+import { changeTaskTitle } from "@/service/task/task.ts";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
@@ -76,10 +77,8 @@ function handleClickTask(task: Task) {
   changeActiveTask(task)
 }
 
-function handleInput (e:Event) {
-  if (currentActiveTask) {
-    currentActiveTask.value!.title = (e.target as HTMLElement).innerText
-  }
+function handleInput (e:Event, task: Task) {
+  changeTaskTitle(task, (e.target as HTMLElement).innerText)
 }
 
 function handleCompleteTodo () {
