@@ -11,6 +11,7 @@ import {
     changeTaskContent,
     TaskState
 } from "@/service/task/task.ts";
+import { createProject, initProjects } from "@/service/task/project.ts";
 
 
 describe('task', () => {
@@ -30,6 +31,18 @@ describe('task', () => {
 
         expect(task.title).toBe('睡觉')
     })
+
+    it('should have project', () => {
+        const projectId = 1
+        const liveProject = createProject('生活', projectId)
+        const listProjects = [liveProject]
+        initProjects(listProjects, {} as any)
+
+        const task = createTask('test', 1, '', projectId)
+
+        expect(task.project?.name).toBe('生活')
+    })
+
     it('should change content of task', () => {
         repository.updateTask = vi.fn()
         const task = createTask('吃饭')

@@ -14,7 +14,7 @@ export interface Task {
     title: string;
     state: TaskState;
     content: string;
-    projectId: number
+    project: Project | undefined
 }
 
 export function createTask(title: string, id: number = 0, content: string = "", projectId: number = 0, state = TaskState.ACTIVE): Task {
@@ -23,7 +23,7 @@ export function createTask(title: string, id: number = 0, content: string = "", 
         title,
         content,
         state,
-        projectId,
+        project: getTaskFromProject(projectId, state),
     }
 }
 
@@ -92,14 +92,14 @@ export function restoreTask(task: Task) {
     _removeTask(task)
 }
 
-export function getTaskFromProject(task: Task) {
-    switch (task.state) {
+export function getTaskFromProject(projectId: number, state: TaskState) {
+    switch (state) {
         case TaskState.REMOVED:
             return trashSmartProject
         case TaskState.COMPLETED:
             return completedSmartProject
         default:
-            return findProjectById(task.projectId)
+            return findProjectById(projectId)
     }
 }
 
