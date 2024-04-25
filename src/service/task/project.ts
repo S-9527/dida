@@ -1,7 +1,7 @@
 import { Repository } from "@/service/task/dbRepository.ts";
 
 export interface Project {
-    id: number;
+    id?: number;
     name: string;
     loadTasks: () => any
 }
@@ -15,8 +15,8 @@ export function initProjects(projectsReactive: Project[] = [], _repository: Repo
 }
 
 export async function loadProjects() {
-    return repository!.loadProjects().then((projects) => {
-        projects.forEach((project: any) => {
+    return repository!.loadProjects().then((projectList) => {
+        projectList.forEach((project: any) => {
             projects.push(createProject(project.name, project.id))
         })
     })
