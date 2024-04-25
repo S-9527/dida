@@ -7,6 +7,12 @@ settings:
 importers:
 
   .:
+    devDependencies:
+      '@types/node':
+        specifier: ^20.12.7
+        version: 20.12.7
+
+  apps/client:
     dependencies:
       '@imengyu/vue3-context-menu':
         specifier: ^1.4.0
@@ -78,6 +84,8 @@ importers:
       vue-tsc:
         specifier: ^2.0.6
         version: 2.0.12(typescript@5.4.5)
+
+  packages/db: {}
 
 packages:
 
@@ -3079,7 +3087,6 @@ snapshots:
   '@types/node@20.12.7':
     dependencies:
       undici-types: 5.26.5
-    optional: true
 
   '@types/sinonjs__fake-timers@8.1.1': {}
 
@@ -4525,8 +4532,7 @@ snapshots:
       defu: 6.1.4
       jiti: 1.21.0
 
-  undici-types@5.26.5:
-    optional: true
+  undici-types@5.26.5: {}
 
   universalify@0.2.0: {}
 
