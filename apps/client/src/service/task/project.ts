@@ -1,7 +1,7 @@
 import { Repository } from "@/service/task/dbRepository.ts";
 
 export interface Project {
-    id?: number;
+    id: number;
     name: string;
     loadTasks: () => any
 }

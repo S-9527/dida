@@ -2,14 +2,14 @@
 import { NCheckbox, NEllipsis } from 'naive-ui'
 import { inject } from 'vue'
 import { useTaskStore } from '@/store/useTaskStore'
-import type { Project, SmartProject} from "@/service/task";
+import type { Project } from "@/service/task";
 import { findTaskById } from "@/service/task/task.ts";
 
 const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: Project | SmartProject | undefined
+  from: Project | undefined
   id: number
 }>()
 
