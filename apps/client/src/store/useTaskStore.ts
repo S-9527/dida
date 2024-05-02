@@ -5,20 +5,21 @@ import * as taskService from '@/service/task'
 
 const projects = reactive<Project[]>([])
 const tasks = reactive<Task[]>([])
+
+taskService.init(projects, tasks)
+
 const currentActiveTask = ref<Task>();
-const currentActiveProject = ref<Project | undefined>(projects[0]);
+const currentActiveProject = ref<Project>(projects[0]);
 
 const projectNames = computed(() => {
     return projects.map(project => project.name)
 })
 
-export async function initTask() {
-    taskService.init(projects, tasks)
+async function init() {
     await taskService.loadProjects()
+    if (projects.length === 0) return
     currentActiveProject.value = projects[0]
-    if (currentActiveProject.value) {
-        await taskService.loadTasks(currentActiveProject.value)
-    }
+    await taskService.loadTasks(currentActiveProject.value)
 }
 
 function changeActiveTask(task: Task | undefined) {
@@ -47,7 +48,7 @@ export const useTaskStore = defineStore("task", () => {
     function addTask(title: string) {
         if (currentActiveProject.value) {
             const task = taskService.createTask(title)
-            taskService.addTask(task, currentActiveProject.value?.id!)
+            taskService.addTask(task, currentActiveProject.value!.id)
             changeActiveTask(task)
         }
     }
@@ -79,6 +80,7 @@ export const useTaskStore = defineStore("task", () => {
         completeTask,
         changeActiveTask,
         removeTask,
-        selectProject
+        selectProject,
+        init
     };
 });

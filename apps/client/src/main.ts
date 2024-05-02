@@ -6,23 +6,18 @@ import { setupRouter } from "./router";
 import ContextMenu from '@imengyu/vue3-context-menu'
 import "@unocss/reset/tailwind.css"
 import "uno.css"
-import { initDB } from "@/db";
-import { initStore } from "@/store";
+import { setupDB } from "@/db";
 
-async function setupApp() {
-    await initDB()
-    const app = createApp(App)
-    const pinia = createPinia()
-    app.use(pinia)
-    await initStore()
+(async function setupApp() {
+    const app = createApp(App).use(createPinia()).use(ContextMenu)
+    await setupDB()
     await setupRouter(app)
-    app.use(ContextMenu)
 
     // This must be placed at bottom of app initialization, before mount.
     resolveNaiveAndTailwindConflict()
 
     app.mount('#app')
-}
+})()
 
 // https://www.naiveui.com/zh-CN/os-theme/docs/style-conflict
 function resolveNaiveAndTailwindConflict() {
@@ -33,5 +28,3 @@ function resolveNaiveAndTailwindConflict() {
     meta.name = 'naive-ui-style'
     document.head.appendChild(meta)
 }
-
-setupApp()

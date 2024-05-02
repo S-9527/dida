@@ -1,25 +1,13 @@
 import { TaskState } from './task'
 import { getDB } from '@/db'
 import { PromiseExtended } from "dexie";
-
-export interface Task {
-    id?: number
-    title: string
-    content: string
-    projectId: number
-    state: number
-}
-
-export interface Project {
-    id?: number
-    name: string
-}
+import type { ProjectTable, TaskTable } from "@/db/types.ts";
 
 export interface Repository {
-    loadProjects: () => Promise<Project[]>
-    getTasks: (projectId: number) => Promise<Task[]>
-    getAllTasks: () => Promise<Task[]>
-    findTasksByState: (state: TaskState) => Promise<Task[]>
+    loadProjects: () => Promise<ProjectTable[]>
+    getTasks: (projectId: number) => Promise<TaskTable[]>
+    getAllTasks: () => Promise<TaskTable[]>
+    findTasksByState: (state: TaskState) => Promise<TaskTable[]>
     addTask: (
         title: string,
         content: string,
@@ -59,7 +47,7 @@ export const dbRepository: Repository = {
             .toArray()
     },
 
-    addTask(title: string, content: string, projectId: number, state = TaskState.ACTIVE) {
+    addTask(title: string, content: string, state = TaskState.ACTIVE, projectId: number) {
         return getDB().tasks.add({
             title,
             content,

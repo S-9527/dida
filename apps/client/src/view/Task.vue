@@ -43,10 +43,16 @@
 import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
-import { ref } from "vue";
+import { onBeforeMount, ref } from "vue";
 import { useTaskSidebarDrag } from "@/composable/useTaskSidebarDrag.ts";
-import { useTaskLeftMenuStatusStore } from '@/store'
+import { useTaskLeftMenuStatusStore, useTaskStore } from '@/store'
 import { storeToRefs } from "pinia";
+
+const taskStore = useTaskStore()
+
+onBeforeMount(async () => {
+  await taskStore.init()
+})
 
 const AREA_MIN_WIDTH = 240
 
