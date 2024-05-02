@@ -48,7 +48,7 @@
         @end="dragging = false"
     >
       <template #item="{ element, index }">
-        <TaskItem :task="element" :index="index" class="item" />
+        <TaskItem :project="taskStore.currentActiveProject" :task="element" :index="index" class="item" />
       </template>
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug -->

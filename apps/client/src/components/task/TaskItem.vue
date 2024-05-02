@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { Task, TaskState, useTaskStore, useThemeStore } from "@/store";
+import { Project, Task, TaskState, useTaskStore, useThemeStore } from "@/store";
 import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
@@ -56,7 +56,8 @@ const { showContextMenu } = useTaskRightContextMenu()
 const { isDark } = storeToRefs(useThemeStore());
 
 interface Props {
-  task: Task
+  task: Task,
+  project: Project
 }
 
 const props = defineProps<Props>();
@@ -85,7 +86,7 @@ function handleCompleteTodo () {
   switch (props.task.state) {
     case TaskState.ACTIVE:
       completeTask(props.task)
-      showCompleteMessage(props.task)
+      showCompleteMessage(props.task, props.project)
       break;
     case TaskState.COMPLETED:
       restoreTask(props.task)
