@@ -1,5 +1,5 @@
 import { describe, it, vi, expect, beforeEach } from "vitest";
-import type { Task } from '../task'
+import type { Project, Task } from '../task'
 import {
     addTask,
     completeTask,
@@ -12,15 +12,25 @@ import {
     TaskState
 } from "@/service/task/task.ts";
 import { createProject, initProjects } from "@/service/task/project.ts";
+import { findAllTasksNotRemoved, loadTasks } from "../task";
 
 
 describe('task', () => {
     let tasks: Task[]
     let repository: any
+    let project: Project
+    const projectId = 1
+    let projectRepository: any
+
     beforeEach(() => {
         repository = {}
         tasks = []
         initTask(tasks, repository)
+        projectRepository = {}
+
+        project = createProject('生活', projectId)
+        const projects = [project]
+        initProjects(projects, projectRepository)
     })
 
     it('should change title of task', () => {
@@ -33,14 +43,64 @@ describe('task', () => {
     })
 
     it('should have project', () => {
-        const projectId = 1
-        const liveProject = createProject('生活', projectId)
-        const listProjects = [liveProject]
-        initProjects(listProjects, {} as any)
-
         const task = createTask('test', 1, '', projectId)
 
         expect(task.project?.name).toBe('生活')
+    })
+
+    it('should load all tasks', async () => {
+        projectRepository.getTasks = vi.fn(() => {
+            return Promise.resolve([
+                {
+                    id: 1,
+                    title: '吃饭',
+                    content: '',
+                    projectId,
+                    state: TaskState.ACTIVE,
+                },
+                {
+                    id: 2,
+                    title: '睡觉',
+                    content: '',
+                    projectId,
+                    state: TaskState.ACTIVE,
+                },
+            ])
+        })
+
+        await loadTasks(project)
+        expect(tasks.length).toBe(2)
+
+        // length 2 when load task again
+        await loadTasks(project)
+        expect(tasks.length).toBe(2)
+    })
+
+    it('should load all task of not removed', async () => {
+        repository.getAllTasks = vi.fn(() => {
+            return Promise.resolve([
+                {
+                    id: 1,
+                    title: '吃饭',
+                    content: '',
+                    projectId,
+                    state: TaskState.ACTIVE,
+                },
+                {
+                    id: 2,
+                    title: '睡觉',
+                    content: '',
+                    projectId,
+                    state: TaskState.REMOVED,
+                },
+
+            ])
+        })
+
+        const tasks = await findAllTasksNotRemoved()
+
+        expect(tasks.length).toBe(1)
+        expect(tasks[0].title).toBe('吃饭')
     })
 
     it('should change content of task', () => {

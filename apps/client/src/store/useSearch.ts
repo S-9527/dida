@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import Fuse, { FuseResult } from 'fuse.js'
 import { Project, SmartProject, TaskState } from "@/service/task";
-import { loadAllTasksNotRemoved } from "@/service/task/task.ts";
+import { findAllTasksNotRemoved } from "@/service/task/task.ts";
 
 interface SearchTaskItem {
     id: number
@@ -24,7 +24,7 @@ export const useSearchStore = defineStore('searchStore', () => {
 
     async function collectAllTasks() {
         allTasks.value = []
-        const tasks = await loadAllTasksNotRemoved();
+        const tasks = await findAllTasksNotRemoved();
         tasks.forEach((task) => {
             allTasks.value.push({
                 id: task.id!,

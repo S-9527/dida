@@ -1,9 +1,10 @@
 import { Repository } from "@/service/task/dbRepository.ts";
+import { TaskTable } from "@/db/types.ts";
 
 export interface Project {
     id: number;
     name: string;
-    loadTasks: () => any
+    loadTasks: () => Promise<TaskTable[]>
 }
 
 let repository: Repository | undefined
