@@ -1,81 +1,53 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { TaskState } from '../task'
-import { initProjects } from "@/service/task/project.ts";
 import {
     completedSmartProject,
-    initCompletedSmartProject,
-    initTrashSmartProject,
+    initSmartProject,
     trashSmartProject
 } from "@/service/task/smartProject.ts";
 
 describe('smartProject', () => {
-    it('init completed project ', () => {
-        const firstTaskTitle = '欢迎加入 DiDa'
-        const secondTaskTitle = '第二个完成测试'
-        initProjects([
-            {
-                name: '快捷',
-                tasks: [],
-            },
-        ])
-
-        initCompletedSmartProject({
-            tasks: [
-                {
-                    title: firstTaskTitle,
-                    content: '',
-                    id: crypto.randomUUID(),
-                    previousProjectName: '快捷',
-                },
-                {
-                    title: secondTaskTitle,
-                    content: '',
-                    id: crypto.randomUUID(),
-                    previousProjectName: '快捷',
-                },
-            ],
-        })
-
-        expect(completedSmartProject.tasks.length).toBe(2)
-        expect(completedSmartProject.tasks[0].title).toBe(firstTaskTitle)
-        expect(completedSmartProject.tasks[0].state).toBe(TaskState.COMPLETED)
-        expect(completedSmartProject.tasks[0].previousProject).toBeTruthy()
-
-        expect(completedSmartProject.tasks[1].title).toBe(secondTaskTitle)
+    let repository: any
+    beforeEach(() => {
+        repository = {}
+        initSmartProject(repository)
     })
-    it('init trash project ', () => {
-        const firstTaskTitle = '我是第一个被删除的任务'
-        const secondTaskTitle = '我是第二个被删除的任务'
-        initProjects([
-            {
-                name: '快捷',
-                tasks: [],
-            },
-        ])
 
-        initTrashSmartProject({
-            name: '垃圾桶',
-            tasks: [
+    it('should load tasks with completed project ', async () => {
+        repository.findTasksByState = vi.fn(() => {
+            return Promise.resolve([
                 {
-                    title: firstTaskTitle,
+                    id: 1,
+                    title: '吃饭',
                     content: '',
-                    id: crypto.randomUUID(),
-                    previousProjectName: '快捷',
+                    projectId: 1,
+                    state: TaskState.COMPLETED,
                 },
-                {
-                    title: secondTaskTitle,
-                    content: '',
-                    id: crypto.randomUUID(),
-                    previousProjectName: '快捷',
-                },
-            ],
+            ])
         })
 
-        expect(trashSmartProject.tasks.length).toBe(2)
-        expect(trashSmartProject.tasks[0].title).toBe(firstTaskTitle)
-        expect(trashSmartProject.tasks[0].state).toBe(TaskState.REMOVED)
-        expect(trashSmartProject.tasks[0].previousProject).toBeTruthy()
+        const tasks = await completedSmartProject.loadTasks()
 
-        expect(trashSmartProject.tasks[1].title).toBe(secondTaskTitle)
+        expect(tasks.length).toBe(1)
+        expect(repository.findTasksByState).toBeCalledWith(TaskState.COMPLETED)
+    })
+
+    it('should load tasks with trash project ', async () => {
+        repository.findTasksByState = vi.fn(() => {
+            return Promise.resolve([
+                {
+                    id: 1,
+                    title: '吃饭',
+                    content: '',
+                    projectId: 1,
+                    state: TaskState.REMOVED,
+                },
+            ])
+        })
+
+        const tasks = await trashSmartProject.loadTasks()
+
+        expect(tasks.length).toBe(1)
+        expect(repository.findTasksByState).toBeCalledWith(TaskState.REMOVED)
     })
 })
