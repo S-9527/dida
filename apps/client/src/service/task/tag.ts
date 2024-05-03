@@ -47,7 +47,15 @@ export async function addTags(tag: Tag) {
     tags.push(tag)
 }
 
+export function updateTags(tag: Omit<Tag, 'loadTasks'>) {
+    repository?.updateTag(tag.id, tag)
+}
+
 export function findTagByName(name: string | undefined) {
     if (!name) return
     return tags.find(tag => tag.name === name)
+}
+
+export function findTagById(id: number) {
+    return tags.find(tag => tag.id === id)
 }

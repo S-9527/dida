@@ -58,8 +58,20 @@ function useTag() {
         await taskService.addTags(tag)
         await selectCategory(tag)
     }
+
+    async function editTag(tag: { id: number; name: string; parentTagId?: number; color: string }) {
+        const origin = tags.find(t => t.id === tag.id)
+        if (!origin) return
+
+        await taskService.updateTags({ ...tag, parentTagId: tag.parentTagId || null })
+        origin.name = tag.name
+        origin.color = tag.color
+        origin.parentTagId = tag.parentTagId || null
+    }
+
     return {
         addTag,
+        editTag
     }
 }
 
@@ -67,11 +79,15 @@ export const useTaskStore = defineStore("task", () => {
     function addTask(title: string) {
         if (currentActiveProject.value) {
             const task = taskService.createTask(title)
-            if (Object.keys(currentActiveProject.value).includes('color')) {
-                taskService.addTask(task, undefined, [currentActiveProject.value.id])
-            } else {
-                taskService.addTask(task, currentActiveProject.value!.id)
-            }
+            taskService.addTask(task, currentActiveProject.value!.id)
+            changeActiveTask(task)
+        }
+    }
+
+    function addTaskToTag(title: string) {
+        if (currentActiveProject.value) {
+            const task = taskService.createTask(title)
+            taskService.addTask(task, undefined, [currentActiveProject.value.id])
             changeActiveTask(task)
         }
     }
@@ -101,6 +117,7 @@ export const useTaskStore = defineStore("task", () => {
         currentActiveTask,
         currentActiveProject,
         addTask,
+        addTaskToTag,
         restoreTask,
         completeTask,
         changeActiveTask,
