@@ -14,8 +14,8 @@
     <div
         v-if="visible"
         ref="leftResizeElement"
-        class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
-        style="flex: 0 0 1px"
+        class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+        style="flex: 0 0 6px"
         title="收缩侧边栏"
         @mousedown.prevent="useDividerLeftDrag"
     />
@@ -24,8 +24,8 @@
     </div>
     <div
         ref="rightResizeElement"
-        class="border-solid cursor-w-resize h-screen border-1 opacity-60 hover-opacity-100"
-        style="flex: 0 0 1px"
+        class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+        style="flex: 0 0 6px"
         title="收缩侧边栏"
         @mousedown.prevent="useDividerRightDrag"
     />
@@ -45,10 +45,11 @@ import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import { onBeforeMount, ref } from "vue";
 import { useTaskSidebarDrag } from "@/composable/useTaskSidebarDrag.ts";
-import { useTaskLeftMenuStatusStore, useTaskStore } from '@/store'
+import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
 import { storeToRefs } from "pinia";
 
 const taskStore = useTaskStore()
+const themeStore = useThemeStore()
 
 onBeforeMount(async () => {
   await taskStore.init()
@@ -72,7 +73,8 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     leftContainerElement,
     rightContainerElement,
     leftWidthFlex,
-    rightWidthFlex
+    rightWidthFlex,
+    themeStore,
 )
 
 const { visible } = storeToRefs(useTaskLeftMenuStatusStore());

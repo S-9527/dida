@@ -12,6 +12,9 @@ export const useThemeStore = defineStore('theme', () => {
         const currentThemeName = isDark.value ? Theme.Dark : Theme.Light
         const currentTheme = ref(Themes.find(item => item.name === currentThemeName))
 
+        const sideBarWidth = 48
+        const taskLeftListViewPadding = 10
+
         function changeTheme(theme: Theme) {
             const themeItem = Themes.find(item => item.name === theme)
             if (themeItem) {
@@ -28,6 +31,8 @@ export const useThemeStore = defineStore('theme', () => {
             isDark,
             toggleDark,
             naiveTheme,
+            sideBarWidth,
+            taskLeftListViewPadding,
         }
     },
 )
