@@ -1,7 +1,7 @@
 import { TaskState } from './task'
 import { getDB } from '@/db'
 import { PromiseExtended } from "dexie";
-import type { ProjectTable, TaskTable } from "@/db/types.ts";
+import type { ProjectTable, TagTable, TaskTable } from "@/db/types.ts";
 
 export interface Repository {
     loadProjects: () => Promise<ProjectTable[]>
@@ -12,10 +12,15 @@ export interface Repository {
         title: string,
         content: string,
         state: TaskState,
-        projectId: number
+        projectId: number,
+        tagIds: number[],
     ) => void
     updateTask: (id: number, changes: any) => void
     addProject: (name: string) => PromiseExtended<number>
+
+    loadTags: () => Promise<TagTable[]>
+    getTasksByTagId: (tagId: number) => Promise<TaskTable[]>
+    addTag: (name: string, parentTagId: number | null, color: string) => PromiseExtended<number>
 }
 
 export const dbRepository: Repository = {
@@ -39,6 +44,18 @@ export const dbRepository: Repository = {
         return getDB().tasks.toArray()
     },
 
+    addTag(name, parentTagId, color) {
+        return getDB().tags.add({ name, parentTagId, color })
+    },
+
+    async loadTags() {
+        return getDB().tags.toArray()
+    },
+
+    async getTasksByTagId(tagId: number) {
+        return getDB().tasks.filter(task => task.tagIds.includes(tagId) && task.state === TaskState.ACTIVE).toArray()
+    },
+
     async findTasksByState(state: TaskState) {
         return getDB().tasks
             .filter((task) => {
@@ -47,12 +64,13 @@ export const dbRepository: Repository = {
             .toArray()
     },
 
-    addTask(title: string, content: string, state = TaskState.ACTIVE, projectId: number) {
+    addTask(title: string, content: string, state = TaskState.ACTIVE, projectId: number, tagIds: number[]) {
         return getDB().tasks.add({
             title,
             content,
             projectId,
             state,
+            tagIds
         })
     },
 

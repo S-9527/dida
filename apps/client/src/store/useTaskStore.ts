@@ -1,15 +1,16 @@
 import { defineStore } from "pinia";
 import { computed, reactive, ref } from "vue";
-import type { Project, Task } from '@/service/task'
+import type { Project, Task, Tag } from '@/service/task'
 import * as taskService from '@/service/task'
 
 const projects = reactive<Project[]>([])
 const tasks = reactive<Task[]>([])
+const tags = reactive<Tag[]>([])
 
-taskService.init(projects, tasks)
+taskService.init(projects, tasks, tags)
 
 const currentActiveTask = ref<Task>();
-const currentActiveProject = ref<Project>(projects[0]);
+const currentActiveProject = ref<Project | Tag>(projects[0]);
 
 const projectNames = computed(() => {
     return projects.map(project => project.name)
@@ -17,6 +18,7 @@ const projectNames = computed(() => {
 
 async function init() {
     await taskService.loadProjects()
+    await taskService.loadTags()
     if (projects.length === 0) return
     currentActiveProject.value = projects[0]
     await taskService.loadTasks(currentActiveProject.value)
@@ -32,6 +34,12 @@ async function selectProject(project: Project) {
     changeActiveTask(undefined)
 }
 
+async function selectCategory(category: Project | Tag) {
+    await taskService.loadTasks(category)
+    currentActiveProject.value = category
+    changeActiveTask(undefined)
+}
+
 function useProject() {
     async function addProject(name: string) {
         const project = taskService.createProject(name)
@@ -44,11 +52,26 @@ function useProject() {
     }
 }
 
+function useTag() {
+    async function addTag(tagVal: { name: string; parentTagId?: number; color: string }) {
+        const tag = taskService.createTags(tagVal.name, tagVal.color, tagVal.parentTagId)
+        await taskService.addTags(tag)
+        await selectCategory(tag)
+    }
+    return {
+        addTag,
+    }
+}
+
 export const useTaskStore = defineStore("task", () => {
     function addTask(title: string) {
         if (currentActiveProject.value) {
             const task = taskService.createTask(title)
-            taskService.addTask(task, currentActiveProject.value!.id)
+            if (Object.keys(currentActiveProject.value).includes('color')) {
+                taskService.addTask(task, undefined, [currentActiveProject.value.id])
+            } else {
+                taskService.addTask(task, currentActiveProject.value!.id)
+            }
             changeActiveTask(task)
         }
     }
@@ -70,8 +93,10 @@ export const useTaskStore = defineStore("task", () => {
 
     return {
         ...useProject(),
+        ...useTag(),
         tasks,
         projects,
+        tags,
         projectNames,
         currentActiveTask,
         currentActiveProject,
@@ -81,6 +106,7 @@ export const useTaskStore = defineStore("task", () => {
         changeActiveTask,
         removeTask,
         selectProject,
+        selectCategory,
         init
     };
 });

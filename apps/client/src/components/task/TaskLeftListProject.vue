@@ -2,7 +2,6 @@
   <NTree
       v-model:selected-keys="projectSelectedStatusStore.selectedKey"
       :default-expanded-keys="defaultExpandedKeys"
-      :render-suffix="projectRender"
       block-line
       expand-on-click
       :data="data"
@@ -11,22 +10,27 @@
       @update:selected-keys="changeSelectedKey"
   />
   <ProjectCreatedView ref="projectViewRef" />
+  <TagCreatedView v-model:show="createTagVisible" />
 </template>
 
 <script setup lang="ts">
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { NTree, TreeOption } from 'naive-ui'
-import { onMounted, ref, watchEffect } from 'vue'
+import { h, onMounted, ref, watchEffect } from 'vue'
 import ProjectCreatedView from "@/components/task/ProjectCreatedView.vue";
+import TagCreatedView from "@/components/task/TagCreatedView.vue";
 import 'vue3-emoji-picker/css'
 import {findProjectByName} from "@/service/task/project.ts";
+import {Icon} from "@iconify/vue";
+import {Tag} from "@/service/task";
+import {findTagByName} from "@/service/task/tag.ts";
 
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
 }
 
-const { projectViewRef, projectRender } = useCreateProjectButton()
+const { projectViewRef } = useCreateProjectButton()
 
 function useCreateProjectButton() {
   const projectViewRef = ref()
@@ -39,14 +43,59 @@ function useCreateProjectButton() {
   }
 }
 
+const createSuffix = (onclick: (e: Event) => void) => {
+  return () => h(Icon, {
+    icon: 'ic:baseline-plus',
+    width: '20',
+    class: 'invisible rounded-1 hover:bg-gray-2',
+    onclick,
+  })
+}
+
+const generateTagChildrenNode = (tags: Tag[]) => {
+  if (!tags.length) {
+    return [
+      {
+        label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
+        placeholder: true,
+      },
+    ]
+  }
+  return tags.map((tag, index) => ({
+    key: TreeRootKeys.TAG + index + 1,
+    label: tag.name,
+    color: tag.color,
+    prefix: () => h(Icon, {
+      icon: 'carbon:tag',
+      width: '14',
+    }),
+    suffix: () => h('div', { class: 'flex flex-row items-center' },
+        [
+          h(Icon, {
+            icon: 'carbon:circle-solid',
+            width: '8',
+            color: tag.color,
+            class: 'mx-2',
+          }),
+          h(Icon, {
+            icon: 'mdi:dots-horizontal',
+            width: '20',
+          }),
+        ],
+    ),
+    isLeaf: true,
+  }))
+}
+
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const taskStore = useTaskStore()
-
-const fakeTagsNamesData = ref<string[]>([])
 
 const defaultExpandedKeys = ref<TreeRootKeys[]>([])
 
 const treeProjectChildren = ref<TreeOption[]>([])
+
+const treeTagChildren = ref<TreeOption[]>([])
+const createTagVisible = ref(false)
 
 watchEffect(() => {
   treeProjectChildren.value = taskStore.projectNames.map((projectName, index) => ({
@@ -54,9 +103,11 @@ watchEffect(() => {
     label: projectName,
     isLeaf: true,
   }))
+
+  treeTagChildren.value = generateTagChildrenNode(taskStore.tags)
   defaultExpandedKeys.value = [...new Set([
     ...(taskStore.projectNames.length ? [] : [TreeRootKeys.PROJECT]),
-    ...(fakeTagsNamesData.value.length ? [] : [TreeRootKeys.TAG]),
+    ...(taskStore.tags.length ? [] : [TreeRootKeys.TAG]),
     ...projectSelectedStatusStore.listDefaultSelectedKey,
   ])]
 })
@@ -67,28 +118,38 @@ const data = ref<any[]>([
     label: '清单',
     checkboxDisabled: false,
     isLeaf: false,
-    children: treeProjectChildren
+    children: treeProjectChildren,
+    suffix: createSuffix((e: Event) => {
+      // todo: 新建清单的按钮操作可以放在这里
+      e.stopPropagation()
+    }),
   },
   {
     key: TreeRootKeys.TAG,
     label: '标签',
     checkboxDisabled: false,
     isLeaf: false,
-    children: fakeTagsNamesData.value.length
-        ? fakeTagsNamesData.value
-        : [{
-          label: '以标签的维度展示不同清单的任务。在添加任务时输入“#”可快速选择标签',
-          placeholder: true,
-        }],
+    children: treeTagChildren,
+    suffix: createSuffix((e: Event) => {
+      createTagVisible.value = true
+      e.stopPropagation()
+    }),
   },
 ])
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
     onClick() {
       if (option.key === TreeRootKeys.PROJECT || option.key === TreeRootKeys.TAG) return
-      const project = findProjectByName(option.label)
-      if (project) {
-        taskStore.selectProject(project)
+      if (option.key! < 200) {
+        const project = findProjectByName(option.label)
+        if (project) {
+          taskStore.selectProject(project)
+        }
+      }
+
+      const tag = findTagByName(option.label)
+      if (tag) {
+        taskStore.selectCategory(tag)
       }
     },
     class: option.placeholder ? 'placeholder' : '',
@@ -145,5 +206,9 @@ const onExpandedKey = (key: number[]) => {
 
 .dark .placeholder .n-tree-node-content__text {
   color: rgba(156,163,175,0.5);
+}
+
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify  {
+  visibility: visible;
 }
 </style>

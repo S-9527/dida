@@ -2,6 +2,7 @@ import type { Project } from "./project";
 import { completedSmartProject, trashSmartProject } from "./smartProject";
 import { Repository } from "@/service/task/dbRepository.ts";
 import { findProjectById } from "./project";
+import { Tag } from "@/service/task/tag.ts";
 
 export enum TaskState {
     ACTIVE,
@@ -35,8 +36,8 @@ export function initTask(tasksReactive: Task[] = [], _repository: Repository) {
     tasks = tasksReactive
 }
 
-export async function loadTasks(project: Project) {
-    const allTasks = await project.loadTasks()
+export async function loadTasks(category: Project | Tag) {
+    const allTasks = await category.loadTasks()
     tasks.length = 0
     allTasks.forEach(({ title, id, content, projectId, state }) => {
         const task = createTask(title, id, content, projectId, state)
@@ -66,8 +67,8 @@ export function changeTaskContent(task: Task, content: string) {
     task.content = content
 }
 
-export function addTask(task: Task, projectId: number = -1) {
-    repository?.addTask(task.title, task.content, task.state, projectId)
+export function addTask(task: Task, projectId: number = -1, tags: number[] = []) {
+    repository?.addTask(task.title, task.content, task.state, projectId, tags)
     tasks.unshift(task)
 }
 
