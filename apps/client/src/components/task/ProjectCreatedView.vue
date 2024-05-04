@@ -13,11 +13,10 @@ const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
 const {
-  EMOJI_GROUPS_NAMES,
-  EMOJI_STATIC_TEXTS,
   emojiValue,
   formRules,
   formValue,
+  getDefaultEmojiConfig,
   handleClose,
   handleMouseLeave,
   handleMouseOver,
@@ -28,16 +27,24 @@ const {
   isShowModal,
   isShowPopover,
   cleanupInput,
-  renderCreateProjectButton,
 } = useTaskLeftListCreateProject(inputElement)
 
+const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
+
 function handleSave() {
-  taskStore.addProject(formValue.value.projectName)
+  let projectName = formValue.value.projectName
+  emojiValue.value && (projectName = emojiValue.value + projectName)
+  taskStore.addProject(projectName)
   isShowModal.value = false
   cleanupInput()
 }
+
+function toggleShowModal() {
+  isShowModal.value = true
+}
+
 defineExpose({
-  renderCreateProjectButton,
+  toggleShowModal,
 })
 </script>
 

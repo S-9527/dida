@@ -1,8 +1,6 @@
-import { Icon } from '@iconify/vue'
-import type { FormRules, TreeOption } from 'naive-ui'
-import { NButton } from 'naive-ui'
+import type { FormRules } from 'naive-ui'
 import type { Ref } from 'vue'
-import { computed, h, ref, toRaw, withModifiers } from 'vue'
+import { computed, ref } from 'vue'
 
 enum SkinStone {
     NEUTRAL = 'neutral',
@@ -23,8 +21,7 @@ interface Emoji {
 
 export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement | undefined>) {
     const {
-        EMOJI_GROUPS_NAMES,
-        EMOJI_STATIC_TEXTS,
+        getDefaultEmojiConfig,
         emojiValue,
         handleSelectEmoji,
     } = useEmoji()
@@ -33,8 +30,8 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
     const { formValue, formRules } = useForm()
     const { cleanupInput, handleUpdateShow, handleClose } = useInput()
     const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
-    const isShowPopover = ref(false)
-    const isShowModal = ref(false)
+    const isShowPopover = ref<boolean>(false)
+    const isShowModal = ref<boolean>(false)
 
     function useForm() {
         const formValue = ref({
@@ -51,18 +48,25 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
     }
 
     function useEmoji() {
-        const EMOJI_GROUPS_NAMES = {
-            smileys_people: '人物',
-            animals_nature: '动物 & 自然',
-            food_drink: '食物 & 饮品',
-            activities: '活动',
-            travel_places: '旅行 & 地点',
-            objects: '物体',
-            symbols: '符号',
-            flags: '旗帜',
+        function getDefaultEmojiConfig() {
+            const EMOJI_GROUPS_NAMES = {
+                smileys_people: '人物',
+                animals_nature: '动物 & 自然',
+                food_drink: '食物 & 饮品',
+                activities: '活动',
+                travel_places: '旅行 & 地点',
+                objects: '物体',
+                symbols: '符号',
+                flags: '旗帜',
+            }
+            const EMOJI_STATIC_TEXTS = { placeholder: '搜索', skinTone: '肤色' }
+
+            return {
+                EMOJI_STATIC_TEXTS,
+                EMOJI_GROUPS_NAMES,
+            }
         }
 
-        const EMOJI_STATIC_TEXTS = { placeholder: '搜索', skinTone: '肤色' }
         const emojiValue = ref()
         function handleSelectEmoji(emoji: Emoji) {
             emojiValue.value = emoji.i
@@ -70,8 +74,7 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
             inputElement.value?.focus()
         }
         return {
-            EMOJI_GROUPS_NAMES,
-            EMOJI_STATIC_TEXTS,
+            getDefaultEmojiConfig,
             emojiValue,
             handleSelectEmoji,
         }
@@ -110,35 +113,9 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
         }
     }
 
-    function handleProjectButtonClick() {
-        isShowModal.value = true
-    }
-
-    function renderCreateProjectButton({ option }: { option: TreeOption }) {
-        const optionRaw = toRaw(option)
-        if (optionRaw.isLeaf || optionRaw.isLeaf === undefined || optionRaw.label === '标签')
-            return
-
-        return h(
-            NButton,
-            {
-                size: 'small',
-                type: 'tertiary',
-                onClick: withModifiers(handleProjectButtonClick, ['stop']),
-            },
-            {
-                default: () =>
-                    h(Icon, {
-                        icon: 'ic:baseline-plus',
-                    }),
-            },
-        )
-    }
-
     return {
         cleanupInput,
-        EMOJI_GROUPS_NAMES,
-        EMOJI_STATIC_TEXTS,
+        getDefaultEmojiConfig,
         emojiValue,
         formRules,
         formValue,
@@ -151,6 +128,5 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
         isSavable,
         isShowModal,
         isShowPopover,
-        renderCreateProjectButton,
     }
 }

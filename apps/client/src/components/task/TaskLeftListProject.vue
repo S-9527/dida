@@ -35,12 +35,8 @@ const { projectViewRef } = useCreateProjectButton()
 
 function useCreateProjectButton() {
   const projectViewRef = ref()
-  const projectRender = ref(undefined)
-  onMounted(() => {
-    projectRender.value = projectViewRef.value.renderCreateProjectButton
-  })
   return {
-    projectRender, projectViewRef,
+    projectViewRef,
   }
 }
 
@@ -60,7 +56,7 @@ const createTagLeafPrefix = () => {
   })
 }
 
-const creatOperateNodeBtn = (items: MenuItem[]) => {
+const createOperateNodeBtn = (items: MenuItem[]) => {
   return h(Icon, {
     class: 'invisible',
     icon: 'mdi:dots-horizontal',
@@ -85,7 +81,7 @@ const createTagLeafSuffix = (tag: Tag) => {
           color: tag.color,
           class: 'mx-2',
         }),
-        creatOperateNodeBtn([
+        createOperateNodeBtn([
           {
             label: 'edit',
             onClick: () => tagCreateViewDialog({ tag }),
@@ -162,7 +158,7 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      // todo: 新建清单的按钮操作可以放在这里
+      projectViewRef.value.toggleShowModal()
       e.stopPropagation()
     }),
   },
@@ -253,7 +249,7 @@ const onExpandedKey = (key: number[]) => {
   color: rgba(156,163,175,0.5);
 }
 
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify  {
+.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify {
   visibility: visible;
 }
 </style>
