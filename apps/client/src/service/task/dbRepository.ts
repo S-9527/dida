@@ -14,6 +14,7 @@ export interface Repository {
         state: TaskState,
         projectId: number,
         tagIds: number[],
+        index: number,
     ) => PromiseExtended<number>
     updateTask: (id: number, changes: any) => void
     addProject: (name: string) => PromiseExtended<number>
@@ -74,13 +75,14 @@ export const dbRepository: Repository = {
             .toArray()
     },
 
-    addTask(title: string, content: string, state = TaskState.ACTIVE, projectId: number, tagIds: number[]) {
+    addTask(title: string, content: string, state = TaskState.ACTIVE, projectId: number, tagIds: number[], index: number) {
         return getDB().tasks.add({
             title,
             content,
             projectId,
             state,
-            tagIds
+            tagIds,
+            index
         })
     },
 

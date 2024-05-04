@@ -45,7 +45,7 @@
       }"
         class="flex flex-col gap-10px"
         @start="dragging = true"
-        @end="dragging = false"
+        @end="handleEndDrag"
     >
       <template #item="{ element, index }">
         <TaskItem :project="taskStore.currentActiveProject" :task="element" :index="index" class="item" />
@@ -66,6 +66,7 @@ import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
 import Command from "@/components/command/Command.vue";
 import { isSmartProject } from "@/service/task/smartProject.ts";
+import { updateTaskIndex } from "@/service/task";
 
 const taskStore = useTaskStore()
 const { toggle } = useTaskLeftMenuStatusStore()
@@ -120,6 +121,29 @@ const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name || ""
   return !isSmartProject(name)
 })
+
+function handleEndDrag(e: any) {
+  dragging.value = false
+
+  const currentTask = taskStore.tasks[e.newIndex]
+  const currentIndex = taskStore.tasks.length - 1 - e.newIndex
+  updateTaskIndex(currentTask!, currentIndex)
+
+  if (e.newIndex > e.oldIndex) {
+    // console.log("往下拖拽");
+    for (let i = e.oldIndex; i < e.newIndex; i++) {
+      const exchangedIndex = taskStore.tasks.length - 1 - i
+      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+    }
+  }
+  else {
+    // console.log("往上拖拽", e.oldIndex, e.newIndex);
+    for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
+      const exchangedIndex = taskStore.tasks.length - 1 - i
+      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+    }
+  }
+}
 </script>
 
 <style scoped>

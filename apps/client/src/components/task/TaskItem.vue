@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-row w-full items-center" @click.right="handleRightClickTask($event, task)">
+  <div :data-id="props.task.id" class="flex flex-row w-full items-center" @click.right="handleRightClickTask($event, task)">
     <i class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm" />
     <div
         class="flex justify-start items-center gap-5px h-40px py-5px flex-1 pl-10"

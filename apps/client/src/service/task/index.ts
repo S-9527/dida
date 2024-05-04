@@ -19,6 +19,7 @@ export {
     loadTasks,
     findAllTasksNotRemoved,
     findTaskById,
+    updateTaskIndex
 } from './task'
 export type { Task } from './task'
 export type { Project } from './project'
