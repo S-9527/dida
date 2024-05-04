@@ -1,6 +1,11 @@
 <template>
-  <div :data-id="props.task.id" class="flex flex-row w-full items-center" @click.right="handleRightClickTask($event, task)">
-    <i class="cursor-move text-gray-200 dark:text-#3B3B3B flex-shrink-0 i-mdi-format-align-justify text-sm" />
+  <div :data-id="props.task.id" class="flex flex-row w-full items-center"
+       @click.right="handleRightClickTask($event, task)" v-on="hoverEvents">
+    <i
+        v-if="isHover"
+        class="cursor-move text-gray dark:text-white flex-shrink-0 i-mdi-format-align-justify opacity-75 hover:opacity-100"
+    />
+    <i v-else class="w-1.2em h-1.2em flex-shrink-0" />
     <div
         class="flex justify-start items-center gap-5px h-40px py-5px flex-1 pl-10"
         :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
@@ -26,7 +31,7 @@
       </template>
       <template v-else>
         <div :class="[checkboxColors[task.state]]"
-             class="w-5 h-5 rounded-1 cursor-pointer"
+             class="w-5 h-5 rounded-1 cursor-pointer border border-solid border-black opacity-75 dark:border-white hover:opacity-100"
              @click="handleCompleteTodo">
         </div>
         <div
@@ -49,11 +54,13 @@ import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
 import { changeTaskTitle } from "@/service/task/task.ts";
+import { ref } from "vue";
 
 const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
 const { showContextMenu } = useTaskRightContextMenu()
 const { isDark } = storeToRefs(useThemeStore());
+const { isHover, hoverEvents } = useHandleHover()
 
 interface Props {
   task: Task,
@@ -64,11 +71,25 @@ const props = defineProps<Props>();
 const { showCompleteMessage } = useTaskOperationMessage()
 
 const checkboxColors: Record<TaskState, string> = {
-  [TaskState.ACTIVE]: "bg-#ccc",
+  [TaskState.ACTIVE]: "bg-transparent",
   [TaskState.COMPLETED]: "bg-#007A78",
   [TaskState.GIVE_UP]: "bg-#FF2200",
   [TaskState.REMOVED]: "bg-#ccc",
 };
+
+function useHandleHover() {
+  const isHover = ref<boolean>(false)
+  const hoverEvents: Record<string, () => void> = {
+    mouseover: () => isHover.value = true,
+    mousemove: () => isHover.value = true,
+    mouseleave: () => isHover.value = false,
+  }
+
+  return {
+    isHover,
+    hoverEvents,
+  }
+}
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   changeActiveTask(task)
