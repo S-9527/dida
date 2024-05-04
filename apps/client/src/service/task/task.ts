@@ -93,6 +93,11 @@ export function restoreTask(task: Task) {
     _removeTask(task)
 }
 
+export function moveTask(task: Task, targetProjectId: number) {
+    repository?.updateTask(task.id, { projectId: targetProjectId })
+    _removeTask(task)
+}
+
 export function getTaskFromProject(projectId: number, state: TaskState) {
     switch (state) {
         case TaskState.REMOVED:

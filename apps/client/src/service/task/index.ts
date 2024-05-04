@@ -11,6 +11,7 @@ export {
     addTask,
     removeTask,
     restoreTask,
+    moveTask,
     completeTask,
     createTask,
     changeTaskTitle,
