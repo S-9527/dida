@@ -23,7 +23,8 @@ import {Icon} from "@iconify/vue";
 import {Tag} from "@/service/task";
 import {findTagByName} from "@/service/task/tag.ts";
 import ContextMenu, {MenuItem} from "@imengyu/vue3-context-menu";
-import TagDialog from "@/components/task/TagCreateView";
+import { tagCreateViewDialog } from "@/components/task/TagCreateView";
+import { tagRemoveAlert } from "@/components/task/TagRemoveAlert";
 
 enum TreeRootKeys {
   PROJECT = 100,
@@ -87,11 +88,20 @@ const createTagLeafSuffix = (tag: Tag) => {
         creatOperateNodeBtn([
           {
             label: 'edit',
-            onClick: () => TagDialog({ tag }),
+            onClick: () => tagCreateViewDialog({ tag }),
           },
           {
             label: 'remove',
-            onClick: () => {},
+            onClick: () => {
+              tagRemoveAlert({
+                tagName: tag.name,
+              }).then((action: any) => {
+                // eslint-disable-next-line no-console
+                console.log(action)
+                if (action === 'confirm')
+                  taskStore.deleteTag(tag.id)
+              })
+            },
           },
         ]),
       ],
@@ -164,7 +174,7 @@ const data = ref<any[]>([
     children: treeTagChildren,
     suffix: createRootNodeSuffix((e: Event) => {
       e.stopPropagation()
-      TagDialog().then(() => {
+      tagCreateViewDialog().then(() => {
         // eslint-disable-next-line no-console
         console.log('done')
       })

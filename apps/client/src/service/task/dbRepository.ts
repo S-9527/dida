@@ -22,6 +22,7 @@ export interface Repository {
     getTasksByTagId: (tagId: number) => Promise<TaskTable[]>
     addTag: (name: string, parentTagId: number | null, color: string) => PromiseExtended<number>
     updateTag: (id: number, changes: any) => void
+    deleteTag: (id: number) => void
 }
 
 export const dbRepository: Repository = {
@@ -55,6 +56,10 @@ export const dbRepository: Repository = {
 
     async updateTag(id: number, changes = {}) {
         return getDB().tags.update(id, changes)
+    },
+
+    async deleteTag(id: number) {
+        return getDB().tags.delete(id)
     },
 
     async getTasksByTagId(tagId: number) {

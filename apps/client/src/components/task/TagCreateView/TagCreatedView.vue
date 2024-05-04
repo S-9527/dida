@@ -23,9 +23,9 @@ interface TFormModel {
   parentTagId: number | undefined
 }
 
-type Actions = 'close' | 'cancel' | 'created' | 'edited'
+type Actions = 'close' | 'cancel' | 'confirm' | 'edited'
 const props = defineProps<TProps>()
-const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'created', 'edited'])
+const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm', 'edited'])
 
 const taskStore = useTaskStore()
 const formRef = ref<FormInst | null>(null)
@@ -75,7 +75,7 @@ const handleCreateTag = async () => {
     model.value = initModel()
     projectSelectedStatusStore.listDefaultSelectedKey.push(200)
     projectSelectedStatusStore.changeSelectedKey([200 + taskStore.tags.length - 1])
-    handleActions('created')
+    handleActions('confirm')
   })
 }
 

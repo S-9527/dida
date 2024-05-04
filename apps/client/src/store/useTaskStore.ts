@@ -59,19 +59,24 @@ function useTag() {
         await selectCategory(tag)
     }
 
-    async function editTag(tag: { id: number; name: string; parentTagId?: number; color: string }) {
+    function editTag(tag: { id: number; name: string; parentTagId?: number; color: string }) {
         const origin = tags.find(t => t.id === tag.id)
         if (!origin) return
 
-        await taskService.updateTags({ ...tag, parentTagId: tag.parentTagId || null })
+        taskService.updateTags({ ...tag, parentTagId: tag.parentTagId || null })
         origin.name = tag.name
         origin.color = tag.color
         origin.parentTagId = tag.parentTagId || null
     }
 
+    function deleteTag(id: number) {
+        taskService.deleteTag(id)
+    }
+
     return {
         addTag,
-        editTag
+        editTag,
+        deleteTag
     }
 }
 

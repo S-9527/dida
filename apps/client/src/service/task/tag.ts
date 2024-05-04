@@ -51,6 +51,11 @@ export function updateTags(tag: Omit<Tag, 'loadTasks'>) {
     repository?.updateTag(tag.id, tag)
 }
 
+export function deleteTag(id: number) {
+    repository?.deleteTag(id)
+    _removeTag(id)
+}
+
 export function findTagByName(name: string | undefined) {
     if (!name) return
     return tags.find(tag => tag.name === name)
@@ -58,4 +63,13 @@ export function findTagByName(name: string | undefined) {
 
 export function findTagById(id: number) {
     return tags.find(tag => tag.id === id)
+}
+
+function _removeTag(id: number) {
+    const len = tags.length - 1
+    for (let i = len; i >=0; i--) {
+        if (tags[i].id === id) {
+            tags.splice(i, 1)
+        }
+    }
 }

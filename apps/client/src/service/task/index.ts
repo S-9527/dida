@@ -5,7 +5,7 @@ import { initTask, Task } from "@/service/task/task.ts";
 import { initTags, Tag } from "@/service/task/tag.ts";
 export type { SmartProjectNames, SmartProject } from './smartProject'
 export { loadProjects, createProject, addProject } from './project'
-export { loadTags, createTags, addTags, updateTags } from './tag'
+export { loadTags, createTags, addTags, updateTags, deleteTag } from './tag'
 export {
     TaskState,
     addTask,
