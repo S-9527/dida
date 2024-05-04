@@ -17,7 +17,7 @@ export function initProjects(projectsReactive: Project[] = [], _repository: Repo
 
 export async function loadProjects() {
     return repository!.loadProjects().then((projectList) => {
-        projectList.length = 0
+        projects.length = 0
         projectList.forEach((project: ProjectTable) => {
             projects.push(createProject(project.name, project.id))
         })
