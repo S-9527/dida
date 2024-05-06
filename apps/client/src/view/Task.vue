@@ -44,7 +44,7 @@ import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import { onBeforeMount, ref } from "vue";
-import { useTaskSidebarDrag } from "@/composable/useTaskSidebarDrag.ts";
+import { useTaskSidebarDrag } from "@/composables/useTaskSidebarDrag.ts";
 import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from '@/store'
 import { storeToRefs } from "pinia";
 

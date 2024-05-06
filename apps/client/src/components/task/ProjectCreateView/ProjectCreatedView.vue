@@ -5,7 +5,7 @@ import {
 } from 'naive-ui'
 import EmojiPicker from 'vue3-emoji-picker'
 import { Icon } from '@iconify/vue'
-import { useTaskLeftListCreateProject } from '@/composable/useTaskLeftListCreateProject.ts'
+import { useTaskLeftListCreateProject } from '@/composables/useTaskLeftListCreateProject.ts'
 import { useTaskStore } from "@/store";
 import 'vue3-emoji-picker/css'
 

@@ -49,10 +49,10 @@
 
 <script setup lang="ts">
 import { Project, Task, TaskState, useTaskStore, useThemeStore } from "@/store";
-import { useTaskRightContextMenu } from "@/composable/useTaskRightConextMenu.ts";
+import { useTaskRightContextMenu } from "@/composables/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
-import { useTaskOperationMessage } from "@/composable/useTaskOperationMessage.ts";
+import { useTaskOperationMessage } from "@/composables/useTaskOperationMessage.ts";
 import { changeTaskTitle } from "@/service/task/task.ts";
 import { ref } from "vue";
 

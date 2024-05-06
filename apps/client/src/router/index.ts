@@ -1,11 +1,11 @@
 import Task from '../view/Task.vue'
 import type { App } from "vue";
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from "vue-router";
-import { getDiscreteApi } from "@/composable/useNaiveDiscreteApi.ts";
+import { getDiscreteApi } from "@/composables/useNaiveDiscreteApi.ts";
 import { SettingsRoute } from './settings'
 
 export const routes: RouteRecordRaw[] = [
-    { path: "/", redirect: "/task" },
+    { path: "/", redirect: "/task", name: "Home" },
     { path: "/task", component: Task, name: "Task" },
     SettingsRoute,
 ];
