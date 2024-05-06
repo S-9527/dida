@@ -76,10 +76,12 @@ export function updateTaskIndex(task: Task, newIndex: number) {
     task.index = newIndex
 }
 
-export async function addTask(task: Task, projectId: number = -1, tags: number[] = []) {
-    const tId = await repository?.addTask(task.title, task.content, task.state, projectId, tags, task.index)
+export async function addTask(task: Task, project: Project | undefined = undefined, tags: number[] = []) {
+    const pId = project?.id || -1
+    const tId = await repository?.addTask(task.title, task.content, task.state, pId, tags, task.index)
     if (tId) {
         task.id = tId
+        task.project = project
         tasks.unshift(task)
     }
 }

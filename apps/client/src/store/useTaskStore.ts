@@ -87,7 +87,7 @@ export const useTaskStore = defineStore("task", () => {
             const task = taskService.createTask(title)
             const tasks = await findProjectById(currentActiveProject.value!.id)!.loadTasks()
             task.index = tasks.length
-            taskService.addTask(task, currentActiveProject.value!.id)
+            taskService.addTask(task, currentActiveProject.value)
             changeActiveTask(task)
         }
     }
