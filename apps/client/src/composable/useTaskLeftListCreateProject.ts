@@ -1,6 +1,7 @@
 import type { FormRules } from 'naive-ui'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
+import { findProjectByName } from "@/service/task/project.ts";
 
 enum SkinStone {
     NEUTRAL = 'neutral',
@@ -28,10 +29,10 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
 
     const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
     const { formValue, formRules } = useForm()
-    const { cleanupInput, handleUpdateShow, handleClose } = useInput()
+    const { cleanupInput, handleUpdateShow } = useInput()
+    const isDuplicate = ref<boolean>(false)
     const isSavable = computed(() => formValue.value.projectName?.trim() !== '')
     const isShowPopover = ref<boolean>(false)
-    const isShowModal = ref<boolean>(false)
 
     function useForm() {
         const formValue = ref({
@@ -39,7 +40,20 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
         })
         const formRules: FormRules = {
             projectName: {
-                validator: () => isSavable.value,
+                validator: (_, value: string) => {
+                    return new Promise<void>((resolve, reject) => {
+                        isDuplicate.value = false
+                        if (!isSavable.value) {
+                            reject(Error('清单名称不能为空'))
+                        }
+
+                        if (findProjectByName(value)) {
+                            isDuplicate.value = true
+                            reject(Error('重复的清单名称'))
+                        }
+                        else { resolve() }
+                    })
+                },
                 message: '清单名称不能为空',
                 trigger: ['input', 'blur'],
             },
@@ -102,14 +116,9 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
             isShowPopover.value = show
             !show && inputElement.value?.focus()
         }
-        function handleClose() {
-            isShowModal.value = false
-            cleanupInput()
-        }
         return {
             cleanupInput,
             handleUpdateShow,
-            handleClose,
         }
     }
 
@@ -119,14 +128,12 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
         emojiValue,
         formRules,
         formValue,
-        handleClose,
         handleMouseLeave,
         handleMouseOver,
         handleSelectEmoji,
         handleUpdateShow,
         isHover,
         isSavable,
-        isShowModal,
         isShowPopover,
     }
 }

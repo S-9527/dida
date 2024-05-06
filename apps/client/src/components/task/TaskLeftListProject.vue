@@ -9,14 +9,12 @@
       @update:expanded-keys="onExpandedKey"
       @update:selected-keys="changeSelectedKey"
   />
-  <ProjectCreatedView ref="projectViewRef" />
 </template>
 
 <script setup lang="ts">
 import { useProjectSelectedStatusStore, useTaskStore } from '@/store'
 import { NTree, TreeOption } from 'naive-ui'
 import { h, onMounted, ref, watchEffect } from 'vue'
-import ProjectCreatedView from "@/components/task/ProjectCreatedView.vue";
 import 'vue3-emoji-picker/css'
 import {findProjectByName} from "@/service/task/project.ts";
 import {Icon} from "@iconify/vue";
@@ -25,19 +23,11 @@ import {findTagByName} from "@/service/task/tag.ts";
 import ContextMenu, {MenuItem} from "@imengyu/vue3-context-menu";
 import { tagCreateViewDialog } from "@/components/task/TagCreateView";
 import { tagRemoveAlert } from "@/components/task/TagRemoveAlert";
+import { projectCreatedViewModal } from "@/components/task/ProjectCreateView";
 
 enum TreeRootKeys {
   PROJECT = 100,
   TAG = 200,
-}
-
-const { projectViewRef } = useCreateProjectButton()
-
-function useCreateProjectButton() {
-  const projectViewRef = ref()
-  return {
-    projectViewRef,
-  }
 }
 
 const createRootNodeSuffix = (onclick: (e: Event) => void) => {
@@ -158,7 +148,7 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      projectViewRef.value.toggleShowModal()
+      projectCreatedViewModal()
       e.stopPropagation()
     }),
   },

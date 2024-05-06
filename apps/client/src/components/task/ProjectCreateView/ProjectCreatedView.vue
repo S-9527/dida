@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import {
   NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover,
 } from 'naive-ui'
@@ -9,6 +9,11 @@ import { useTaskLeftListCreateProject } from '@/composable/useTaskLeftListCreate
 import { useTaskStore } from "@/store";
 import 'vue3-emoji-picker/css'
 
+const props = defineProps({
+  show: { type: Boolean },
+})
+
+const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm'])
 const inputElement = ref<HTMLInputElement>()
 const taskStore = useTaskStore()
 
@@ -17,26 +22,39 @@ const {
   formRules,
   formValue,
   getDefaultEmojiConfig,
-  handleClose,
   handleMouseLeave,
   handleMouseOver,
   handleSelectEmoji,
   handleUpdateShow,
   isHover,
   isSavable,
-  isShowModal,
   isShowPopover,
   cleanupInput,
 } = useTaskLeftListCreateProject(inputElement)
 
 const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
 
+type Actions = 'close' | 'cancel' | 'confirm'
+const isShowModal = computed({
+  get() {
+    return props.show
+  },
+  set(val) {
+    emits('update:show', val)
+  },
+})
+const handleActions = (action: Actions) => {
+  emits(action)
+  cleanupInput()
+  isShowModal.value = false
+  emits('closed')
+}
+
 function handleSave() {
   let projectName = formValue.value.projectName
   emojiValue.value && (projectName = emojiValue.value + projectName)
   taskStore.addProject(projectName)
-  isShowModal.value = false
-  cleanupInput()
+  handleActions('confirm')
 }
 
 function toggleShowModal() {
@@ -54,6 +72,7 @@ defineExpose({
       transform-origin="center"
       :mask-closable="!isSavable"
       @esc="cleanupInput"
+      @close="handleActions('close')"
   >
     <NCard
         style="width: 600px"
@@ -114,7 +133,7 @@ defineExpose({
 
       <template #footer>
         <div class="flex justify-end">
-          <NButton class="mr-3" @click="handleClose">
+          <NButton class="mr-3" @click="handleActions('cancel')">
             关闭
           </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
