@@ -1,4 +1,5 @@
 import ContextMenu from "@imengyu/vue3-context-menu";
+import type { MenuOptions } from '@imengyu/vue3-context-menu'
 import { useTaskStore } from "@/store";
 import { useTaskOperationMessage } from "./useTaskOperationMessage.ts";
 import { h, reactive, toRefs } from "vue";
@@ -8,8 +9,12 @@ export function useTaskRightContextMenu() {
     const { currentActiveTask, projects } = toRefs(useTaskStore());
     const { showRemoveMessage, showMoveMessage } = useTaskOperationMessage()
 
-    const moveProjects = [...getSearchMenuItem(), ...getMoveListProjects()]
-    const menuData = reactive({
+    const moveProjects: NonNullable<MenuOptions['items']> = [
+        ...getSearchMenuItem(),
+        ...getMoveListProjects()
+    ]
+
+    const menuData = reactive<MenuOptions>({
         x: 0,
         y: 0,
         items: [
@@ -45,17 +50,19 @@ export function useTaskRightContextMenu() {
 
     function changeInput() {
         const inputValue = (<HTMLInputElement>document.getElementById('searchInput')).value
-        if (!inputValue) {
-            menuData.items[0].children = moveProjects
-            return
-        }
-        menuData.items[0].children = moveProjects.filter((projectItem) => {
-            if (typeof projectItem.label === 'string') {
-                return (projectItem.label as string).includes(inputValue)
+        if (menuData.items) {
+            if (!inputValue) {
+                menuData.items[0].children = moveProjects
+                return
             }
+            menuData.items[0].children = moveProjects.filter((projectItem) => {
+                if (typeof projectItem.label === 'string') {
+                    return (projectItem.label as string).includes(inputValue)
+                }
 
-            return true
-        })
+                return true
+            })
+        }
     }
 
     function getMoveListProjects() {
@@ -87,7 +94,9 @@ export function useTaskRightContextMenu() {
         e.preventDefault();
         menuData.x = e.x
         menuData.y = e.y
-        menuData.items[0].children = moveProjects
+        if (menuData.items) {
+            menuData.items[0].children = moveProjects
+        }
         ContextMenu.showContextMenu(menuData)
     }
 
