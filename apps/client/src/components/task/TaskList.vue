@@ -44,11 +44,18 @@
         name: !dragging ? 'flip-list' : null,
       }"
         class="flex flex-col gap-10px"
+        :disabled="!shouldEnabledDrag"
         @start="dragging = true"
         @end="handleEndDrag"
     >
       <template #item="{ element, index }">
-        <TaskItem :project="taskStore.currentActiveProject" :task="element" :index="index" class="item" />
+        <TaskItem
+            :project="taskStore.currentActiveProject"
+            :task="element"
+            :index="index"
+            :is-show-drag-icon="shouldEnabledDrag"
+            class="item"
+        />
       </template>
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug -->
@@ -61,7 +68,7 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { useTaskLeftMenuStatusStore, useTaskStore, useThemeStore } from "@/store";
+import {SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore} from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
 import Command from "@/components/command/Command.vue";
@@ -121,6 +128,12 @@ const shouldShowTodoAdd = computed(() => {
   const name = taskStore.currentActiveProject?.name || ""
   return !isSmartProject(name)
 })
+
+const shouldEnabledDrag = computed(() =>
+    !Object.values(SmartProjectNames).includes(
+        taskStore.currentActiveProject?.name as SmartProjectNames,
+    ),
+)
 
 function handleEndDrag(e: any) {
   dragging.value = false

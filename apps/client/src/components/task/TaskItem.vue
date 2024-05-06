@@ -2,7 +2,7 @@
   <div :data-id="props.task.id" class="flex flex-row w-full items-center"
        @click.right="handleRightClickTask($event, task)" v-on="hoverEvents">
     <i
-        v-if="isHover"
+        v-if="isHover && props.isShowDragIcon"
         class="cursor-move text-gray dark:text-white flex-shrink-0 i-mdi-format-align-justify opacity-75 hover:opacity-100"
     />
     <i v-else class="w-1.2em h-1.2em flex-shrink-0" />
@@ -65,6 +65,7 @@ const { isHover, hoverEvents } = useHandleHover()
 interface Props {
   task: Task,
   project: Project
+  isShowDragIcon: boolean
 }
 
 const props = defineProps<Props>();
