@@ -11,6 +11,10 @@ export function useGoto() {
         name: 'Settings',
     });
 
+    const gotoSettingsTheme = () => router.push({
+        name: 'SettingsTheme',
+    });
+
     const gotoGithub = () => {
         window.open('https://github.com/cuixueshe/dida')
     };
@@ -18,6 +22,7 @@ export function useGoto() {
     return {
         gotoHome,
         gotoSettings,
+        gotoSettingsTheme,
         gotoGithub,
     }
 }

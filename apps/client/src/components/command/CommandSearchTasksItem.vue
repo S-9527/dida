@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NCheckbox, NEllipsis } from 'naive-ui'
-import { inject } from 'vue'
 import { useTaskStore } from '@/store/useTaskStore'
 import type { Project } from "@/service/task";
 import { findTaskById } from "@/service/task/task.ts";
+import { closeCommandModal } from "@/components/command/commandModal.ts";
 
 const props = defineProps<{
   title: string
@@ -14,14 +14,13 @@ const props = defineProps<{
 }>()
 
 const taskStore = useTaskStore()
-const closeModal = inject('closeModal') as () => void
 
 const goTo = async () => {
   if (props.from) {
     await taskStore.selectProject(props.from)
     taskStore.changeActiveTask(findTaskById(props.id))
   }
-  closeModal()
+  closeCommandModal()
 }
 </script>
 

@@ -71,7 +71,7 @@ import { Icon } from '@iconify/vue'
 import {SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore} from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
-import Command from "@/components/command/Command.vue";
+import Command from "@/components/command/CommandModal.vue";
 import { isSmartProject } from "@/service/task/smartProject.ts";
 import { updateTaskIndex } from "@/service/task";
 
