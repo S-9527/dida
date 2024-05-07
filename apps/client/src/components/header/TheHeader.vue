@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGoto } from "./theHeader.ts";
+import { useGoto } from "@/composables/goto.ts";
 
 const { gotoHome, gotoGithub, gotoSettings } = useGoto()
 </script>

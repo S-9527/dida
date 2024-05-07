@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted, ref } from 'vue'
-import { useIsMac } from "@/store/useCommandStore.ts";
+import { useIsMac } from "@/composables/misc.ts";
 
 const isMac = useIsMac()
 

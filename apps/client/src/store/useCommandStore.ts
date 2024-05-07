@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import type { Router } from 'vue-router'
 import Fuse from 'fuse.js'
-import { computed, ref } from 'vue'
+import { ref } from 'vue'
 
 interface CommandItem {
     id: number
@@ -29,9 +29,6 @@ const commands: CommandItem[] = [
         },
     },
 ]
-
-
-export const useIsMac = () => computed(() => /(Mac|iPhone|iPod|iPad)/i.test(navigator.userAgent) || false)
 
 export const useCommandStore = defineStore('commandStore', () => {
     const searchCommands = ref<CommandItem[]>(commands)

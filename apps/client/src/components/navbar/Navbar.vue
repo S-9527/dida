@@ -3,7 +3,7 @@ import { NDropdown, NPopover } from 'naive-ui'
 import Command from '@/components/command/Command.vue'
 import type { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
 import { useCommand } from "@/components/command/command.ts";
-import { useGoto } from "@/components/header/theHeader.ts";
+import { useGoto } from "@/composables/goto.ts";
 
 const { showCommand } = useCommand()
 const { gotoSettings } = useGoto()
