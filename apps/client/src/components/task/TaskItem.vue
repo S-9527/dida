@@ -11,13 +11,13 @@
         :class="[isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
         currentActiveTask?.id === task.id ? isDark ? '!bg-[#474747]' : '!bg-[#ECF1FF]' : '']"
     >
-      <template v-if="task.state === TaskState.REMOVED">
+      <template v-if="task.status === TaskStatus.REMOVED">
         <div class="flex justify-center items-center gap-5px">
           <NPopover trigger="hover">
             <template #trigger>
               <div
                   class="w-5 h-5 rounded-1 cursor-pointer"
-                  :class="[checkboxColors[task.state]]"
+                  :class="[checkboxColors[task.status]]"
                   @click="handleCompleteTodo"
               >
               </div>
@@ -30,7 +30,7 @@
         </div>
       </template>
       <template v-else>
-        <div :class="[checkboxColors[task.state]]"
+        <div :class="[checkboxColors[task.status]]"
              class="w-5 h-5 rounded-1 cursor-pointer border border-solid border-black opacity-75 dark:border-white hover:opacity-100"
              @click="handleCompleteTodo">
         </div>
@@ -48,15 +48,16 @@
 </template>
 
 <script setup lang="ts">
-import { Project, Task, TaskState, useTaskStore, useThemeStore } from "@/store";
+import { Project, useThemeStore } from "@/store";
+import { TaskStatus, useTaskStore } from '@/store/tasks'
+import type { Task } from '@/store/tasks'
 import { useTaskRightContextMenu } from "@/composables/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
 import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composables/useTaskOperationMessage.ts";
-import { changeTaskTitle } from "@/service/task/task.ts";
 import { ref } from "vue";
 
-const { changeActiveTask, completeTask, restoreTask } = useTaskStore()
+const { changeActiveTask, completeTask, restoreTask, changeTaskTitle } = useTaskStore()
 const { currentActiveTask } = storeToRefs(useTaskStore());
 const { showContextMenu } = useTaskRightContextMenu()
 const { isDark } = storeToRefs(useThemeStore());
@@ -71,11 +72,10 @@ interface Props {
 const props = defineProps<Props>();
 const { showCompleteMessage } = useTaskOperationMessage()
 
-const checkboxColors: Record<TaskState, string> = {
-  [TaskState.ACTIVE]: "bg-transparent",
-  [TaskState.COMPLETED]: "bg-#007A78",
-  [TaskState.GIVE_UP]: "bg-#FF2200",
-  [TaskState.REMOVED]: "bg-#ccc",
+const checkboxColors: Record<TaskStatus, string> = {
+  [TaskStatus.ACTIVE]: "bg-transparent",
+  [TaskStatus.COMPLETED]: "bg-#007A78",
+  [TaskStatus.REMOVED]: "bg-#ccc",
 };
 
 function useHandleHover() {
@@ -105,15 +105,15 @@ function handleInput (e:Event, task: Task) {
 }
 
 function handleCompleteTodo () {
-  switch (props.task.state) {
-    case TaskState.ACTIVE:
+  switch (props.task.status) {
+    case TaskStatus.ACTIVE:
       completeTask(props.task)
-      showCompleteMessage(props.task, props.project)
+      showCompleteMessage(props.task)
       break;
-    case TaskState.COMPLETED:
+    case TaskStatus.COMPLETED:
       restoreTask(props.task)
       break;
-    case TaskState.REMOVED:
+    case TaskStatus.REMOVED:
       console.log("在垃圾桶里面的 task 不可以直接恢复")
       break;
   }

@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed } from 'vue'
 import { closeCommandModal, openCommandModal, registerKeyboardShortcut, showCommandModal } from '../commandModal'
-import { fireEvent, useSetup } from '@/tests/test-helper'
+import { fireEvent, useSetup } from '@/tests/helper'
 import * as misc from "@/composables/misc.ts";
 
 describe('CommandModal', () => {

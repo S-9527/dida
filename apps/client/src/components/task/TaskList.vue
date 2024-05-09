@@ -60,7 +60,6 @@
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug -->
     <div class="w-full h-1px" contenteditable="false" />
-    <Command />
   </div>
 </template>
 
@@ -68,12 +67,11 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import {SmartProjectNames, useTaskLeftMenuStatusStore, useTaskStore, useThemeStore} from "@/store";
+import {SmartProjectNames, useTaskLeftMenuStatusStore, useThemeStore} from "@/store";
+import { useTaskStore } from '@/store/tasks'
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
-import Command from "@/components/command/CommandModal.vue";
 import { isSmartProject } from "@/service/task/smartProject.ts";
-import { updateTaskIndex } from "@/service/task";
 
 const taskStore = useTaskStore()
 const { toggle } = useTaskLeftMenuStatusStore()
@@ -140,20 +138,18 @@ function handleEndDrag(e: any) {
 
   const currentTask = taskStore.tasks[e.newIndex]
   const currentIndex = taskStore.tasks.length - 1 - e.newIndex
-  updateTaskIndex(currentTask!, currentIndex)
+  taskStore.updateTaskPosition(currentTask!, currentIndex)
 
   if (e.newIndex > e.oldIndex) {
-    // console.log("往下拖拽");
     for (let i = e.oldIndex; i < e.newIndex; i++) {
       const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+      taskStore.updateTaskPosition(taskStore.tasks[i], exchangedIndex)
     }
   }
   else {
-    // console.log("往上拖拽", e.oldIndex, e.newIndex);
     for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
       const exchangedIndex = taskStore.tasks.length - 1 - i
-      updateTaskIndex(taskStore.tasks[i], exchangedIndex)
+      taskStore.updateTaskPosition(taskStore.tasks[i], exchangedIndex)
     }
   }
 }

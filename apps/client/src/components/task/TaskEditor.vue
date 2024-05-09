@@ -1,7 +1,7 @@
 <template>
   <div>
     <div v-if="currentActiveTask">
-      <h1 contenteditable="true" class="text-3xl" @input="handleInput">
+      <h1 contenteditable="true" class="text-3xl" @input="debounceHandleInput">
         {{ currentActiveTask.title }}
       </h1>
       <div class="mt-2">
@@ -10,7 +10,7 @@
             appearance: isDark ? 'dark' : 'light'
           },
           hooks: {
-            afterUpdate: handleAfterUpdate,
+            afterUpdate: debounceHandleAfterUpdate,
           },
         }" />
       </div>
@@ -27,25 +27,30 @@
 </template>
 
 <script setup lang="ts">
-import { useTaskStore, useThemeStore } from "@/store";
+import { useThemeStore } from "@/store";
+import { useTaskStore } from '@/store/tasks'
 import { storeToRefs } from "pinia";
-import {changeTaskContent, changeTaskTitle} from "@/service/task/task.ts";
 import InkMde from 'ink-mde/vue'
+import { debounce } from 'lodash-es'
 
 const { currentActiveTask } = storeToRefs(useTaskStore());
 const { isDark } = storeToRefs(useThemeStore());
+const { updateTaskTitle, updateTaskContent } = useTaskStore();
 
 function handleInput (e:Event) {
   if (currentActiveTask) {
-    changeTaskTitle(currentActiveTask.value!, (e.target as HTMLElement).innerText)
+    updateTaskTitle(currentActiveTask.value!, (e.target as HTMLElement).innerText)
   }
 }
 
 function handleAfterUpdate(doc: string) {
   if (currentActiveTask)
-    changeTaskContent(currentActiveTask.value!, doc)
+    updateTaskContent(currentActiveTask.value!, doc)
 }
 
+const waitTime = 700
+const debounceHandleInput = debounce(handleInput, waitTime)
+const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime)
 </script>
 
 <style scoped></style>
