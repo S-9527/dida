@@ -11,8 +11,13 @@ export class TasksService {
 
     async create(createTaskDto: CreateTaskDto): Promise<Task> {
         const position = await this.generatePosition(createTaskDto)
+        const projectId = new Types.ObjectId(createTaskDto.projectId)
 
-        const createdTask = new this.taskModel({ ...createTaskDto, position })
+        const createdTask = new this.taskModel({
+            ...createTaskDto,
+            projectId,
+            position
+        })
         return createdTask.save()
     }
 
@@ -40,8 +45,14 @@ export class TasksService {
     }
 
     async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
+        const update: { projectId?: Types.ObjectId } = {}
+
+        if (updateTaskDto.projectId) {
+            update.projectId = new Types.ObjectId(updateTaskDto.projectId)
+        }
+
         const updatedTask = await this.taskModel
-            .findByIdAndUpdate(id, { $set: updateTaskDto }, { new: true })
+            .findByIdAndUpdate(id,  { $set: { ...updateTaskDto, ...update }}, { new: true })
             .exec()
 
         if (!updatedTask)
