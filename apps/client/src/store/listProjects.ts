@@ -3,18 +3,17 @@ import { ref } from 'vue'
 import { TaskStatus } from './tasks'
 import { fetchAllProjects, fetchCreateProject } from '@/api/project'
 import { fetchAllTasks } from '@/api/task'
-import { useTasksSelectorStore } from '@/store'
+import { TasksSelectorType, useTasksSelectorStore } from '@/store'
 
-type ProjectType = 'listProject' | 'smartProject'
-export interface Project {
+export interface ListProject {
     id: string
     name: string
-    type: ProjectType
+    type: TasksSelectorType.listProject
 }
 
 export const useListProjectsStore = defineStore('newProjects', () => {
     const tasksSelectorStore = useTasksSelectorStore()
-    const projects = ref<Project[]>([])
+    const projects = ref<ListProject[]>([])
 
     async function init() {
         const rawProjects: any = await fetchAllProjects()
@@ -25,11 +24,11 @@ export const useListProjectsStore = defineStore('newProjects', () => {
         }
     }
 
-    function selectProject(project: Project): void
-    function selectProject(projectId: Project['id']): void
-    function selectProject(projectName: Project['name']): void
-    function selectProject(projectOrNameOrId: Project | string): void {
-        let project: Project | undefined
+    function selectProject(project: ListProject): void
+    function selectProject(projectId: ListProject['id']): void
+    function selectProject(projectName: ListProject['name']): void
+    function selectProject(projectOrNameOrId: ListProject | string): void {
+        let project: ListProject | undefined
 
         if (typeof projectOrNameOrId === 'string')
             project = findProject(projectOrNameOrId)
@@ -41,7 +40,7 @@ export const useListProjectsStore = defineStore('newProjects', () => {
             tasksSelectorStore.setCurrentSelector(project)
     }
 
-    function findProject(projectIdOrName: string): Project | undefined {
+    function findProject(projectIdOrName: string): ListProject | undefined {
         return projects.value.find(p => p.name === projectIdOrName || p.id === projectIdOrName)
     }
 
@@ -72,11 +71,11 @@ export const useListProjectsStore = defineStore('newProjects', () => {
 })
 
 // TODO 需要提供后端返回的  project 的 type shape
-function normalizeProject(rawProject: any): Project {
+function normalizeProject(rawProject: any): ListProject {
     return {
         id: `${rawProject._id}`,
         name: rawProject.name,
-        type: 'listProject',
+        type: TasksSelectorType.listProject,
     }
 }
 

@@ -8,7 +8,7 @@ interface SearchTaskItem {
     title: string
     desc: string
     done: boolean
-    from: TasksSelector
+    from: TasksSelector | undefined
 }
 
 export const filteredTasks = ref<FuseResult<SearchTaskItem>[]>([])
@@ -20,6 +20,7 @@ export async function searchTasks(input: string) {
     const tasksStore = useTasksStore()
     const projectsStore = useListProjectsStore()
     const rawTasks = await tasksStore.findAllTasksNotRemoved()
+
     const tasks = rawTasks.map((task) => {
         const done = task.status === TaskStatus.COMPLETED
         const from = done ? completeSmartProject : projectsStore.findProject(task.projectId)

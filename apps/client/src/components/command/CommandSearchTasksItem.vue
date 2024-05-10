@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { NCheckbox, NEllipsis } from 'naive-ui'
-import { findTaskById } from "@/service/task/task.ts";
 import { closeCommandModal } from "@/components/command/commandModal.ts";
 import { TasksSelector, useTasksSelectorStore } from "@/store/taskSelector.ts";
 
@@ -8,7 +7,7 @@ const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: TasksSelector
+  from: TasksSelector | undefined
   id: string
 }>()
 

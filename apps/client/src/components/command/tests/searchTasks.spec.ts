@@ -1,19 +1,11 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { filteredTasks, resetSearchTasks, searchTasks } from '../searchTasks'
+import { completeSmartProject } from "@/store";
+
+vi.mock('@/store/tasks')
+vi.mock('@/store/listProjects')
 
 describe('SearchTasks', () => {
-    beforeEach(() => {
-        // TODO 不在使用 TaskService
-        // vi.spyOn(TaskService, 'findAllTasksNotRemoved').mockResolvedValue([
-        //   createMockTask('吃饭'),
-        //   createMockTask('写代码', '一杯茶，一包烟，一行代码写一天'),
-        // ])
-    })
-
-    afterEach(() => {
-        resetSearchTasks()
-    })
-
     it('should be search a task by title', async () => {
         await searchTasks('写代码')
 
@@ -29,7 +21,7 @@ describe('SearchTasks', () => {
     })
 
     it('should not be found when the task does not exist', async () => {
-        await searchTasks('睡觉')
+        await searchTasks('运动')
 
         expect(filteredTasks.value.length).toBe(0)
     })
@@ -41,15 +33,18 @@ describe('SearchTasks', () => {
 
         expect(filteredTasks.value.length).toBe(0)
     })
-})
 
-// function createMockTask(title: string, content = '') {
-//     return {
-//         id: 0,
-//         title,
-//         content,
-//         state: TaskService.TaskState.ACTIVE,
-//         project: undefined,
-//         index: 1,
-//     }
-// }
+    it('should be task’s project is listProject when status is active', async () => {
+        await searchTasks('写代码')
+
+        const task = filteredTasks.value[0].item
+        expect(task.from!.type).toBe('listProject')
+    })
+
+    it('should be task’s project is completeSmartProject when status is completed', async () => {
+        await searchTasks('睡觉')
+
+        const task = filteredTasks.value[0].item
+        expect(task.from!.name).toBe(completeSmartProject.name)
+    })
+})
