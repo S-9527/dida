@@ -1,7 +1,7 @@
 import type { FormRules } from 'naive-ui'
 import type { Ref } from 'vue'
 import { computed, ref } from 'vue'
-import { findProjectByName } from "@/service/task/project.ts";
+import { useListProjectsStore } from '@/store'
 
 enum SkinStone {
     NEUTRAL = 'neutral',
@@ -27,6 +27,7 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
         handleSelectEmoji,
     } = useEmoji()
 
+    const listProjectsStore = useListProjectsStore()
     const { handleMouseOver, handleMouseLeave, isHover } = useMouse()
     const { formValue, formRules } = useForm()
     const { cleanupInput, handleUpdateShow } = useInput()
@@ -47,7 +48,7 @@ export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement 
                             reject(Error('清单名称不能为空'))
                         }
 
-                        if (findProjectByName(value)) {
+                        if (listProjectsStore.checkProjectIsExist(value)) {
                             isDuplicate.value = true
                             reject(Error('重复的清单名称'))
                         }

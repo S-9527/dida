@@ -3,7 +3,7 @@
     <div class="flex items-center">
       <Icon :icon="visible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'"
              width="30" @click="toggleLeftMenu()" />
-      <h1 class="text-4xl">{{ taskStore.currentActiveProject?.name }}</h1>
+      <h1 class="text-4xl">{{ tasksSelectorStore.currentSelector?.name }}</h1>
     </div>
     <div
         v-show="shouldShowTodoAdd"
@@ -50,7 +50,6 @@
     >
       <template #item="{ element, index }">
         <TaskItem
-            :project="taskStore.currentActiveProject"
             :task="element"
             :index="index"
             :is-show-drag-icon="shouldEnabledDrag"
@@ -67,13 +66,14 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import {SmartProjectNames, useTaskLeftMenuStatusStore, useThemeStore} from "@/store";
-import { useTaskStore } from '@/store/tasks'
+import { useTaskLeftMenuStatusStore, useTasksStore, useThemeStore} from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
-import { isSmartProject } from "@/service/task/smartProject.ts";
+import { useTasksSelectorStore } from "@/store/taskSelector.ts";
 
-const taskStore = useTaskStore()
+const taskStore = useTasksStore()
+const tasksSelectorStore = useTasksSelectorStore()
+
 const { toggle } = useTaskLeftMenuStatusStore()
 const { visible } = storeToRefs(useTaskLeftMenuStatusStore())
 const { isDark } = storeToRefs(useThemeStore());
@@ -82,7 +82,7 @@ const taskTitle = ref("")
 const dragging = ref<boolean>(false)
 
 const placeholderText = computed(() => {
-  return `添加任务至"${taskStore.currentActiveProject?.name}"，回车即可保存`;
+  return `添加任务至"${tasksSelectorStore.currentSelector?.name}"，回车即可保存`;
 });
 
 const isPlaceholder = computed(() => {
@@ -106,9 +106,10 @@ const { inputRef, onFocus } = useInput()
 
 const addTask = () => {
   if (!taskTitle.value) return
-  if (Reflect.has(taskStore.currentActiveProject, 'color')) {
-    taskStore.addTaskToTag(taskTitle.value)
-  } else {
+  // if (Reflect.has(taskStore.currentActiveProject, 'color')) {
+  //   taskStore.addTaskToTag(taskTitle.value)
+  // }
+  else {
     taskStore.addTask(taskTitle.value)
   }
   taskTitle.value = ""
@@ -123,15 +124,12 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  const name = taskStore.currentActiveProject?.name || ""
-  return !isSmartProject(name)
+  return tasksSelectorStore.currentSelector?.type === 'listProject'
 })
 
-const shouldEnabledDrag = computed(() =>
-    !Object.values(SmartProjectNames).includes(
-        taskStore.currentActiveProject?.name as SmartProjectNames,
-    ),
-)
+const shouldEnabledDrag = computed(() =>{
+  return tasksSelectorStore.currentSelector?.type === 'listProject'
+})
 
 function handleEndDrag(e: any) {
   dragging.value = false

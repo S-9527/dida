@@ -1,24 +1,23 @@
 <script setup lang="ts">
 import { NCheckbox, NEllipsis } from 'naive-ui'
-import { useTaskStore } from '@/store/useTaskStore'
-import type { Project } from "@/service/task";
 import { findTaskById } from "@/service/task/task.ts";
 import { closeCommandModal } from "@/components/command/commandModal.ts";
+import { TasksSelector, useTasksSelectorStore } from "@/store/taskSelector.ts";
 
 const props = defineProps<{
   title: string
   desc: string
   done: boolean
-  from: Project | undefined
-  id: number
+  from: TasksSelector
+  id: string
 }>()
 
-const taskStore = useTaskStore()
+const tasksSelectorStore = useTasksSelectorStore()
 
 const goTo = async () => {
   if (props.from) {
-    await taskStore.selectProject(props.from)
-    taskStore.changeActiveTask(findTaskById(props.id))
+    await tasksSelectorStore.setCurrentSelector(props.from)
+    // TODO 还应该跳转到对应的 task 上
   }
   closeCommandModal()
 }

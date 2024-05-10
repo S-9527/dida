@@ -1,7 +1,7 @@
 import type { RouteRecordRaw } from 'vue-router'
 import type { Component } from 'vue'
 import Settings from '@/view/Settings.vue'
-import { sidebars } from '@/service/settings/sidebar'
+import { sidebars } from '@/composables/settings/sidebar'
 
 const SETTINGS_PATH = 'settings'
 

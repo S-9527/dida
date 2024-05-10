@@ -27,15 +27,14 @@
 </template>
 
 <script setup lang="ts">
-import { useThemeStore } from "@/store";
-import { useTaskStore } from '@/store/tasks'
+import { useThemeStore, useTasksStore } from "@/store";
 import { storeToRefs } from "pinia";
 import InkMde from 'ink-mde/vue'
 import { debounce } from 'lodash-es'
 
-const { currentActiveTask } = storeToRefs(useTaskStore());
+const { currentActiveTask } = storeToRefs(useTasksStore());
 const { isDark } = storeToRefs(useThemeStore());
-const { updateTaskTitle, updateTaskContent } = useTaskStore();
+const { updateTaskTitle, updateTaskContent } = useTasksStore();
 
 function handleInput (e:Event) {
   if (currentActiveTask) {

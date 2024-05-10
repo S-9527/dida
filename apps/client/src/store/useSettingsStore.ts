@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
-import { smartProjects, SmartProjectOptionValue, setHideSmartProject } from '@/service/settings'
+import { smartProjects, SmartProjectOptionValue, setHideSmartProject } from '@/composables/settings'
 
 export const useSettingsStore = defineStore('settingsStore', () => {
     const settingsSmartProjects = reactive(smartProjects)

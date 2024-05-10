@@ -1,15 +1,14 @@
 import ContextMenu from "@imengyu/vue3-context-menu";
 import type { MenuOptions } from '@imengyu/vue3-context-menu'
-import { useTaskStore } from "@/store";
-import { useTaskStore as useNewTaskStore } from '@/store/tasks'
+import { useListProjectsStore, useTasksStore } from "@/store";
 import { useTaskOperationMessage } from "./useTaskOperationMessage.ts";
 import { h, reactive, toRefs } from "vue";
 
 export function useTaskRightContextMenu() {
-    const { moveTask } = useTaskStore();
-    const { currentActiveTask, projects } = toRefs(useTaskStore());
+    const { moveTaskToProject, removeTask } = useTasksStore();
+    const { currentActiveTask } = toRefs(useTasksStore());
     const { showRemoveMessage, showMoveMessage } = useTaskOperationMessage()
-    const newTaskStore = useNewTaskStore()
+    const listProjectsStore = useListProjectsStore()
 
     const moveProjects: NonNullable<MenuOptions['items']> = [
         ...getSearchMenuItem(),
@@ -27,8 +26,8 @@ export function useTaskRightContextMenu() {
             {
                 label: '删除',
                 onClick: () => {
-                    showRemoveMessage(newTaskStore.currentActiveTask!)
-                    newTaskStore.removeTask(newTaskStore.currentActiveTask!)
+                    showRemoveMessage(currentActiveTask!)
+                    removeTask(currentActiveTask!)
                 },
             },
         ],
@@ -68,8 +67,8 @@ export function useTaskRightContextMenu() {
     }
 
     function getMoveListProjects() {
-        return projects.value.map((projectItem) => {
-            const isCurrentProject = currentActiveTask.value?.project!.id === projectItem.id
+        return listProjectsStore.projects.map((project: any) => {
+            const isCurrentProject = currentActiveTask.value?.projectId === project.id
             return {
                 label: isCurrentProject
                     ? h(
@@ -79,14 +78,13 @@ export function useTaskRightContextMenu() {
                                 color: '#567dfa',
                             },
                         },
-                        projectItem.name,
+                        project.name,
                     )
-                    : projectItem.name,
+                    : project.name,
                 onClick: () => {
-                    if (isCurrentProject)
-                        return
-                    showMoveMessage(projectItem.name)
-                    moveTask(currentActiveTask.value!, projectItem.id)
+                    if (isCurrentProject) return
+                    showMoveMessage(project.name)
+                    moveTaskToProject(currentActiveTask!, project.id)
                 },
             }
         })

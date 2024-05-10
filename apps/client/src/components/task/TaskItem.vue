@@ -48,8 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { Project, useThemeStore } from "@/store";
-import { TaskStatus, useTaskStore } from '@/store/tasks'
+import { useThemeStore, useTasksStore } from "@/store";
+import { TaskStatus } from '@/store/tasks'
 import type { Task } from '@/store/tasks'
 import { useTaskRightContextMenu } from "@/composables/useTaskRightConextMenu.ts";
 import { NPopover } from "naive-ui";
@@ -57,15 +57,14 @@ import { storeToRefs } from "pinia";
 import { useTaskOperationMessage } from "@/composables/useTaskOperationMessage.ts";
 import { ref } from "vue";
 
-const { changeActiveTask, completeTask, restoreTask, changeTaskTitle } = useTaskStore()
-const { currentActiveTask } = storeToRefs(useTaskStore());
+const { changeActiveTask, completeTask, restoreTask, updateTaskTitle } = useTasksStore()
+const { currentActiveTask } = storeToRefs(useTasksStore());
 const { showContextMenu } = useTaskRightContextMenu()
 const { isDark } = storeToRefs(useThemeStore());
 const { isHover, hoverEvents } = useHandleHover()
 
 interface Props {
   task: Task,
-  project: Project
   isShowDragIcon: boolean
 }
 
@@ -101,7 +100,7 @@ function handleClickTask(task: Task) {
 }
 
 function handleInput (e:Event, task: Task) {
-  changeTaskTitle(task, (e.target as HTMLElement).innerText)
+  updateTaskTitle(task, (e.target as HTMLElement).innerText)
 }
 
 function handleCompleteTodo () {

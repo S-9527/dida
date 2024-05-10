@@ -1,30 +1,34 @@
-import Fuse from 'fuse.js'
+import Fuse, { FuseResult } from 'fuse.js'
 import { ref } from 'vue'
-import type { Project } from '@/service/task'
-import { TaskState, findAllTasksNotRemoved } from '@/service/task'
+import type { TasksSelector } from "@/store/taskSelector.ts";
+import {completeSmartProject, TaskStatus, useListProjectsStore, useTasksStore} from "@/store";
 
 interface SearchTaskItem {
-    id: number
+    id: string
     title: string
     desc: string
     done: boolean
-    from: Project | undefined
+    from: TasksSelector
 }
 
-export const filteredTasks = ref<Fuse.FuseResult<SearchTaskItem>[]>([])
+export const filteredTasks = ref<FuseResult<SearchTaskItem>[]>([])
 const fuse = new Fuse([] as SearchTaskItem[], {
     keys: ['title', 'desc'],
 })
 
 export async function searchTasks(input: string) {
-    const rawTasks = await findAllTasksNotRemoved()
+    const tasksStore = useTasksStore()
+    const projectsStore = useListProjectsStore()
+    const rawTasks = await tasksStore.findAllTasksNotRemoved()
     const tasks = rawTasks.map((task) => {
+        const done = task.status === TaskStatus.COMPLETED
+        const from = done ? completeSmartProject : projectsStore.findProject(task.projectId)
         return {
             id: task.id!,
             title: task.title,
             desc: task.content,
-            done: task.state === TaskState.COMPLETED,
-            from: task.project,
+            done,
+            from,
         }
     })
     fuse.setCollection(tasks)

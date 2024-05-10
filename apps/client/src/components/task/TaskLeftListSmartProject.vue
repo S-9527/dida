@@ -43,16 +43,20 @@
 </template>
 
 <script setup lang="ts">
-import { SmartProjectNames, useProjectSelectedStatusStore, useSettingsStore, useTaskStore } from '@/store'
+import {
+  SmartProjectName,
+  useProjectSelectedStatusStore,
+  useSettingsStore,
+  useSmartProjects,
+} from '@/store'
 import { Icon } from '@iconify/vue'
 import { NPopover } from "naive-ui";
 import { ref } from 'vue'
-import {findSmartProjectByName} from "@/service/task/smartProject.ts";
 
 export interface TaskListType {
   key: number
   icon: string
-  title: `${SmartProjectNames}`
+  title: `${SmartProjectName}`
   option?: string
 }
 
@@ -74,12 +78,12 @@ function useProjectMoreActions() {
 const settingsStore = useSettingsStore()
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
-const taskStore = useTaskStore()
+const smartProjects = useSmartProjects()
 const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const { showMoreIconIndex, showWitchPopover, openPopover } = useProjectMoreActions()
 
 const handleTaskItemClick = (projectName: string, key: number) => {
-  taskStore.selectProject(findSmartProjectByName(projectName))
+  smartProjects.selectProject(projectName as SmartProjectName)
   projectSelectedStatusStore.changeSelectedKey([key])
 }
 </script>

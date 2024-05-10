@@ -3,13 +3,14 @@ import { ref } from 'vue'
 import {
     fetchAllTasks,
     fetchCompleteTask,
-    fetchCreateTask,
+    fetchCreateTask, fetchMoveTaskToProject,
     fetchRemoveTask,
     fetchRestoreTask,
     fetchUpdateTaskContent,
     fetchUpdateTaskPosition,
     fetchUpdateTaskTitle,
 } from '@/api/task.ts'
+import { useTasksSelectorStore } from "@/store/taskSelector.ts";
 
 export enum TaskStatus {
     ACTIVE = 'active',
@@ -26,32 +27,35 @@ export interface Task {
     position: number
 }
 
-export const useTaskStore = defineStore('newTask', () => {
+export const useTasksStore = defineStore('tasksStore', () => {
+    const tasksSelectorStore = useTasksSelectorStore()
+
     const tasks = ref<Task[]>([])
     const currentActiveTask = ref<Task>()
-    // TODO 后面统一处理 project
-    const currentActiveProject = {
-        name: '哈哈',
-        loadTasks(): any {},
-        id: '1',
-    }
 
-    async function init() {
-        const rawTasks: any = await fetchAllTasks(
-            currentActiveProject.id,
-            TaskStatus.ACTIVE,
-        )
-        tasks.value = rawTasks.map(normalizeTask)
+    async function updateTasks(_tasks: any) {
+        tasks.value = _tasks.map(normalizeTask)
     }
 
     async function addTask(title: string) {
-        const newRawTask = await fetchCreateTask(title, currentActiveProject.id)
+        if (!tasksSelectorStore.currentSelector) return
+        if (tasksSelectorStore.currentSelector.type !== 'listProject') return
+
+        const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
         const task = normalizeTask(newRawTask)
         tasks.value.unshift(task)
         changeActiveTask(task)
     }
 
-    function changeActiveTask(task: Task | undefined) {
+    function changeActiveTask(taskId: Task['id']): void
+    function changeActiveTask(task: Task | undefined): void
+    function changeActiveTask(taskOrTaskId: Task | Task['id'] | undefined): void {
+        let task: Task | undefined
+
+        task = typeof taskOrTaskId === 'string'
+            ? tasks.value.find(t => t.id === taskOrTaskId)
+            : taskOrTaskId;
+
         currentActiveTask.value = task
     }
 
@@ -63,6 +67,12 @@ export const useTaskStore = defineStore('newTask', () => {
     }
 
     async function restoreTask(task: Task) {
+        await fetchRestoreTask(task.id)
+        task.status = TaskStatus.ACTIVE
+
+        tasks.value = tasks.value.filter(t => t.id !== task.id)
+    }
+    async function cancelCompleteTask(task: Task) {
         function taskPositionRestorer(task: Task) {
             const lastTask = tasks.value[tasks.value.length - 1]
             if (task.position < lastTask.position) {
@@ -116,24 +126,35 @@ export const useTaskStore = defineStore('newTask', () => {
         task.position = newPosition
     }
 
-    function addTaskToTag(title: string) {
-        console.log(title)
+    async function findAllTasksNotRemoved() {
+        const activeTasks: any = await fetchAllTasks({ status: TaskStatus.ACTIVE })
+        const completedTasks: any = await fetchAllTasks({ status: TaskStatus.COMPLETED })
+
+        return [...activeTasks.map(normalizeTask), ...completedTasks.map(normalizeTask)]
+    }
+
+    async function moveTaskToProject(task: Task, projectId: string) {
+        await fetchMoveTaskToProject(task.id, projectId)
+        task.projectId = projectId
+
+        tasks.value = tasks.value.filter(t => t.id !== task.id)
     }
 
     return {
         tasks,
         currentActiveTask,
-        currentActiveProject,
-        init,
-        addTaskToTag,
         addTask,
         removeTask,
+        updateTasks,
         changeActiveTask,
         completeTask,
         restoreTask,
+        moveTaskToProject,
+        cancelCompleteTask,
         updateTaskTitle,
         updateTaskContent,
         updateTaskPosition,
+        findAllTasksNotRemoved,
     }
 })
 

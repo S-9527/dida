@@ -9,7 +9,7 @@
         ref="leftContainerElement"
         :style="leftWidthFlex"
     >
-<!--      <TaskLeftListView/>-->
+      <TaskLeftListView/>
     </div>
     <div
         v-if="visible"
@@ -42,18 +42,17 @@
 <script setup lang="ts">
 import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
-// import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
+import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import { onBeforeMount, ref } from "vue";
 import { useTaskSidebarDrag } from "@/composables/useTaskSidebarDrag.ts";
-import { useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
+import { useListProjectsStore, useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
 import { storeToRefs } from "pinia";
-import { useTaskStore } from '@/store/tasks'
 
-const taskStore = useTaskStore()
+const projectsStore = useListProjectsStore()
 const themeStore = useThemeStore()
 
 onBeforeMount(async () => {
-  await taskStore.init()
+  await projectsStore.init()
 })
 
 const AREA_MIN_WIDTH = 240
