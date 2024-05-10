@@ -19,7 +19,7 @@
         title="收缩侧边栏"
         @mousedown.prevent="useDividerLeftDrag"
     />
-    <div class="flex-1 flex w-full h-full p-24px">
+    <div class="flex-1 flex w-full h-full p-24px  min-w-300px">
       <TaskList class="w-full"/>
     </div>
     <div
