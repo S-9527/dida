@@ -9,7 +9,8 @@ export const http: AxiosInstance = axios.create({
 
 http.interceptors.response.use(
     (response: AxiosResponse) => {
-        return response.data
+        const { code, message, data } = response.data
+        return code === 0 ? data : Promise.reject(new Error(message));
     },
     (error) => {
         return Promise.reject(error)
