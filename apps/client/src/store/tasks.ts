@@ -11,6 +11,7 @@ import {
     fetchUpdateTaskTitle,
 } from '@/api/task.ts'
 import { useTasksSelectorStore } from "@/store/taskSelector.ts";
+import { TaskResponse } from "@/api/types.ts";
 
 export enum TaskStatus {
     ACTIVE = 'active',
@@ -33,8 +34,8 @@ export const useTasksStore = defineStore('tasksStore', () => {
     const tasks = ref<Task[]>([])
     const currentActiveTask = ref<Task>()
 
-    async function updateTasks(_tasks: any) {
-        tasks.value = _tasks.map(normalizeTask)
+    async function updateTasks(_tasks: TaskResponse[]) {
+        tasks.value = _tasks.map(mapTaskResponseToTask)
     }
 
     async function addTask(title: string) {
@@ -42,7 +43,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
         if (tasksSelectorStore.currentSelector.type !== 'listProject') return
 
         const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
-        const task = normalizeTask(newRawTask)
+        const task = mapTaskResponseToTask(newRawTask)
         tasks.value.unshift(task)
         changeActiveTask(task)
     }
@@ -127,10 +128,10 @@ export const useTasksStore = defineStore('tasksStore', () => {
     }
 
     async function findAllTasksNotRemoved() {
-        const activeTasks: any = await fetchAllTasks({ status: TaskStatus.ACTIVE })
-        const completedTasks: any = await fetchAllTasks({ status: TaskStatus.COMPLETED })
+        const activeTasks = await fetchAllTasks({ status: TaskStatus.ACTIVE })
+        const completedTasks = await fetchAllTasks({ status: TaskStatus.COMPLETED })
 
-        return [...activeTasks.map(normalizeTask), ...completedTasks.map(normalizeTask)]
+        return [...activeTasks.map(mapTaskResponseToTask), ...completedTasks.map(mapTaskResponseToTask)]
     }
 
     async function moveTaskToProject(task: Task, projectId: string) {
@@ -158,8 +159,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
     }
 })
 
-// TODO 这里的 any 后面应该改成后端返回来的接口shape
-function normalizeTask(rawTask: any): Task {
+function mapTaskResponseToTask(rawTask: TaskResponse): Task {
     return {
         id: rawTask._id,
         title: rawTask.title,

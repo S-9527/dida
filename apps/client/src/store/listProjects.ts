@@ -30,18 +30,16 @@ export const useListProjectsStore = defineStore('newProjects', () => {
     function selectProject(projectOrNameOrId: ListProject | string): void {
         let project: ListProject | undefined
 
-        if (typeof projectOrNameOrId === 'string')
-            project = findProject(projectOrNameOrId)
-
-        else
-            project = projectOrNameOrId
+        project = typeof projectOrNameOrId === 'string' ? findProject(projectOrNameOrId) : projectOrNameOrId;
 
         if (project)
             tasksSelectorStore.setCurrentSelector(project)
     }
 
     function findProject(projectIdOrName: string): ListProject | undefined {
-        return projects.value.find(p => p.name === projectIdOrName || p.id === projectIdOrName)
+        return projects.value.find(p =>
+            p.name === projectIdOrName || p.id === projectIdOrName
+        )
     }
 
     async function createProject(name: string) {
@@ -80,10 +78,8 @@ function normalizeProject(rawProject: any): ListProject {
 }
 
 export async function loadListProjectTasks(pId: string) {
-    return await fetchAllTasks(
-        {
-            pId,
-            status: TaskStatus.ACTIVE,
-        },
-    )
+    return await fetchAllTasks({
+        pId,
+        status: TaskStatus.ACTIVE,
+    })
 }
