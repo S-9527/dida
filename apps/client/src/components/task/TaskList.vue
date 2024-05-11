@@ -66,7 +66,7 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { useTaskLeftMenuStatusStore, useTasksStore, useThemeStore} from "@/store";
+import { TasksSelectorType, useTaskLeftMenuStatusStore, useTasksStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
 import { useTasksSelectorStore } from "@/store/taskSelector.ts";
@@ -124,11 +124,11 @@ function handleInputChange(event: any) {
 }
 
 const shouldShowTodoAdd = computed(() => {
-  return tasksSelectorStore.currentSelector?.type === 'listProject'
+  return tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
 })
 
 const shouldEnabledDrag = computed(() =>{
-  return tasksSelectorStore.currentSelector?.type === 'listProject'
+  return tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
 })
 
 function handleEndDrag(e: any) {
