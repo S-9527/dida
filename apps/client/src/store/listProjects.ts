@@ -4,6 +4,7 @@ import { TaskStatus } from './tasks'
 import { fetchAllProjects, fetchCreateProject } from '@/api/project'
 import { fetchAllTasks } from '@/api/task'
 import { TasksSelectorType, useTasksSelectorStore } from '@/store'
+import { ProjectResponse } from "@/api/types.ts";
 
 export interface ListProject {
     id: string
@@ -17,7 +18,7 @@ export const useListProjectsStore = defineStore('newProjects', () => {
 
     async function init() {
         const rawProjects: any = await fetchAllProjects()
-        projects.value = rawProjects.map(normalizeProject)
+        projects.value = rawProjects.map(mapProjectResponseToProject)
 
         if (projects.value.length > 0) {
             tasksSelectorStore.setCurrentSelector(projects.value[0])
@@ -46,7 +47,7 @@ export const useListProjectsStore = defineStore('newProjects', () => {
         if (!name) return
 
         const rawProject = await fetchCreateProject(name)
-        const newProject = normalizeProject(rawProject)
+        const newProject = mapProjectResponseToProject(rawProject)
         projects.value.push(newProject)
 
         selectProject(newProject)
@@ -68,8 +69,7 @@ export const useListProjectsStore = defineStore('newProjects', () => {
     }
 })
 
-// TODO 需要提供后端返回的  project 的 type shape
-function normalizeProject(rawProject: any): ListProject {
+function mapProjectResponseToProject(rawProject: ProjectResponse): ListProject {
     return {
         id: `${rawProject._id}`,
         name: rawProject.name,
