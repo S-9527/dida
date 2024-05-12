@@ -5,8 +5,8 @@
         hover:bg-[#F6F8FF] pl-4 pr-2 cursor-pointer"
         dark="color-white hover:color-white hover:rounded
         hover:bg-lightblue-700 transition duration-400 ease-in-out"
-        :class="projectSelectedStatusStore.selectedKey[0] === key ? selected : ''"
-        @click="handleTaskItemClick(item.title, key)"
+        :class="taskLeftListStore.selectedKey === item.title ? selected : ''"
+        @click="handleTaskItemClick(item.title)"
         @mouseenter="showMoreIconIndex = key"
         @mouseleave="showMoreIconIndex = -1"
     >
@@ -25,7 +25,7 @@
       >
         <template #trigger>
           <Icon
-              v-show="projectSelectedStatusStore.selectedKey[0] === key || showMoreIconIndex === key"
+              v-show="showMoreIconIndex === key"
               icon="material-symbols:more-horiz"
               width="20"
               class="color-[#9D9FA3]"
@@ -45,13 +45,13 @@
 <script setup lang="ts">
 import {
   SmartProjectName,
-  useProjectSelectedStatusStore,
   useSettingsStore,
   useSmartProjects,
 } from '@/store'
 import { Icon } from '@iconify/vue'
 import { NPopover } from "naive-ui";
 import { ref } from 'vue'
+import { useTaskLeftListStore } from "@/components/task/taskLeftList.ts";
 
 export interface TaskListType {
   key: number
@@ -75,16 +75,16 @@ function useProjectMoreActions() {
   }
 }
 
+const taskLeftListStore = useTaskLeftListStore()
 const settingsStore = useSettingsStore()
 const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
 const smartProjects = useSmartProjects()
-const projectSelectedStatusStore = useProjectSelectedStatusStore()
 const { showMoreIconIndex, showWitchPopover, openPopover } = useProjectMoreActions()
 
-const handleTaskItemClick = (projectName: string, key: number) => {
+const handleTaskItemClick = (projectName: string) => {
   smartProjects.selectProject(projectName as SmartProjectName)
-  projectSelectedStatusStore.changeSelectedKey([key])
+  taskLeftListStore.selectedKey = projectName
 }
 </script>
 

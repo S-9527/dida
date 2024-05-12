@@ -1,4 +1,3 @@
-export { useProjectSelectedStatusStore } from './useProjectSelectedStatusStore.ts'
 export { useTaskLeftMenuStatusStore } from './useTaskLeftMenuStatusStore'
 export { useThemeStore, getGlobalThemeStore } from './useTheme'
 export { useSettingsStore } from './useSettingsStore'
