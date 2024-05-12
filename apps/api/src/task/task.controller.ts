@@ -14,8 +14,12 @@ export class TasksController {
     }
 
     @Get()
-    findAll(@Query('projectId') projectId?: string, @Query('status') status?: string) {
-        return this.tasksService.findAll(projectId, status)
+    findAll(
+        @Query('projectId') projectId?: string,
+        @Query('status') status?: string,
+        @Query('sortBy') sortBy?: string,
+    ) {
+        return this.tasksService.findAll(projectId, status, sortBy)
     }
 
     @Get(':id')

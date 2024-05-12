@@ -46,5 +46,6 @@ export async function loadSmartProjectTasks(smartProjectName: string) {
     const status = smartProjectName === '已完成' ? TaskStatus.COMPLETED : TaskStatus.REMOVED
     return await fetchAllTasks({
         status,
+        sortBy: 'updatedAt',
     })
 }

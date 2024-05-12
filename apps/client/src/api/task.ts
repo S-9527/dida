@@ -3,11 +3,12 @@ import type { Task } from '@/store/tasks'
 import { TaskStatus } from '@/store/tasks'
 import { TaskResponse } from "@/api/types.ts";
 
-export function fetchAllTasks({ pId, status }: { pId?: string; status?: TaskStatus }) {
+export function fetchAllTasks({ pId, status, sortBy }: { pId?: string; status?: TaskStatus; sortBy?: string }) {
     return http.get<TaskResponse[], TaskResponse[]>('/tasks', {
         params: {
             projectId: pId,
             status,
+            sortBy,
         },
     })
 }
