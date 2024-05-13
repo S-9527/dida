@@ -38,7 +38,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
         tasks.value = _tasks.map(mapTaskResponseToTask)
     }
 
-    async function addTask(title: string) {
+    async function addTask(title: string): Promise<Task | undefined> {
         if (!tasksSelectorStore.currentSelector) return
         if (tasksSelectorStore.currentSelector.type !== 'listProject') return
 
@@ -46,6 +46,8 @@ export const useTasksStore = defineStore('tasksStore', () => {
         const task = mapTaskResponseToTask(newRawTask)
         tasks.value.unshift(task)
         changeActiveTask(task)
+
+        return task
     }
 
     function changeActiveTask(taskId: Task['id']): void
@@ -128,10 +130,18 @@ export const useTasksStore = defineStore('tasksStore', () => {
     }
 
     async function findAllTasksNotRemoved() {
-        const activeTasks = await fetchAllTasks({ status: TaskStatus.ACTIVE })
-        const completedTasks = await fetchAllTasks({ status: TaskStatus.COMPLETED })
+        const activeTasks = await fetchAllTasks({
+            status: TaskStatus.ACTIVE
+        })
 
-        return [...activeTasks.map(mapTaskResponseToTask), ...completedTasks.map(mapTaskResponseToTask)]
+        const completedTasks = await fetchAllTasks({
+            status: TaskStatus.COMPLETED
+        })
+
+        return [
+            ...activeTasks.map(mapTaskResponseToTask),
+            ...completedTasks.map(mapTaskResponseToTask)
+        ]
     }
 
     async function moveTaskToProject(task: Task, projectId: string) {
