@@ -64,16 +64,13 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     async function completeTask(task: Task) {
         await fetchCompleteTask(task.id)
-        task.status = TaskStatus.COMPLETED
-        tasks.value = tasks.value.filter(t => t.id !== task.id)
+        _removeTask(task)
         changeActiveTask(undefined)
     }
 
     async function restoreTask(task: Task) {
         await fetchRestoreTask(task.id)
-        task.status = TaskStatus.ACTIVE
-
-        tasks.value = tasks.value.filter(t => t.id !== task.id)
+        _removeTask(task)
     }
     async function cancelCompleteTask(task: Task) {
         function taskPositionRestorer(task: Task) {
@@ -100,8 +97,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     async function removeTask(task: Task) {
         await fetchRemoveTask(task.id)
-        task.status = TaskStatus.REMOVED
-        tasks.value = tasks.value.filter(t => t.id !== task.id)
+        _removeTask(task)
         changeActiveTask(undefined)
     }
 
@@ -146,8 +142,10 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     async function moveTaskToProject(task: Task, projectId: string) {
         await fetchMoveTaskToProject(task.id, projectId)
-        task.projectId = projectId
+        _removeTask(task)
+    }
 
+    function _removeTask(task: Task) {
         tasks.value = tasks.value.filter(t => t.id !== task.id)
     }
 
