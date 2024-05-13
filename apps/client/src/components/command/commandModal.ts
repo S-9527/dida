@@ -1,30 +1,40 @@
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useIsMac } from "@/composables/misc.ts";
-export const showCommandModal = ref(false)
+const showCommandModal = ref<boolean>(false)
 
-export function openCommandModal() {
-    showCommandModal.value = true
-}
-
-export function closeCommandModal() {
-    showCommandModal.value = false
-}
-
-export function registerKeyboardShortcut() {
-    // Command + K Or Command + / will show command in macOS
-    // Ctrl + K Or Ctrl + / in Windows
-    const isMac = useIsMac()
-    const keydownHandler = (e: KeyboardEvent) => {
-        if ((e.key === 'k') && (isMac.value ? e.metaKey : e.ctrlKey)) {
-            e.preventDefault()
-            openCommandModal()
-        }
+export function useCommandModal() {
+    function openCommandModal() {
+        showCommandModal.value = true
     }
 
-    onMounted(() => {
-        window.addEventListener('keydown', keydownHandler)
-    })
-    onUnmounted(() => {
-        window.removeEventListener('keydown', keydownHandler)
-    })
+    function closeCommandModal() {
+        showCommandModal.value = false
+    }
+
+    function registerKeyboardShortcut() {
+        // Command + K Or Command + / will show command in macOS
+        // Ctrl + K Or Ctrl + / in Windows
+        const isMac = useIsMac()
+        const keydownHandler = (e: KeyboardEvent) => {
+            if ((e.key === 'k') && (isMac.value ? e.metaKey : e.ctrlKey)) {
+                e.preventDefault()
+                openCommandModal()
+            }
+        }
+
+        onMounted(() => {
+            window.addEventListener('keydown', keydownHandler)
+        })
+        onUnmounted(() => {
+            window.removeEventListener('keydown', keydownHandler)
+        })
+    }
+
+    return {
+        showCommandModal,
+        openCommandModal,
+        closeCommandModal,
+        registerKeyboardShortcut
+    }
 }
+

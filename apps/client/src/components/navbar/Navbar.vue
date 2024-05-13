@@ -2,10 +2,11 @@
 import { NDropdown, NPopover } from 'naive-ui'
 import Command from '@/components/command/CommandModal.vue'
 import type { DropdownMixedOption } from 'naive-ui/es/dropdown/src/interface'
-import { openCommandModal } from "@/components/command/commandModal.ts";
+import { useCommandModal } from "@/components/command/commandModal.ts";
 import { useGoto } from "@/composables/goto.ts";
 
 const { gotoSettings } = useGoto()
+const { openCommandModal } = useCommandModal()
 
 const settingOptions: DropdownMixedOption[] = [
   {

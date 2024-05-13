@@ -1,47 +1,42 @@
 import { watchDebounced } from '@vueuse/core'
 import { computed, ref, watch } from 'vue'
-import { resetSearchCommands, searchCommands } from './searchCommands'
-import { resetSearchTasks, searchTasks } from './searchTasks'
-type State = 'waitingForInput' | 'inputCompleted' | 'loading' | 'loadCompleted'
+import { useSearchCommands } from './searchCommands'
+import { resetSearchTasks, searchTasks, useSearchTasks } from './searchTasks'
+import { delay } from "@/utils";
 
-export const inputStateMachine = {
-    state: ref<State>('waitingForInput'),
-    startLoading() {
-        this.state.value = 'loading'
-    },
-    completeLoad(): void {
-        this.state.value = 'loadCompleted'
-    },
-    reset(): void {
-        this.state.value = 'waitingForInput'
-    },
-}
+const { resetSearchCommands, searchCommands } = useSearchCommands()
+const { resetSearchTasks, searchTasks } = useSearchTasks()
 
-export const search = ref('')
+const search = ref('')
+const loading = ref(false)
+const searching = ref(false)
 
-export function resetSearch() {
+function resetSearch() {
     search.value = ''
 }
 
-export const isSearchCommand = computed(() => {
+const isSearchCommand = computed(() => {
     return search.value.startsWith('>')
 })
 
 async function handleSearch(input: string) {
     if (isSearchCommand.value) {
-        searchCommands(input.slice(1))
+        searchCommands(input.trimEnd().slice(1))
     }
-
-    await searchTasks(input)
+    else {
+        await delay()
+        await searchTasks(input)
+    }
 }
 
 watchDebounced(
     () => search.value,
     async (v) => {
         if (v) {
-            inputStateMachine.startLoading()
+            loading.value = true
             await handleSearch(v)
-            inputStateMachine.completeLoad()
+            loading.value = false
+            searching.value = true
         }
     },
     { debounce: 500 },
@@ -51,9 +46,19 @@ watch(
     () => search.value,
     (v) => {
         if (v === '') {
-            inputStateMachine.reset()
+            searching.value = false
             resetSearchCommands()
             resetSearchTasks()
         }
     },
 )
+
+export function useSearch() {
+    return {
+        loading,
+        searching,
+        search,
+        isSearchCommand,
+        resetSearch,
+    }
+}
