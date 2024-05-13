@@ -71,6 +71,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
     async function restoreTask(task: Task) {
         await fetchRestoreTask(task.id)
         _removeTask(task)
+        changeActiveTask(undefined)
     }
     async function cancelCompleteTask(task: Task) {
         function taskPositionRestorer(task: Task) {
