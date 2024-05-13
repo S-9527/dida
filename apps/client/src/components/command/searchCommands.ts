@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { Command, useCommand } from "@/composables/command";
 
 // 默认显示所在的命令
-export const filteredCommands = ref<Command[]>()
+export const filteredCommands = ref<Command[]>([])
 const fuse = new Fuse([] as Command[], {
     keys: ['name'],
 })
