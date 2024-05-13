@@ -30,7 +30,7 @@ describe('CommandModal', () => {
         it('should be open command modal when use command + k on Mac', () => {
             vi.spyOn(misc,'useIsMac').mockImplementation(() => computed(() => true))
             const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
-            useSetup(() => {
+            const { wrapper } = useSetup(() => {
                 registerKeyboardShortcut()
             })
             // 触发键盘事件
@@ -40,11 +40,12 @@ describe('CommandModal', () => {
             })
 
             expect(showCommandModal.value).toBe(true)
+            wrapper.unmount()
         })
         it('should be open command modal when use ctrl + k on Win', () => {
             vi.spyOn(misc,'useIsMac').mockImplementation(() => computed(() => false))
             const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
-            useSetup(() => {
+            const { wrapper } = useSetup(() => {
                 registerKeyboardShortcut()
             })
             // 触发键盘事件
@@ -54,6 +55,7 @@ describe('CommandModal', () => {
             })
 
             expect(showCommandModal.value).toBe(true)
+            wrapper.unmount()
         })
     })
 })

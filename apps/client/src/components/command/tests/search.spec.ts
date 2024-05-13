@@ -1,45 +1,44 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { useSearch } from '../search'
 
-const resetSearchCommands = vi.fn()
-const searchCommands = vi.fn()
-vi.mock('../searchCommands.ts', () => {
+const searchTasks = vi.fn()
+const resetSearchTasks = vi.fn()
+vi.mock('../searchTasks.ts', () => {
     return {
-        useSearchCommands() {
+        useSearchTasks() {
             return {
-                resetSearchCommands,
-                searchCommands,
+                searchTasks,
+                resetSearchTasks,
             }
         },
     }
 })
 
-const resetSearchTasks = vi.fn()
-const searchTasks = vi.fn().mockResolvedValue('')
-vi.mock('../searchTasks.ts', () => {
+const searchCommands = vi.fn()
+const resetSearchCommands = vi.fn()
+vi.mock('../searchCommands.ts', () => {
     return {
-        useSearchTasks() {
+        useSearchCommands() {
             return {
-                resetSearchTasks,
-                searchTasks,
+                searchCommands,
+                resetSearchCommands,
             }
         },
     }
 })
 
 describe('search', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.useFakeTimers()
-        resetSearchCommands.mockClear()
-        searchCommands.mockClear()
-        resetSearchTasks.mockClear()
-        searchTasks.mockClear()
 
         const { resetSearch } = useSearch()
         resetSearch()
+
+        await vi.runAllTimersAsync()
+        vi.clearAllMocks()
     })
 
-    it('should be loading is true when searching', async () => {
+    it('should be loading is true when search is start', async () => {
         const { search, loading } = useSearch()
 
         search.value = '吃饭'
@@ -48,7 +47,7 @@ describe('search', () => {
         expect(loading.value).toBe(true)
     })
 
-    it('should be loading is false when loaded', async () => {
+    it('should be loading is false when search is complete', async () => {
         const { search, loading } = useSearch()
 
         search.value = '吃饭'
@@ -58,7 +57,7 @@ describe('search', () => {
         expect(loading.value).toBe(false)
     })
 
-    it('should be searching is true when loaded', async () => {
+    it('should be searching is true when search is complete', async () => {
         const { search, searching } = useSearch()
 
         search.value = '吃饭'
@@ -68,35 +67,26 @@ describe('search', () => {
         expect(searching.value).toBe(true)
     })
 
-    it('should be searching is false when search reset', async () => {
-        const { search, searching } = useSearch()
+    describe('search command', () => {
+        it('normal', async () => {
+            const { search } = useSearch()
 
-        search.value = '吃饭'
-        await vi.runAllTimersAsync()
+            search.value = '>主页'
 
-        search.value = ''
-        await vi.runAllTimersAsync()
+            await vi.runAllTimersAsync()
 
-        expect(searching.value).toBe(false)
-    })
+            expect(searchCommands).toBeCalledWith('主页')
+        })
 
-    it('should search commands when input contain \'>\'  ', async () => {
-        const { search } = useSearch()
-        search.value = '>主页'
+        it('removes the trailing white space', async () => {
+            const { search } = useSearch()
 
-        await vi.runAllTimersAsync()
+            search.value = '>主页 '
 
-        expect(searchCommands).toBeCalledWith('主页')
-    })
+            await vi.runAllTimersAsync()
 
-    it('should search commands when input contain blank character  ', async () => {
-        const { search } = useSearch()
-
-        search.value = '>主页 '
-
-        await vi.runAllTimersAsync()
-
-        expect(searchCommands).toBeCalledWith('主页')
+            expect(searchCommands).toBeCalledWith('主页')
+        })
     })
 
     it('should search tasks ', async () => {
@@ -108,16 +98,16 @@ describe('search', () => {
         expect(searchTasks).toBeCalledWith('吃饭')
     })
 
-    it('should be reset when reset search', async () => {
-        const { search, loading, searchIng } = useSearch()
+    it('should be reset when search is empty', async () => {
+        const { search, loading, searching } = useSearch()
         search.value = '吃饭'
         await vi.runAllTimersAsync()
 
         search.value = ''
         await vi.runAllTimersAsync()
 
+        expect(searching.value).toBe(false)
         expect(loading.value).toBe(false)
-        expect(searchIng.value).toBe(false)
         expect(resetSearchCommands).toBeCalled()
         expect(resetSearchTasks).toBeCalled()
     })
