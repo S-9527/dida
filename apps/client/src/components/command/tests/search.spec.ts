@@ -1,17 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import flushPromises from 'flush-promises'
 import { useSearch } from '../search'
-
-vi.mock('../searchCommands.ts')
-vi.mock('../searchTasks.ts')
-
-async function flushWatch() {
-    // 这是为了处理 watch
-    await flushPromises() // 这是为了处理延迟 500ms
-    vi.runAllTimers()
-    // 这是为了处理内部的 await
-    await flushPromises()
-}
 
 const resetSearchCommands = vi.fn()
 const searchCommands = vi.fn()
@@ -56,8 +44,7 @@ describe('search', () => {
 
         search.value = '吃饭'
 
-        await flushPromises()
-        vi.runAllTimers()
+        await vi.advanceTimersToNextTimerAsync()
         expect(loading.value).toBe(true)
     })
 
@@ -66,7 +53,7 @@ describe('search', () => {
 
         search.value = '吃饭'
 
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         expect(loading.value).toBe(false)
     })
@@ -76,7 +63,7 @@ describe('search', () => {
 
         search.value = '吃饭'
 
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         expect(searching.value).toBe(true)
     })
@@ -85,10 +72,10 @@ describe('search', () => {
         const { search, searching } = useSearch()
 
         search.value = '吃饭'
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         search.value = ''
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         expect(searching.value).toBe(false)
     })
@@ -97,7 +84,17 @@ describe('search', () => {
         const { search } = useSearch()
         search.value = '>主页'
 
-        await flushWatch()
+        await vi.runAllTimersAsync()
+
+        expect(searchCommands).toBeCalledWith('主页')
+    })
+
+    it('should search commands when input contain blank character  ', async () => {
+        const { search } = useSearch()
+
+        search.value = '>主页 '
+
+        await vi.runAllTimersAsync()
 
         expect(searchCommands).toBeCalledWith('主页')
     })
@@ -106,19 +103,21 @@ describe('search', () => {
         const { search } = useSearch()
         search.value = '吃饭'
 
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         expect(searchTasks).toBeCalledWith('吃饭')
     })
 
     it('should be reset when reset search', async () => {
-        const { search } = useSearch()
+        const { search, loading, searchIng } = useSearch()
         search.value = '吃饭'
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
         search.value = ''
-        await flushWatch()
+        await vi.runAllTimersAsync()
 
+        expect(loading.value).toBe(false)
+        expect(searchIng.value).toBe(false)
         expect(resetSearchCommands).toBeCalled()
         expect(resetSearchTasks).toBeCalled()
     })

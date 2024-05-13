@@ -33,7 +33,7 @@ export function useSearch() {
                 () => search.value,
                 (v) => {
                     if (v === '') {
-                        searching.value = false
+                        resetSearch()
                         resetSearchCommands()
                         resetSearchTasks()
                     }
@@ -44,6 +44,8 @@ export function useSearch() {
 
     function resetSearch() {
         search.value = ''
+        loading.value = false
+        searching.value = false
     }
 
     const isSearchCommand = computed(() => {
