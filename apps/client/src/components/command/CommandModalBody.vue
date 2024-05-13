@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NEmpty, NInput } from 'naive-ui'
+import { Icon } from '@iconify/vue'
 import { useSearch } from './search'
 import CommandSearchCommands from './CommandSearchCommands.vue'
 import CommandSearchTasks from './CommandSearchTasks.vue'
