@@ -1,8 +1,8 @@
 import type { AxiosInstance, AxiosResponse } from 'axios'
 import axios from 'axios'
-import { router } from '@/router'
 import { messageError, messageRedirectToSignIn } from '@/composables/message.ts'
 import { checkHaveToken, getToken } from "@/utils/token.ts";
+import { goToLogin } from "@/composables/goto.ts";
 
 export const http: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
@@ -39,7 +39,7 @@ http.interceptors.response.use(
         if (error.response.status) {
             switch (error.response.status) {
                 case 401:
-                    messageRedirectToSignIn(router.currentRoute.value.fullPath)
+                    messageRedirectToSignIn(goToLogin)
                     break
             }
             return Promise.reject(error)
