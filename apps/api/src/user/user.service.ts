@@ -16,10 +16,10 @@ export class UsersService {
         })
 
         if (!user)
-            throw new HttpException('帐号或密码错误', 200)
+            throw new HttpException('Invalid username or password', 200)
 
         if (user.password !== md5(signinUserDto.password))
-            throw new HttpException('帐号或密码错误', 200)
+            throw new HttpException('Invalid username or password', 200)
 
         return user
     }
@@ -35,16 +35,16 @@ export class UsersService {
             throw new HttpException('用户已存在', 200)
 
         try {
+            // eslint-disable-next-line new-cap
             const createUser = new this.userModel({
                 username: signupUserDto.username,
                 password: md5(signupUserDto.password),
             })
 
-            createUser.save()
-            return '注册成功'
+            return createUser.save()
         }
         catch (e) {
-            return '注册失败'
+            throw new HttpException('注册失败', 200)
         }
     }
 }
