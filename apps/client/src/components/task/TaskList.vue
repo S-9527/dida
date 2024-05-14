@@ -1,8 +1,8 @@
 <template>
   <div class="flex flex-col gap-20px px-4 text-16px">
     <div class="flex items-center">
-      <Icon :icon="visible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'"
-             width="30" @click="toggleLeftMenu()" />
+      <Icon :icon="taskLeftMenuVisible ? 'tabler:layout-sidebar-left-collapse' : 'tabler:layout-sidebar-right-collapse'"
+             width="30" @click="toggleTaskLeftMenu" />
       <h1 class="text-4xl">{{ tasksSelectorStore.currentSelector?.name }}</h1>
     </div>
     <div
@@ -66,16 +66,16 @@
 import TaskItem from "./TaskItem.vue";
 import { computed, Ref, ref } from "vue";
 import { Icon } from '@iconify/vue'
-import { TasksSelectorType, useTaskLeftMenuStatusStore, useTasksStore, useThemeStore } from "@/store";
+import { TasksSelectorType, useTasksStore, useThemeStore } from "@/store";
 import draggable from 'vuedraggable'
 import { storeToRefs } from "pinia";
 import { useTasksSelectorStore } from "@/store/taskSelector.ts";
+import { useTaskLeftMenu } from "@/composables/taskLeftMenu.ts";
 
 const taskStore = useTasksStore()
 const tasksSelectorStore = useTasksSelectorStore()
 
-const { toggle } = useTaskLeftMenuStatusStore()
-const { visible } = storeToRefs(useTaskLeftMenuStatusStore())
+const { toggleTaskLeftMenu, taskLeftMenuVisible } = useTaskLeftMenu()
 const { isDark } = storeToRefs(useThemeStore());
 
 const taskTitle = ref("")
@@ -113,10 +113,6 @@ const addTask = () => {
     taskStore.addTask(taskTitle.value)
   }
   taskTitle.value = ""
-}
-
-function toggleLeftMenu() {
-  toggle()
 }
 
 function handleInputChange(event: any) {

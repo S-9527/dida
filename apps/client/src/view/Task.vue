@@ -5,14 +5,14 @@
       overflow-hidden dark:bg-#18181c dark:text-white"
   >
     <div
-        v-if="visible"
+        v-if="taskLeftMenuVisible"
         ref="leftContainerElement"
         :style="leftWidthFlex"
     >
       <TaskLeftListView/>
     </div>
     <div
-        v-if="visible"
+        v-if="taskLeftMenuVisible"
         ref="leftResizeElement"
         class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
         style="flex: 0 0 6px"
@@ -45,8 +45,8 @@ import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
 import { onBeforeMount, ref } from "vue";
 import { useTaskSidebarDrag } from "@/composables/useTaskSidebarDrag.ts";
-import { useListProjectsStore, useTaskLeftMenuStatusStore, useThemeStore } from '@/store'
-import { storeToRefs } from "pinia";
+import { useListProjectsStore, useThemeStore } from '@/store'
+import { useTaskLeftMenu } from "@/composables/taskLeftMenu.ts";
 
 const projectsStore = useListProjectsStore()
 const themeStore = useThemeStore()
@@ -77,7 +77,7 @@ const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
     themeStore,
 )
 
-const { visible } = storeToRefs(useTaskLeftMenuStatusStore());
+const { taskLeftMenuVisible } = useTaskLeftMenu()
 </script>
 
 <style scoped></style>
