@@ -20,7 +20,7 @@ interface Emoji {
     u: string // without tone
 }
 
-export function useTaskLeftListCreateProject(inputElement: Ref<HTMLInputElement | undefined>) {
+export function useProjectCreatedView(inputElement: Ref<HTMLInputElement | undefined>) {
     const {
         getDefaultEmojiConfig,
         emojiValue,

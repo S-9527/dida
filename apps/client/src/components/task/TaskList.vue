@@ -106,9 +106,6 @@ const { inputRef, onFocus } = useInput()
 
 const addTask = () => {
   if (!taskTitle.value) return
-  // if (Reflect.has(taskStore.currentActiveProject, 'color')) {
-  //   taskStore.addTaskToTag(taskTitle.value)
-  // }
   else {
     taskStore.addTask(taskTitle.value)
   }

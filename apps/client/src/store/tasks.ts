@@ -40,7 +40,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
     async function addTask(title: string): Promise<Task | undefined> {
         if (!tasksSelectorStore.currentSelector) return
-        if (tasksSelectorStore.currentSelector.type !== TasksSelectorType.smartProject) return
+        if (tasksSelectorStore.currentSelector.type !== TasksSelectorType.listProject) return
 
         const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
         const task = mapTaskResponseToTask(newRawTask)
