@@ -30,7 +30,7 @@ export function openGithub() {
 }
 
 export function goToLogin() {
-    getRouterInstance().replace({
+  return getRouterInstance().replace({
         name: RouteNames.LOGIN,
     })
 }

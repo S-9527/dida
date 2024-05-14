@@ -42,14 +42,12 @@ const setupRouterGuard = (router: Router) => {
     })
 
     router.beforeEach((to, from, next) => {
-        // 判断该路由是否需要登录权限
         if (to.matched.some(record => record.meta.requiresAuth)) {
-            // 判断当前的 token 是否存在
             if (checkHaveToken()) {
                 next()
             }
             else {
-                messageRedirectToSignIn(to.fullPath)
+                messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }))
             }
         }
         else {
