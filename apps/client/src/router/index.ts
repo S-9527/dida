@@ -2,10 +2,11 @@ import Task from '../view/Task.vue'
 import Login from "../view/Login.vue";
 import type { App } from "vue";
 import { createRouter, createWebHashHistory, Router, RouteRecordRaw } from "vue-router";
-import { getDiscreteApi } from "@/composables/useNaiveDiscreteApi.ts";
 import { SettingsRoute } from './settings'
 import { RouteNames } from "./const.ts";
 import { messageRedirectToSignIn } from "@/composables/message.ts";
+import { finishLoading, startLoading } from "@/composables/loadingBar.ts";
+import { checkHaveToken } from "@/utils/token.ts";
 
 export const routes: RouteRecordRaw[] = [
     {
@@ -34,26 +35,21 @@ export const routes: RouteRecordRaw[] = [
 
 const setupRouterGuard = (router: Router) => {
     router.beforeEach(() => {
-        getDiscreteApi().loadingBar.start()
+        startLoading()
     })
     router.afterEach(() => {
-        getDiscreteApi().loadingBar.finish()
+        finishLoading()
     })
 
     router.beforeEach((to, from, next) => {
         // 判断该路由是否需要登录权限
         if (to.matched.some(record => record.meta.requiresAuth)) {
             // 判断当前的 token 是否存在
-            if (localStorage.getItem('token')) {
+            if (checkHaveToken()) {
                 next()
             }
             else {
-                messageRedirectToSignIn(() => {
-                    next({
-                        name: RouteNames.LOGIN,
-                        query: { redirect: to.fullPath }, // 将跳转的路由path作为参数，登录成功后跳转到该路由
-                    })
-                })
+                messageRedirectToSignIn(to.fullPath)
             }
         }
         else {
@@ -72,4 +68,8 @@ export const setupRouter = async (app: App) => {
     app.use(router)
     setupRouterGuard(router)
     await router.isReady()
+}
+
+export function setRouterInstance(routerInstance: Router) {
+    router = routerInstance
 }

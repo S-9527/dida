@@ -1,7 +1,8 @@
 import type { AxiosInstance, AxiosResponse } from 'axios'
 import axios from 'axios'
 import { router } from '@/router'
-import { Message, messageRedirectToSignIn } from '@/composables/message.ts'
+import { messageError, messageRedirectToSignIn } from '@/composables/message.ts'
+import { checkHaveToken, getToken } from "@/utils/token.ts";
 
 export const http: AxiosInstance = axios.create({
     baseURL: 'http://localhost:3000',
@@ -11,10 +12,9 @@ export const http: AxiosInstance = axios.create({
 
 http.interceptors.request.use(
     (config) => {
-        const token = localStorage.getItem('token')
-
-        if (token)
-            config.headers.Authorization = `Bearer ${token}`
+        if (checkHaveToken()) {
+            config.headers.Authorization = `Bearer ${getToken()}`
+        }
 
         return config
     },
@@ -31,7 +31,7 @@ http.interceptors.response.use(
             return data
         }
         else {
-            Message.error(message)
+            messageError(message)
             return Promise.reject(new Error(message))
         }
     },
@@ -39,12 +39,7 @@ http.interceptors.response.use(
         if (error.response.status) {
             switch (error.response.status) {
                 case 401:
-                    messageRedirectToSignIn(() => {
-                        router.replace({
-                            path: '/login',
-                            query: { redirect: router.currentRoute.value.fullPath },
-                        })
-                    })
+                    messageRedirectToSignIn(router.currentRoute.value.fullPath)
                     break
             }
             return Promise.reject(error)

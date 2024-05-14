@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { reactive } from 'vue'
 import { fetchSignIn, fetchSignUp } from '@/api/user'
 import type { UserResponse } from '@/api/types'
+import { setToken } from "@/utils/token.ts";
 
 interface User {
     username: string
@@ -18,7 +19,7 @@ export const useUserStore = defineStore('user', () => {
         user.username = userResponse.username
         user.nickname = userResponse.username
 
-        localStorage.setItem('token', userResponse.token)
+        setToken(userResponse.token)
     }
 
     async function signIn(username: string, password: string) {
