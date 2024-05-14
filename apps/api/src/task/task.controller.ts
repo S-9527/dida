@@ -1,14 +1,16 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common'
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { TasksService } from './task.service'
 import { Task } from './schemas/task.schema'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
+import { LoginGuard } from "../guards/login.guard";
 
 @Controller('tasks')
 export class TasksController {
     constructor(private readonly tasksService: TasksService) {}
 
     @Post()
+    @UseGuards(LoginGuard)
     async create(@Body() createTaskDto: CreateTaskDto): Promise<Task> {
         return this.tasksService.create(createTaskDto)
     }
