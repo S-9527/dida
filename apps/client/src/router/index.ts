@@ -73,3 +73,7 @@ export const setupRouter = async (app: App) => {
 export function setRouterInstance(routerInstance: Router) {
     router = routerInstance
 }
+
+export function getRouterInstance() {
+    return router
+}
