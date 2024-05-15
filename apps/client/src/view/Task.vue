@@ -5,18 +5,14 @@
       overflow-hidden dark:bg-#18181c dark:text-white"
   >
     <template v-if="taskLeftMenuVisible">
-      <div
-          ref="leftContainerElement"
-          :style="leftWidthFlex"
-      >
+      <div :style="leftWidthStyle">
         <TaskLeftListView />
       </div>
       <div
           ref="leftResizeElement"
-          class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+          class="border-solid cursor-col-resize h-screen border-l-2px opacity-60 hover-opacity-100"
           style="flex: 0 0 6px"
           title="收缩侧边栏"
-          @mousedown.prevent="useDividerLeftDrag"
       />
     </template>
     <div class="flex-1 flex w-full h-full p-24px  min-w-300px">
@@ -24,15 +20,13 @@
     </div>
     <div
         ref="rightResizeElement"
-        class="border-solid cursor-w-resize h-screen border-l-2px opacity-60 hover-opacity-100"
+        class="border-solid cursor-col-resize h-screen border-l-2px opacity-60 hover-opacity-100"
         style="flex: 0 0 6px"
         title="收缩侧边栏"
-        @mousedown.prevent="useDividerRightDrag"
     />
     <div
-        ref="rightContainerElement"
         class="flex w-full h-full p-24px"
-        :style="rightWidthFlex"
+        :style="rightWidthStyle"
     >
       <TaskEditor class="w-full h-full" />
     </div>
@@ -43,41 +37,71 @@
 import TaskList from "@/components/task/TaskList.vue";
 import TaskEditor from "@/components/task/TaskEditor.vue";
 import TaskLeftListView from "@/components/task/TaskLeftListView.vue";
-import { onBeforeMount, ref } from "vue";
-import { useTaskSidebarDrag } from "@/composables/useTaskSidebarDrag.ts";
-import { useListProjectsStore, useThemeStore } from '@/store'
+import { computed, onBeforeMount, onMounted, Ref, ref } from "vue";
+import { useDrag } from "@/composables/drag.ts";
+import { useListProjectsStore } from '@/store'
 import { useTaskLeftMenu } from "@/composables/taskLeftMenu.ts";
 
 const projectsStore = useListProjectsStore()
-const themeStore = useThemeStore()
 
 onBeforeMount(async () => {
   await projectsStore.init()
 })
 
-const AREA_MIN_WIDTH = 240
+function useLeftDrag(el: Ref<HTMLDivElement | undefined>) {
+  const leftWidth = ref(240)
+  const leftWidthStyle = computed(() => {
+    return `flex: 0 0 ${leftWidth.value}px`
+  })
 
-const leftResizeElement = ref()
-const rightResizeElement = ref()
-const boxContainerElement = ref()
-const leftContainerElement = ref()
-const rightContainerElement = ref()
-const leftWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
-const rightWidthFlex = ref<string>(`flex: 0 0 ${AREA_MIN_WIDTH}px`)
+  onMounted(() => {
+    const offsetLeft = el.value?.offsetLeft || 0
+    useDrag({
+      el: el.value!,
+      moveRange: [offsetLeft - 50, offsetLeft + 150],
+      onMove(moveDistance) {
+        leftWidth.value += moveDistance
+      },
+    })
+  })
 
-const { useDividerLeftDrag, useDividerRightDrag } = useTaskSidebarDrag(
-    AREA_MIN_WIDTH,
-    leftResizeElement,
-    rightResizeElement,
-    boxContainerElement,
-    leftContainerElement,
-    rightContainerElement,
-    leftWidthFlex,
-    rightWidthFlex,
-    themeStore,
-)
+  return {
+    leftWidthStyle,
+  }
+}
+
+function useRightDrag(el: Ref<HTMLDivElement | undefined>) {
+  const rightWidth = ref(240)
+  const rightWidthStyle = computed(() => {
+    return `flex: 0 0 ${rightWidth.value}px`
+  })
+
+  onMounted(() => {
+    const offsetLeft = el.value?.offsetLeft || 0
+    useDrag({
+      el: el.value!,
+      moveRange: [
+        offsetLeft - 400,
+        offsetLeft,
+      ],
+      onMove(moveDistance) {
+        rightWidth.value -= moveDistance
+      },
+    })
+  })
+
+  return {
+    rightWidthStyle,
+  }
+}
 
 const { taskLeftMenuVisible } = useTaskLeftMenu()
+
+const leftResizeElement = ref<HTMLDivElement>()
+const { leftWidthStyle } = useLeftDrag(leftResizeElement)
+
+const rightResizeElement = ref<HTMLDivElement>()
+const { rightWidthStyle } = useRightDrag(rightResizeElement)
 </script>
 
 <style scoped></style>
