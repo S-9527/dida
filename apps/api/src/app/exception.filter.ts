@@ -7,12 +7,17 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const response = ctx.getResponse()
         const status = exception.getStatus()
 
+        const exceptionResponse = exception.getResponse();
         const message = exception.message ?? `${status >= 500 ? 'Service Error' : 'Client Error'}`
 
         const errorResponse = {
             data: {},
             message,
             code: -1,
+        }
+
+        if (typeof exceptionResponse === "object" && exceptionResponse.hasOwnProperty("message")) {
+            errorResponse.message = exceptionResponse["message"];
         }
 
         response.status(status)
