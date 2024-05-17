@@ -8,9 +8,7 @@ export class LoginGuard implements CanActivate {
     @Inject(JwtService)
     private jwtService: JwtService
 
-    canActivate(
-        context: ExecutionContext,
-    ): boolean | Promise<boolean> | Observable<boolean> {
+    canActivate(context: ExecutionContext,): boolean | Promise<boolean> | Observable<boolean> {
         const request: Request = context.switchToHttp().getRequest()
 
         const authorization = request.header('authorization') || ''
@@ -24,7 +22,7 @@ export class LoginGuard implements CanActivate {
 
         try {
             const info = this.jwtService.verify(token);
-            (request as any).user = info.user
+            request['user'] = info.user
             return true
         }
         catch (e) {
