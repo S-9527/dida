@@ -25,23 +25,23 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
     (response: AxiosResponse) => {
-        const { code, message, data } = response.data
+        if (response.data.code && response.data.code !== 0) {
+            messageError(response.data.message)
+            return Promise.reject(response.data)
+        }
 
-        if (code === 0) {
-            return data
-        }
-        else {
-            messageError(message)
-            return Promise.reject(new Error(message))
-        }
+        return response.data
     },
     (error) => {
-        if (error.response.status) {
+        const { response } = error
+
+        if (response && response.status) {
             switch (error.response.status) {
                 case 401:
                     messageRedirectToSignIn(goToLogin)
                     break
             }
+            messageError(error.response.message)
             return Promise.reject(error)
         }
     },
