@@ -37,6 +37,7 @@
     "@vueuse/core": "^10.9.0",
     "axios-mock-adapter": "^1.22.0",
     "cypress": "^13.7.2",
+    "fake-indexeddb": "^5.0.2",
     "flush-promises": "^1.0.2",
     "fuse.js": "^7.0.0",
     "happy-dom": "^14.7.1",
