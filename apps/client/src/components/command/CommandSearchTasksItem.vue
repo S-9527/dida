@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NCheckbox, NEllipsis } from 'naive-ui'
 import { useCommandModal } from "./commandModal.ts";
-import { TasksSelector, useTasksSelectorStore } from "@/store/taskSelector.ts";
-import { useTasksStore } from "@/store";
+import type { TasksSelector } from "@/store";
+import { useTasksSelectorStore, useTasksStore } from "@/store";
 
 const props = defineProps<{
   title: string
@@ -21,6 +21,7 @@ const goTo = async () => {
     await tasksSelectorStore.setCurrentSelector(props.from)
     tasksStore.changeActiveTask(props.id)
   }
+
   closeCommandModal()
 }
 </script>
@@ -30,14 +31,14 @@ const goTo = async () => {
     <!-- TODO 添加高亮 -->
     <div class="w-full flex justify-start items-center cursor-pointer" @click="goTo">
       <NCheckbox :checked="props.done" disabled size="large" />
-      <NEllipsis style="width: 660px" :tooltip="false" class="text-18px ml-10px text-ellipsis overflow-hidden" :class="{ 'line-through': props.done }">
+      <NEllipsis :tooltip="false" class="w-660px text-18px ml-10px text-ellipsis overflow-hidden" :class="{ 'line-through': props.done }">
         {{ title }}
       </NEllipsis>
       <div class="w-80px flex justify-center items-center text-gray-500">
         {{ from?.name }}
       </div>
     </div>
-    <NEllipsis style="width: 660px" :tooltip="false" class="w-full mt-5px ml-30px pr-80px">
+    <NEllipsis :tooltip="false" class="w-660px w-full mt-5px ml-30px pr-80px">
       {{ desc }}
     </NEllipsis>
   </div>

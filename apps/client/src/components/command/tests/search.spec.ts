@@ -38,6 +38,28 @@ describe('search', () => {
         vi.clearAllMocks()
     })
 
+    describe('search command', () => {
+        it('normal', async () => {
+            const { search } = useSearch()
+
+            search.value = '>主页'
+
+            await vi.runAllTimersAsync()
+
+            expect(searchCommands).toBeCalledWith('主页')
+        })
+
+        it('removes the trailing white space', async () => {
+            const { search } = useSearch()
+
+            search.value = '>主页 '
+
+            await vi.runAllTimersAsync()
+
+            expect(searchCommands).toBeCalledWith('主页')
+        })
+    })
+
     it('should be loading is true when search is start', async () => {
         const { search, loading } = useSearch()
 
@@ -65,28 +87,6 @@ describe('search', () => {
         await vi.runAllTimersAsync()
 
         expect(searching.value).toBe(true)
-    })
-
-    describe('search command', () => {
-        it('normal', async () => {
-            const { search } = useSearch()
-
-            search.value = '>主页'
-
-            await vi.runAllTimersAsync()
-
-            expect(searchCommands).toBeCalledWith('主页')
-        })
-
-        it('removes the trailing white space', async () => {
-            const { search } = useSearch()
-
-            search.value = '>主页 '
-
-            await vi.runAllTimersAsync()
-
-            expect(searchCommands).toBeCalledWith('主页')
-        })
     })
 
     it('should search tasks ', async () => {

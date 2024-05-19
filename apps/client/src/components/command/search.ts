@@ -4,15 +4,15 @@ import { useSearchCommands } from './searchCommands'
 import { useSearchTasks } from './searchTasks'
 import { delay } from "@/utils";
 
-const { resetSearchCommands, searchCommands } = useSearchCommands()
-const { resetSearchTasks, searchTasks } = useSearchTasks()
-
 const search = ref('')
 const loading = ref(false)
 const searching = ref(false)
 let isInitialized = false
 
 export function useSearch() {
+    const { resetSearchCommands, searchCommands } = useSearchCommands()
+    const { resetSearchTasks, searchTasks } = useSearchTasks()
+
     function init() {
         if (!isInitialized) {
             isInitialized = true

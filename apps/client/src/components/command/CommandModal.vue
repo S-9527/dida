@@ -18,7 +18,7 @@ watch(() => showCommandModal.value, (v) => {
 
 <template>
   <NModal v-model:show="showCommandModal" display-directive="show">
-    <CommandBody ref="commandBody" />
+    <CommandBody/>
   </NModal>
 </template>
 
