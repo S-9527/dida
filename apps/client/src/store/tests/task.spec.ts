@@ -16,7 +16,7 @@ import {
 } from '@/api/task.ts'
 import type { TaskResponse } from '@/api/types'
 
-vi.mock('@/api')
+vi.mock('@/api/task.ts')
 
 let id = 0
 let position = 0

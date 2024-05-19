@@ -1,7 +1,8 @@
 import {defineStore} from 'pinia'
 import {TaskStatus} from './tasks'
 import {fetchAllTasks} from '@/api/task'
-import { TasksSelectorType, useTasksSelectorStore } from '@/store'
+import { TasksSelectorType } from './taskSelector'
+import { useTasksSelectorStore } from '@/store'
 
 export interface SmartProject {
     name: string

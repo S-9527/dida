@@ -33,7 +33,7 @@ export const routes: RouteRecordRaw[] = [
     SettingsRoute,
 ];
 
-const setupRouterGuard = (router: Router) => {
+export const setupRouterGuard = (router: Router) => {
     router.beforeEach(() => {
         startLoading()
     })
