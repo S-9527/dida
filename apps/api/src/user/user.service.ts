@@ -35,7 +35,6 @@ export class UsersService {
             throw new HttpException('用户已存在', 200)
 
         try {
-            // eslint-disable-next-line new-cap
             const createUser = new this.userModel({
                 username: signupUserDto.username,
                 password: md5(signupUserDto.password),

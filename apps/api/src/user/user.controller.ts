@@ -15,29 +15,28 @@ export class UsersController {
     async signin(@Body(ValidationPipe) signinUserDto: SigninUserDto) {
         const user = await this.usersService.signin(signinUserDto)
 
-        if (user) {
-            const token = await this.signToken(user)
-            return this.mapResponse(user, token)
-        }
-        else {
+        if (!user) {
             throw new HttpException('登录失败', 200)
         }
+
+        const token = await this.signToken(user)
+        return this.mapResponse(user, token)
     }
 
     @Post('signup')
     async signup(@Body(ValidationPipe) signupUserDto: SignupUserDto) {
-        if (signupUserDto.password !== signupUserDto.confirmPassword)
+        if (signupUserDto.password !== signupUserDto.confirmPassword) {
             throw new HttpException('两次输入的密码不一致', 200)
+        }
 
         const user = await this.usersService.signup(signupUserDto)
 
-        if (user) {
-            const token = await this.signToken(user)
-            return this.mapResponse(user, token)
-        }
-        else {
+        if (!user) {
             throw new HttpException('注册失败', 200)
         }
+
+        const token = await this.signToken(user)
+        return this.mapResponse(user, token)
     }
 
     private async signToken(user) {
@@ -51,9 +50,7 @@ export class UsersController {
 
     private mapResponse(user, token) {
         return {
-            user: {
-                username: user.username,
-            },
+            user: { username: user.username },
             token,
         }
     }
