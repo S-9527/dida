@@ -2,8 +2,8 @@ import { Model, Types } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
 import { InjectModel } from '@nestjs/mongoose'
 import { Task } from './schemas/task.schema'
-import { CreateTaskDto } from './model/create-task.dto'
-import { UpdateTaskDto } from './model/update-task.dto'
+import { CreateTaskDto } from './dto/create-task.dto'
+import { UpdateTaskDto } from './dto/update-task.dto'
 
 @Injectable()
 export class TasksService {

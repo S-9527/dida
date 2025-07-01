@@ -1,8 +1,8 @@
 import { Body, Controller, HttpException, Inject, Post, ValidationPipe } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
 import { UsersService } from './user.service'
-import { SignupUserDto } from './model/signup-user.dto'
-import { SigninUserDto } from './model/signin-user.dto'
+import { SignupUserDto } from './dto/signup-user.dto'
+import { SigninUserDto } from './dto/signin-user.dto'
 
 @Controller('users')
 export class UsersController {
