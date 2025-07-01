@@ -3,7 +3,7 @@ import { TasksService } from './task.service'
 import { Task } from './schemas/task.schema'
 import { CreateTaskDto } from './model/create-task.dto'
 import { UpdateTaskDto } from './model/update-task.dto'
-import { LoginGuard } from "../guards/login.guard";
+import { LoginGuard } from "../core/login.guard";
 
 @Controller('tasks')
 export class TasksController {
