@@ -27,7 +27,7 @@ const createTaskResponse = (title: string) => {
         status: TaskStatus.ACTIVE,
         projectId: '1',
         position: position++,
-        _id: String(id++),
+        id: String(id++),
         createdAt: new Date().toString(),
         updatedAt: new Date().toString(),
     } as TaskResponse

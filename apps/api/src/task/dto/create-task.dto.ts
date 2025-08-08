@@ -1,4 +1,4 @@
-import { TaskStatus } from '../const'
+import { TaskStatus } from '@prisma/client'
 
 export class CreateTaskDto {
     title: string

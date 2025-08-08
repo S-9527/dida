@@ -1,21 +1,21 @@
 import type { TaskStatus } from '@/store/tasks'
 
 export interface TaskResponse {
+    id: string
     title: string
     content: string
     status: TaskStatus
     projectId: string
     position: number
-    _id: string
     createdAt: string
     updatedAt: string
 }
 
 export interface ProjectResponse {
-    createdAt: string
+    id: string
     name: string
+    createdAt: string
     updatedAt: string
-    _id: string
 }
 
 export interface UserResponse {

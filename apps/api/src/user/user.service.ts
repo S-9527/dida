@@ -1,18 +1,20 @@
-import { HttpException, Injectable } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Model } from 'mongoose'
+import { HttpException, Injectable, Logger } from '@nestjs/common'
+import { PrismaService } from '../prisma/prisma.service'
 import { md5 } from '../utils/md5'
 import { SignupUserDto } from './dto/signup-user.dto'
-import { User } from './schemas/user.schema'
 import { SigninUserDto } from './dto/signin-user.dto'
 
 @Injectable()
 export class UsersService {
-    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+    private readonly logger = new Logger(UsersService.name);
+
+    constructor(private prisma: PrismaService) {}
 
     async signin(signinUserDto: SigninUserDto) {
-        const user = await this.userModel.findOne({
-            username: signinUserDto.username,
+        const user = await this.prisma.user.findUnique({
+            where: {
+                username: signinUserDto.username,
+            },
         })
 
         if (!user)
@@ -25,24 +27,28 @@ export class UsersService {
     }
 
     async signup(signupUserDto: SignupUserDto) {
-        const user = await this.userModel
-            .findOne({
+        const existingUser = await this.prisma.user.findUnique({
+            where: {
                 username: signupUserDto.username,
-            })
-            .exec()
+            },
+        })
 
-        if (user)
+        if (existingUser)
             throw new HttpException('用户已存在', 200)
 
         try {
-            const createUser = new this.userModel({
-                username: signupUserDto.username,
-                password: md5(signupUserDto.password),
+            return await this.prisma.user.create({
+                data: {
+                    username: signupUserDto.username,
+                    password: md5(signupUserDto.password),
+                },
             })
-
-            return createUser.save()
         }
         catch (e) {
+            this.logger.error('用户注册失败', e);
+            if (e.code === 'P2002') {
+                throw new HttpException('用户名已存在', 200)
+            }
             throw new HttpException('注册失败', 200)
         }
     }

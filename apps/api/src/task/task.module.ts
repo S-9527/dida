@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common'
-import { MongooseModule } from '@nestjs/mongoose'
 import { TasksController } from './task.controller'
 import { TasksService } from './task.service'
-import { Task, TaskSchema } from './schemas/task.schema'
+import { PrismaModule } from '../prisma/prisma.module'
 
 @Module({
-    imports: [MongooseModule.forFeature([{ name: Task.name, schema: TaskSchema }])],
+    imports: [PrismaModule],
     controllers: [TasksController],
     providers: [TasksService],
 })

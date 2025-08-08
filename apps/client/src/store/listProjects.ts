@@ -71,7 +71,7 @@ export const useListProjectsStore = defineStore('newProjects', () => {
 
 function mapProjectResponseToProject(rawProject: ProjectResponse): ListProject {
     return {
-        id: `${rawProject._id}`,
+        id: rawProject.id,
         name: rawProject.name,
         type: TasksSelectorType.listProject,
     }

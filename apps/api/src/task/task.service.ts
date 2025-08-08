@@ -1,75 +1,76 @@
-import { Model, Types } from 'mongoose'
 import { Injectable, NotFoundException } from '@nestjs/common'
-import { InjectModel } from '@nestjs/mongoose'
-import { Task } from './schemas/task.schema'
+import { PrismaService } from '../prisma/prisma.service'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
+import {TaskStatus} from "@prisma/client";
 
 @Injectable()
 export class TasksService {
-    constructor(@InjectModel(Task.name) private taskModel: Model<Task>) {}
+    constructor(private prisma: PrismaService) {}
 
-    async create(createTaskDto: CreateTaskDto): Promise<Task> {
+    async create(createTaskDto: CreateTaskDto) {
         const position = await this.generatePosition(createTaskDto)
-        const projectId = new Types.ObjectId(createTaskDto.projectId)
 
-        const createdTask = new this.taskModel({
-            ...createTaskDto,
-            projectId,
-            position
+        return this.prisma.task.create({
+            data: {
+                ...createTaskDto,
+                position,
+            },
         })
-        return createdTask.save()
     }
 
     async findAll(
         projectId?: string,
-        status?: string,
+        status?: TaskStatus,
         sortBy = 'position',
-    ): Promise<Task[]> {
-        const query: {
-            projectId?: Types.ObjectId
-            status?: string
+    ) {
+        const where: {
+            projectId?: string
+            status?: TaskStatus
         } = {}
 
         if (projectId)
-            query.projectId = new Types.ObjectId(projectId)
+            where.projectId = projectId
 
         if (status)
-            query.status = status
+            where.status = status as any
 
-        return this.taskModel
-            .find(query)
-            .sort({ [sortBy]: -1 })
-            .exec()
+        return this.prisma.task.findMany({
+            where,
+            orderBy: {
+                [sortBy]: 'desc',
+            },
+        })
     }
 
-    async findOne(id: string): Promise<Task> {
-        return this.taskModel.findById(id).exec()
+    async findOne(id: string) {
+        return this.prisma.task.findUnique({
+            where: { id },
+        })
     }
 
-    async delete(id: string): Promise<Task> {
-        return this.taskModel.findByIdAndDelete(id).exec()
+    async delete(id: string) {
+        return this.prisma.task.delete({
+            where: { id },
+        })
     }
 
-    async update(id: string, updateTaskDto: UpdateTaskDto): Promise<Task> {
-        const update: { projectId?: Types.ObjectId } = {}
-
-        if (updateTaskDto.projectId) {
-            update.projectId = new Types.ObjectId(updateTaskDto.projectId)
-        }
-
-        const updatedTask = await this.taskModel
-            .findByIdAndUpdate(id,  { $set: { ...updateTaskDto, ...update }}, { new: true })
-            .exec()
-
-        if (!updatedTask)
+    async update(id: string, updateTaskDto: UpdateTaskDto) {
+        try {
+            return await this.prisma.task.update({
+                where: { id },
+                data: updateTaskDto,
+            })
+        } catch (error) {
             throw new NotFoundException(`Task with ID "${id}" not found`)
-
-        return updatedTask
+        }
     }
 
     async generatePosition(createTaskDto: CreateTaskDto) {
-        const highestPositionTask = await this.taskModel.findOne({ projectId: createTaskDto.projectId }).sort({ position: -1 }).exec()
+        const highestPositionTask = await this.prisma.task.findFirst({
+            where: { projectId: createTaskDto.projectId },
+            orderBy: { position: 'desc' },
+        })
         return highestPositionTask ? highestPositionTask.position + 1 : 0
     }
 }

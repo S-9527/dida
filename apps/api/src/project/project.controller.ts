@@ -1,14 +1,15 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common'
+import { Body, Controller, Get, Param, Post, ValidationPipe } from '@nestjs/common'
 import { ProjectsService } from './project.service'
-import { Project } from './schemas/project.schema'
+import { Project } from '@prisma/client'
+import { CreateProjectDto } from './dto/create-project.dto'
 
 @Controller('projects')
 export class ProjectsController {
     constructor(private readonly projectsService: ProjectsService) {}
 
     @Post()
-    async create(@Body() project: Project): Promise<Project> {
-        return this.projectsService.create(project)
+    async create(@Body(ValidationPipe) createProjectDto: CreateProjectDto): Promise<Project> {
+        return this.projectsService.create(createProjectDto)
     }
 
     @Get()

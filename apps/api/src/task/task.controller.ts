@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common'
 import { TasksService } from './task.service'
-import { Task } from './schemas/task.schema'
+import {Task, TaskStatus} from '@prisma/client'
 import { CreateTaskDto } from './dto/create-task.dto'
 import { UpdateTaskDto } from './dto/update-task.dto'
 import { LoginGuard } from "../core/login.guard";
@@ -18,7 +18,7 @@ export class TasksController {
     @Get()
     findAll(
         @Query('projectId') projectId?: string,
-        @Query('status') status?: string,
+        @Query('status') status?: TaskStatus,
         @Query('sortBy') sortBy?: string,
     ) {
         return this.tasksService.findAll(projectId, status, sortBy)

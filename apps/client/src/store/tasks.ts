@@ -14,9 +14,9 @@ import { TasksSelectorType, useTasksSelectorStore } from "@/store/taskSelector.t
 import { TaskResponse } from "@/api/types.ts";
 
 export enum TaskStatus {
-    ACTIVE = 'active',
-    COMPLETED = 'completed',
-    REMOVED = 'removed',
+    ACTIVE = 'ACTIVE',
+    COMPLETED = 'COMPLETED',
+    REMOVED = 'REMOVED',
 }
 
 export interface Task {
@@ -176,7 +176,7 @@ export const useTasksStore = defineStore('tasksStore', () => {
 
 function mapTaskResponseToTask(rawTask: TaskResponse): Task {
     return {
-        id: rawTask._id,
+        id: rawTask.id,
         title: rawTask.title,
         content: rawTask.content,
         status: rawTask.status,

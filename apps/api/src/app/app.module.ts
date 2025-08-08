@@ -1,16 +1,16 @@
 import { Module } from '@nestjs/common';
-import { MongooseModule } from "@nestjs/mongoose";
 import { TasksModule } from "../task/task.module";
 import { ProjectsModule } from "../project/project.module";
 import { UsersModule } from "../user/user.module";
 import { JwtModule } from "@nestjs/jwt";
+import { PrismaModule } from "../prisma/prisma.module";
 
 @Module({
   imports: [
     TasksModule,
     ProjectsModule,
     UsersModule,
-    MongooseModule.forRoot('mongodb://127.0.0.1:27017/dida'),
+    PrismaModule,
     JwtModule.register({
       global: true,
       secret: 'dida',

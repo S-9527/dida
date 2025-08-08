@@ -1,5 +1,5 @@
 import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
-import { TaskStatus } from '../const'
+import { TaskStatus } from '@prisma/client'
 
 export class UpdateTaskDto {
     @IsOptional()
