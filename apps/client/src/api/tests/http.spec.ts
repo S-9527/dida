@@ -6,13 +6,19 @@ import { setToken } from '@/utils/token'
 
 vi.mock('@/composables/message')
 
-const mock: MockAdapter = new MockAdapter(http)
+interface ResponseData {
+    code?: number
+    data?: unknown
+    message?: string
+}
 
-function mockReply(statusCode: number, response?: object): void {
+const mock = new MockAdapter(http)
+
+function mockReply(statusCode: number, response?: ResponseData): void {
     mock.onGet('/tasks').reply(statusCode, response ?? {})
 }
 
-function fetchTasks() {
+function triggerApiRequest() {
     return http.get('/tasks')
 }
 
@@ -25,18 +31,18 @@ describe('http', () => {
     it('should set headers Authorization when token exist', async () => {
         const token = 'Authorization'
         setToken(token)
-        mockReply(200)
+        mockReply(200, { code: 0 })
 
-        await fetchTasks()
+        await triggerApiRequest()
 
         expect(mock.history.get[0].headers?.Authorization).toBe(`Bearer ${token}`)
     })
 
     it('should return data of the response when code is 0', async () => {
         const data = [{ name: '吃饭' }]
-        mockReply(200, data)
+        mockReply(200, { code: 0, data })
 
-        const result = await fetchTasks()
+        const result = await triggerApiRequest()
 
         expect(result).toEqual(data)
     })
@@ -46,7 +52,7 @@ describe('http', () => {
 
         mockReply(200, { code: -1, message })
 
-        await expect(() => fetchTasks()).rejects.toThrowError(message)
+        await expect(() => triggerApiRequest()).rejects.toThrowError(message)
         expect(messageError).toBeCalledWith(message)
     })
 

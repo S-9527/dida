@@ -10,39 +10,35 @@ export const http: AxiosInstance = axios.create({
     headers: { 'Content-Type': 'application/json' },
 })
 
-http.interceptors.request.use(
-    (config) => {
-        if (checkHaveToken()) {
-            config.headers.Authorization = `Bearer ${getToken()}`
+http.interceptors.request.use((config) => {
+    if (checkHaveToken()) {
+        config.headers.Authorization = `Bearer ${getToken()}`
+    }
+
+    return config
+})
+
+http.interceptors.response.use((response: AxiosResponse) => {
+    const { code, message, data } = response.data;
+        if (code === 0) {
+            return data
         }
 
-        return config
+        messageError(message)
+        return Promise.reject(new Error(message))
     },
     (error) => {
-        return Promise.reject(error)
-    },
-)
-
-http.interceptors.response.use(
-    (response: AxiosResponse) => {
-        if (response.data.code && response.data.code !== 0) {
-            messageError(response.data.message)
-            return Promise.reject(response.data)
-        }
-
-        return response.data
-    },
-    (error) => {
-        const { response } = error
-
-        if (response && response.status) {
-            switch (error.response.status) {
-                case 401:
-                    messageRedirectToSignIn(goToLogin)
-                    break
-            }
-            messageError(error.response.message)
+        if (error.response.status) {
+            handleError(error.response)
             return Promise.reject(error)
         }
     },
 )
+
+function handleError(response: AxiosResponse) {
+    switch (response.status) {
+        case 401:
+            messageRedirectToSignIn(goToLogin)
+            break
+    }
+}
