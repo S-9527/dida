@@ -6,11 +6,7 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "test": "pnpm test:unit:run && pnpm test:e2e:run",
-    "test:unit:watch": "vitest",
-    "test:unit:run": "vitest run",
-    "test:e2e:run": "cypress run",
-    "cypress:open": "cypress open"
+    "test": "vitest"
   },
   "dependencies": {
     "@imengyu/vue3-context-menu": "^1.4.0",
@@ -37,7 +33,6 @@
     "@vue/test-utils": "^2.4.5",
     "@vueuse/core": "^10.9.0",
     "axios-mock-adapter": "^1.22.0",
-    "cypress": "^13.7.2",
     "fake-indexeddb": "^5.0.2",
     "flush-promises": "^1.0.2",
     "fuse.js": "^7.0.0",
