@@ -55,10 +55,11 @@ export function useSearch() {
   async function handleSearch(input: string) {
     if (isSearchCommand.value) {
       searchCommands(input.trimEnd().slice(1));
-    } else {
-      await delay();
-      await searchTasks(input);
+      return;
     }
+
+    await delay();
+    await searchTasks(input);
   }
 
   init();

@@ -1,9 +1,9 @@
 import Fuse from "fuse.js";
 import { ref } from "vue";
-import { Command, useCommand } from "@/composables/command";
+import type { Command } from "@/composables/command";
+import { useCommand } from "@/composables/command";
 
-// 默认显示所在的命令
-export const filteredCommands = ref<Command[]>([]);
+const filteredCommands = ref<Command[]>([]);
 const fuse = new Fuse([] as Command[], {
   keys: ["name"],
 });

@@ -1,37 +1,48 @@
 <script setup lang="ts">
-import { NCheckbox, NEllipsis } from 'naive-ui'
-import { useCommandModal } from "./commandModal.ts";
+import { NCheckbox, NEllipsis } from "naive-ui";
+import { useCommandModal } from "./commandModal";
 import type { TasksSelector } from "@/store";
 import { useTasksSelectorStore, useTasksStore } from "@/store";
 
-const props = defineProps<{
-  title: string
-  desc: string
-  done: boolean
-  from: TasksSelector | undefined
-  id: string
-}>()
+interface Props {
+  title: string;
+  desc: string;
+  done: boolean;
+  from: TasksSelector | undefined;
+  id: string;
+}
 
-const tasksStore = useTasksStore()
-const tasksSelectorStore = useTasksSelectorStore()
-const { closeCommandModal } = useCommandModal()
+const props = defineProps<Props>();
+const tasksStore = useTasksStore();
+const tasksSelectorStore = useTasksSelectorStore();
+const { closeCommandModal } = useCommandModal();
 
 const goTo = async () => {
   if (props.from) {
-    await tasksSelectorStore.setCurrentSelector(props.from)
-    tasksStore.changeActiveTask(props.id)
+    await tasksSelectorStore.setCurrentSelector(props.from);
+    tasksStore.changeActiveTask(props.id);
   }
 
-  closeCommandModal()
-}
+  closeCommandModal();
+};
 </script>
 
 <template>
-  <div class="w-full border-b-1px p-3 border-gray-500/8 hover:bg-cyan/2" :class="{ 'text-gray-300 dark:text-gray-700': props.done }">
+  <div
+    class="w-full border-b-1px p-3 border-gray-500/8 hover:bg-cyan/2"
+    :class="{ 'text-gray-300 dark:text-gray-700': props.done }"
+  >
     <!-- TODO 添加高亮 -->
-    <div class="w-full flex justify-start items-center cursor-pointer" @click="goTo">
+    <div
+      class="w-full flex justify-start items-center cursor-pointer"
+      @click="goTo"
+    >
       <NCheckbox :checked="props.done" disabled size="large" />
-      <NEllipsis :tooltip="false" class="w-660px text-18px ml-10px text-ellipsis overflow-hidden" :class="{ 'line-through': props.done }">
+      <NEllipsis
+        :tooltip="false"
+        class="w-660px text-18px ml-10px text-ellipsis overflow-hidden"
+        :class="{ 'line-through': props.done }"
+      >
         {{ title }}
       </NEllipsis>
       <div class="w-80px flex justify-center items-center text-gray-500">

@@ -38,7 +38,7 @@ describe("search", () => {
     vi.clearAllMocks();
   });
 
-  describe("search command", () => {
+  describe("search commands", () => {
     it("normal", async () => {
       const { search } = useSearch();
 
@@ -89,7 +89,7 @@ describe("search", () => {
     expect(searching.value).toBe(true);
   });
 
-  it("should search tasks ", async () => {
+  it("search tasks", async () => {
     const { search } = useSearch();
     search.value = "吃饭";
 

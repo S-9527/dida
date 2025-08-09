@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { useCommandModal } from "../commandModal";
 import { useSetup } from "@/tests/helper/component";
 import { fireEvent } from "@/tests/helper/fireEvent";
-import * as misc from "@/composables/misc.ts";
+import * as misc from "@/composables/misc";
 
 describe("command modal", () => {
   beforeEach(() => {

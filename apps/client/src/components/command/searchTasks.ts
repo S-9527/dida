@@ -22,9 +22,9 @@ const fuse = new Fuse([] as SearchTaskItem[], {
 });
 
 export function useSearchTasks() {
-  const tasksStore = useTasksStore();
-  const projectsStore = useListProjectsStore();
   async function searchTasks(input: string) {
+    const tasksStore = useTasksStore();
+    const projectsStore = useListProjectsStore();
     const tasks = await tasksStore.findAllTasksNotRemoved();
 
     const fuseTasks = tasks.map((task) => {

@@ -93,6 +93,7 @@ describe("search new ", () => {
       expect(filteredTasks.value[0].item.done).toBe(false);
       expect(filteredTasks.value[0].item.from?.name).toBe("生活");
     });
+
     it("should be task's project is completeSmartProject when status is complete", async () => {
       const { search } = useSearch();
       const { filteredTasks } = useSearchTasks();

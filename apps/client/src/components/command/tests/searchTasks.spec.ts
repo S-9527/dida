@@ -33,6 +33,7 @@ describe("search tasks", () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
     await searchTasks("吃饭");
 
+    expect(filteredTasks.value.length).toBe(1);
     const item = filteredTasks.value[0].item;
     expect(item.title).toBe("吃饭");
     expect(item).toHaveProperty("id");
@@ -82,7 +83,6 @@ describe("search tasks", () => {
     const { searchTasks, filteredTasks, resetSearchTasks } = useSearchTasks();
 
     await searchTasks("吃饭");
-
     resetSearchTasks();
 
     expect(filteredTasks.value.length).toBe(0);
