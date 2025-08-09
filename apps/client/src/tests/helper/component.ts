@@ -9,5 +9,6 @@ export function useSetup<V>(setup: () => V) {
   const wrapper = mount(comp);
   return {
     wrapper,
+    router: wrapper.router,
   };
 }
