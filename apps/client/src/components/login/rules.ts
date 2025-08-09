@@ -13,7 +13,7 @@ export function createUsernameRule() {
       trigger: "blur",
     },
     {
-      validator(rule: FormItemRule, value: string) {
+      validator(_rule: FormItemRule, value: string) {
         return validateUsernameLength(value);
       },
       message: "长度要大于 5 小于 25",
@@ -31,7 +31,7 @@ export function createPasswordRule() {
     },
 
     {
-      validator(rule: FormItemRule, value: string) {
+      validator(_rule: FormItemRule, value: string) {
         return validatePasswordLength(value);
       },
       message: "长度要大于 6 小于 30",
@@ -48,7 +48,7 @@ export function createConfirmPasswordRule(formValue: { password: string }) {
       trigger: ["input", "blur"],
     },
     {
-      validator: (rule: FormItemRule, value: string) => {
+      validator: (_rule: FormItemRule, value: string) => {
         return validatePasswordSame(formValue.password, value);
       },
       message: "两次密码输入不一致",
