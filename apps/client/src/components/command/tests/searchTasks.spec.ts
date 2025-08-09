@@ -1,82 +1,90 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { useSearchTasks } from '../searchTasks'
-import {completeSmartProject, useListProjectsStore, useTasksStore} from "@/store";
-import {createTestingPinia} from "@pinia/testing";
-import {tasks} from "@/tests/fixture/tasks.ts";
-import {liveListProject} from "@/tests/fixture/projects.ts";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+import { useSearchTasks } from "../searchTasks";
+import {
+  completeSmartProject,
+  useListProjectsStore,
+  useTasksStore,
+} from "@/store";
+import { createTestingPinia } from "@pinia/testing";
+import { tasks } from "@/tests/fixture/tasks.ts";
+import { liveListProject } from "@/tests/fixture/projects.ts";
 
-describe('search tasks', () => {
-    beforeEach(() => {
-        createTestingPinia({
-            createSpy: vi.fn,
-        })
+describe("search tasks", () => {
+  beforeEach(() => {
+    createTestingPinia({
+      createSpy: vi.fn,
+    });
 
-        const tasksStore = useTasksStore()
-        vi.mocked(tasksStore.findAllTasksNotRemoved).mockImplementation(
-            async () => tasks,
-        )
+    const tasksStore = useTasksStore();
+    vi.mocked(tasksStore.findAllTasksNotRemoved).mockImplementation(
+      async () => tasks,
+    );
 
-        const listProjectsStore = useListProjectsStore()
-        vi.mocked(listProjectsStore.findProject).mockImplementation(() => liveListProject)
+    const listProjectsStore = useListProjectsStore();
+    vi.mocked(listProjectsStore.findProject).mockImplementation(
+      () => liveListProject,
+    );
 
-        const { resetSearchTasks } = useSearchTasks()
-        resetSearchTasks()
-    })
+    const { resetSearchTasks } = useSearchTasks();
+    resetSearchTasks();
+  });
 
-    it('should be search a task by title', async () => {
-        const { searchTasks, filteredTasks } = useSearchTasks()
-        await searchTasks('吃饭')
+  it("should be search a task by title", async () => {
+    const { searchTasks, filteredTasks } = useSearchTasks();
+    await searchTasks("吃饭");
 
-        const item = filteredTasks.value[0].item
-        expect(item.title).toBe('吃饭')
-        expect(item).toHaveProperty('id')
-        expect(item).toHaveProperty('desc')
-        expect(item).toHaveProperty('done')
-        expect(item).toHaveProperty('from')
+    const item = filteredTasks.value[0].item;
+    expect(item.title).toBe("吃饭");
+    expect(item).toHaveProperty("id");
+    expect(item).toHaveProperty("desc");
+    expect(item).toHaveProperty("done");
+    expect(item).toHaveProperty("from");
 
-        expect(filteredTasks.value.length).toBe(1)
-    })
+    expect(filteredTasks.value.length).toBe(1);
+  });
 
-    it('should be search a task by desc', async () => {
-        const { searchTasks, filteredTasks } = useSearchTasks()
-        await searchTasks('吃什么')
+  it("should be search a task by desc", async () => {
+    const { searchTasks, filteredTasks } = useSearchTasks();
+    await searchTasks("吃什么");
 
-        expect(filteredTasks.value.length).toBe(1)
-        expect(filteredTasks.value[0].item.title).toBe('吃饭')
-    })
+    expect(filteredTasks.value.length).toBe(1);
+    expect(filteredTasks.value[0].item.title).toBe("吃饭");
+  });
 
-    it('should not be found when the task does not exist', async () => {
-        const { searchTasks, filteredTasks } = useSearchTasks()
-        await searchTasks('运动')
+  it("should not be found when the task does not exist", async () => {
+    const { searchTasks, filteredTasks } = useSearchTasks();
+    await searchTasks("运动");
 
-        expect(filteredTasks.value.length).toBe(0)
-    })
+    expect(filteredTasks.value.length).toBe(0);
+  });
 
-    it('should be task’s project is listProject when status is active', async () => {
-        const { searchTasks, filteredTasks } = useSearchTasks()
+  it("should be task’s project is listProject when status is active", async () => {
+    const { searchTasks, filteredTasks } = useSearchTasks();
 
-        await searchTasks('吃饭')
+    await searchTasks("吃饭");
 
-        expect(filteredTasks.value[0].item.done).toBe(false)
-        expect(filteredTasks.value[0].item.from?.name).toBe('生活')
-    })
+    expect(filteredTasks.value[0].item.done).toBe(false);
+    expect(filteredTasks.value[0].item.from?.name).toBe("生活");
+  });
 
-    it('should be task’s project is completeSmartProject when status is complete', async () => {
-        const { searchTasks, filteredTasks } = useSearchTasks()
+  it("should be task’s project is completeSmartProject when status is complete", async () => {
+    const { searchTasks, filteredTasks } = useSearchTasks();
 
-        await searchTasks('写代码')
+    await searchTasks("写代码");
 
-        expect(filteredTasks.value[0].item.done).toBe(true)
-        expect(filteredTasks.value[0].item.from?.name).toBe(completeSmartProject.name)
-    })
+    expect(filteredTasks.value[0].item.done).toBe(true);
+    expect(filteredTasks.value[0].item.from?.name).toBe(
+      completeSmartProject.name,
+    );
+  });
 
-    it('should be reset tasks', async () => {
-        const { searchTasks, filteredTasks, resetSearchTasks } = useSearchTasks()
+  it("should be reset tasks", async () => {
+    const { searchTasks, filteredTasks, resetSearchTasks } = useSearchTasks();
 
-        await searchTasks('吃饭')
+    await searchTasks("吃饭");
 
-        resetSearchTasks()
+    resetSearchTasks();
 
-        expect(filteredTasks.value.length).toBe(0)
-    })
-})
+    expect(filteredTasks.value.length).toBe(0);
+  });
+});

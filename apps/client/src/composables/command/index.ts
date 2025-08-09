@@ -1,30 +1,30 @@
-import { CommandGoToHome } from './CommandGoToHome.ts'
-import { CommandGoToSettingsTheme } from './CommandGoToSettingsTheme.ts'
+import { CommandGoToHome } from "./CommandGoToHome.ts";
+import { CommandGoToSettingsTheme } from "./CommandGoToSettingsTheme.ts";
 export interface Command {
-    name: string
-    execute: () => void
+  name: string;
+  execute: () => void;
 }
 
-let commands: Command[] = []
+let commands: Command[] = [];
 
 export function useCommand() {
-    function initCommands() {
-        commands.push(new CommandGoToHome())
-        commands.push(new CommandGoToSettingsTheme())
-    }
+  function initCommands() {
+    commands.push(new CommandGoToHome());
+    commands.push(new CommandGoToSettingsTheme());
+  }
 
-    function resetCommand() {
-        commands = []
-    }
+  function resetCommand() {
+    commands = [];
+  }
 
-    function addCommand(command: Command) {
-        commands.push(command)
-    }
+  function addCommand(command: Command) {
+    commands.push(command);
+  }
 
-    return {
-        commands,
-        initCommands,
-        resetCommand,
-        addCommand,
-    }
+  return {
+    commands,
+    initCommands,
+    resetCommand,
+    addCommand,
+  };
 }

@@ -1,9 +1,13 @@
-import { describe, expect, it } from 'vitest'
-import { createConfirmPasswordRule, createPasswordRule, createUsernameRule } from '../rules'
+import { describe, expect, it } from "vitest";
+import {
+  createConfirmPasswordRule,
+  createPasswordRule,
+  createUsernameRule,
+} from "../rules";
 
-describe('rules', () => {
-    it('create username rules', () => {
-        expect(createUsernameRule()).toMatchInlineSnapshot(`
+describe("rules", () => {
+  it("create username rules", () => {
+    expect(createUsernameRule()).toMatchInlineSnapshot(`
       [
         {
           "message": "请输入帐号",
@@ -16,11 +20,11 @@ describe('rules', () => {
           "validator": [Function],
         },
       ]
-    `)
-    })
+    `);
+  });
 
-    it('create createPasswordRule rules ', () => {
-        expect(createPasswordRule()).toMatchInlineSnapshot(`
+  it("create createPasswordRule rules ", () => {
+    expect(createPasswordRule()).toMatchInlineSnapshot(`
       [
         {
           "message": "请输入密码",
@@ -33,11 +37,11 @@ describe('rules', () => {
           "validator": [Function],
         },
       ]
-    `)
-    })
+    `);
+  });
 
-    it('create createConfirmPasswordRule rules ', () => {
-        expect(createConfirmPasswordRule({ password: '' })).toMatchInlineSnapshot(`
+  it("create createConfirmPasswordRule rules ", () => {
+    expect(createConfirmPasswordRule({ password: "" })).toMatchInlineSnapshot(`
       [
         {
           "message": "请再次输入密码",
@@ -56,6 +60,6 @@ describe('rules', () => {
           "validator": [Function],
         },
       ]
-    `)
-    })
-})
+    `);
+  });
+});

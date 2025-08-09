@@ -1,186 +1,197 @@
-import { defineStore } from 'pinia'
-import { ref } from 'vue'
+import { defineStore } from "pinia";
+import { ref } from "vue";
 import {
-    fetchAllTasks,
-    fetchCompleteTask,
-    fetchCreateTask, fetchMoveTaskToProject,
-    fetchRemoveTask,
-    fetchRestoreTask,
-    fetchUpdateTaskContent,
-    fetchUpdateTaskPosition,
-    fetchUpdateTaskTitle,
-} from '@/api/task.ts'
-import { TasksSelectorType, useTasksSelectorStore } from "@/store/taskSelector.ts";
+  fetchAllTasks,
+  fetchCompleteTask,
+  fetchCreateTask,
+  fetchMoveTaskToProject,
+  fetchRemoveTask,
+  fetchRestoreTask,
+  fetchUpdateTaskContent,
+  fetchUpdateTaskPosition,
+  fetchUpdateTaskTitle,
+} from "@/api/task.ts";
+import {
+  TasksSelectorType,
+  useTasksSelectorStore,
+} from "@/store/taskSelector.ts";
 import { TaskResponse } from "@/api/types.ts";
 
 export enum TaskStatus {
-    ACTIVE = 'ACTIVE',
-    COMPLETED = 'COMPLETED',
-    REMOVED = 'REMOVED',
+  ACTIVE = "ACTIVE",
+  COMPLETED = "COMPLETED",
+  REMOVED = "REMOVED",
 }
 
 export interface Task {
-    id: string
-    title: string
-    status: TaskStatus
-    content: string
-    projectId: string
-    position: number
+  id: string;
+  title: string;
+  status: TaskStatus;
+  content: string;
+  projectId: string;
+  position: number;
 }
 
-export const useTasksStore = defineStore('tasksStore', () => {
-    const tasksSelectorStore = useTasksSelectorStore()
+export const useTasksStore = defineStore("tasksStore", () => {
+  const tasksSelectorStore = useTasksSelectorStore();
 
-    const tasks = ref<Task[]>([])
-    const currentActiveTask = ref<Task>()
+  const tasks = ref<Task[]>([]);
+  const currentActiveTask = ref<Task>();
 
-    async function updateTasks(_tasks: TaskResponse[]) {
-        tasks.value = _tasks.map(mapTaskResponseToTask)
-    }
+  async function updateTasks(_tasks: TaskResponse[]) {
+    tasks.value = _tasks.map(mapTaskResponseToTask);
+  }
 
-    async function addTask(title: string): Promise<Task | undefined> {
-        if (!tasksSelectorStore.currentSelector) return
-        if (tasksSelectorStore.currentSelector.type !== TasksSelectorType.listProject) return
+  async function addTask(title: string): Promise<Task | undefined> {
+    if (!tasksSelectorStore.currentSelector) return;
+    if (
+      tasksSelectorStore.currentSelector.type !== TasksSelectorType.listProject
+    )
+      return;
 
-        const newRawTask = await fetchCreateTask(title, tasksSelectorStore.currentSelector.id)
-        const task = mapTaskResponseToTask(newRawTask)
-        tasks.value.unshift(task)
-        changeActiveTask(task)
+    const newRawTask = await fetchCreateTask(
+      title,
+      tasksSelectorStore.currentSelector.id,
+    );
+    const task = mapTaskResponseToTask(newRawTask);
+    tasks.value.unshift(task);
+    changeActiveTask(task);
 
-        return task
-    }
+    return task;
+  }
 
-    function changeActiveTask(taskId: Task['id']): void
-    function changeActiveTask(task: Task | undefined): void
-    function changeActiveTask(taskOrTaskId: Task | Task['id'] | undefined): void {
-        let task: Task | undefined
+  function changeActiveTask(taskId: Task["id"]): void;
+  function changeActiveTask(task: Task | undefined): void;
+  function changeActiveTask(taskOrTaskId: Task | Task["id"] | undefined): void {
+    let task: Task | undefined;
 
-        task = typeof taskOrTaskId === 'string'
-            ? tasks.value.find(t => t.id === taskOrTaskId)
-            : taskOrTaskId;
+    task =
+      typeof taskOrTaskId === "string"
+        ? tasks.value.find((t) => t.id === taskOrTaskId)
+        : taskOrTaskId;
 
-        currentActiveTask.value = task
-    }
+    currentActiveTask.value = task;
+  }
 
-    async function completeTask(task: Task) {
-        await fetchCompleteTask(task.id)
-        _removeTask(task)
-        changeActiveTask(undefined)
-    }
+  async function completeTask(task: Task) {
+    await fetchCompleteTask(task.id);
+    _removeTask(task);
+    changeActiveTask(undefined);
+  }
 
-    async function restoreTask(task: Task) {
-        await fetchRestoreTask(task.id)
-        _removeTask(task)
-        changeActiveTask(undefined)
-    }
-    async function cancelCompleteTask(task: Task) {
-        function taskPositionRestorer(task: Task) {
-            if (tasks.value.length === 0) {
-                tasks.value.push(task)
-                return
-            }
+  async function restoreTask(task: Task) {
+    await fetchRestoreTask(task.id);
+    _removeTask(task);
+    changeActiveTask(undefined);
+  }
+  async function cancelCompleteTask(task: Task) {
+    function taskPositionRestorer(task: Task) {
+      if (tasks.value.length === 0) {
+        tasks.value.push(task);
+        return;
+      }
 
-            const lastTask = tasks.value[tasks.value.length - 1]
-            if (task.position < lastTask.position) {
-                tasks.value.push(task)
-                return
-            }
+      const lastTask = tasks.value[tasks.value.length - 1];
+      if (task.position < lastTask.position) {
+        tasks.value.push(task);
+        return;
+      }
 
-            for (let i = 0; i < tasks.value.length; i++) {
-                if (task.position > tasks.value[i].position) {
-                    const currentIndex = tasks.value.indexOf(tasks.value[i])
-                    tasks.value.splice(currentIndex, 0, task)
-                    return
-                }
-            }
+      for (let i = 0; i < tasks.value.length; i++) {
+        if (task.position > tasks.value[i].position) {
+          const currentIndex = tasks.value.indexOf(tasks.value[i]);
+          tasks.value.splice(currentIndex, 0, task);
+          return;
         }
-
-        await fetchRestoreTask(task.id)
-        task.status = TaskStatus.ACTIVE
-
-        taskPositionRestorer(task)
+      }
     }
 
-    async function removeTask(task: Task) {
-        await fetchRemoveTask(task.id)
-        _removeTask(task)
-        changeActiveTask(undefined)
-    }
+    await fetchRestoreTask(task.id);
+    task.status = TaskStatus.ACTIVE;
 
-    async function updateTaskTitle(task: Task, newTitle: string) {
-        const oldTitle = task.title
-        if (newTitle === oldTitle) return
+    taskPositionRestorer(task);
+  }
 
-        await fetchUpdateTaskTitle(task.id, newTitle)
-        task.title = newTitle
-    }
+  async function removeTask(task: Task) {
+    await fetchRemoveTask(task.id);
+    _removeTask(task);
+    changeActiveTask(undefined);
+  }
 
-    async function updateTaskContent(task: Task, newContent: string) {
-        const oldContent = task.content
-        if (newContent === oldContent) return
+  async function updateTaskTitle(task: Task, newTitle: string) {
+    const oldTitle = task.title;
+    if (newTitle === oldTitle) return;
 
-        await fetchUpdateTaskContent(task.id, newContent)
-        task.content = newContent
-    }
+    await fetchUpdateTaskTitle(task.id, newTitle);
+    task.title = newTitle;
+  }
 
-    async function updateTaskPosition(task: Task, newPosition: number) {
-        const oldPosition = task.position
-        if (newPosition === oldPosition) return
+  async function updateTaskContent(task: Task, newContent: string) {
+    const oldContent = task.content;
+    if (newContent === oldContent) return;
 
-        await fetchUpdateTaskPosition(task.id, newPosition)
-        task.position = newPosition
-    }
+    await fetchUpdateTaskContent(task.id, newContent);
+    task.content = newContent;
+  }
 
-    async function findAllTasksNotRemoved() {
-        const activeTasks = await fetchAllTasks({
-            status: TaskStatus.ACTIVE
-        })
+  async function updateTaskPosition(task: Task, newPosition: number) {
+    const oldPosition = task.position;
+    if (newPosition === oldPosition) return;
 
-        const completedTasks = await fetchAllTasks({
-            status: TaskStatus.COMPLETED
-        })
+    await fetchUpdateTaskPosition(task.id, newPosition);
+    task.position = newPosition;
+  }
 
-        return [
-            ...activeTasks.map(mapTaskResponseToTask),
-            ...completedTasks.map(mapTaskResponseToTask)
-        ]
-    }
+  async function findAllTasksNotRemoved() {
+    const activeTasks = await fetchAllTasks({
+      status: TaskStatus.ACTIVE,
+    });
 
-    async function moveTaskToProject(task: Task, projectId: string) {
-        await fetchMoveTaskToProject(task.id, projectId)
-        _removeTask(task)
-        changeActiveTask(undefined)
-    }
+    const completedTasks = await fetchAllTasks({
+      status: TaskStatus.COMPLETED,
+    });
 
-    function _removeTask(task: Task) {
-        tasks.value = tasks.value.filter(t => t.id !== task.id)
-    }
+    return [
+      ...activeTasks.map(mapTaskResponseToTask),
+      ...completedTasks.map(mapTaskResponseToTask),
+    ];
+  }
 
-    return {
-        tasks,
-        currentActiveTask,
-        addTask,
-        removeTask,
-        updateTasks,
-        changeActiveTask,
-        completeTask,
-        restoreTask,
-        moveTaskToProject,
-        cancelCompleteTask,
-        updateTaskTitle,
-        updateTaskContent,
-        updateTaskPosition,
-        findAllTasksNotRemoved,
-    }
-})
+  async function moveTaskToProject(task: Task, projectId: string) {
+    await fetchMoveTaskToProject(task.id, projectId);
+    _removeTask(task);
+    changeActiveTask(undefined);
+  }
+
+  function _removeTask(task: Task) {
+    tasks.value = tasks.value.filter((t) => t.id !== task.id);
+  }
+
+  return {
+    tasks,
+    currentActiveTask,
+    addTask,
+    removeTask,
+    updateTasks,
+    changeActiveTask,
+    completeTask,
+    restoreTask,
+    moveTaskToProject,
+    cancelCompleteTask,
+    updateTaskTitle,
+    updateTaskContent,
+    updateTaskPosition,
+    findAllTasksNotRemoved,
+  };
+});
 
 function mapTaskResponseToTask(rawTask: TaskResponse): Task {
-    return {
-        id: rawTask.id,
-        title: rawTask.title,
-        content: rawTask.content,
-        status: rawTask.status,
-        projectId: rawTask.projectId,
-        position: rawTask.position,
-    }
+  return {
+    id: rawTask.id,
+    title: rawTask.title,
+    content: rawTask.content,
+    status: rawTask.status,
+    projectId: rawTask.projectId,
+    position: rawTask.position,
+  };
 }

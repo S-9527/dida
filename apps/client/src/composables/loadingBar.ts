@@ -1,9 +1,9 @@
-import { loadingBar } from './discreteApi'
+import { loadingBar } from "./discreteApi";
 
 export function startLoading() {
-    loadingBar.start()
+  loadingBar.start();
 }
 
 export function finishLoading() {
-    loadingBar.finish()
+  loadingBar.finish();
 }

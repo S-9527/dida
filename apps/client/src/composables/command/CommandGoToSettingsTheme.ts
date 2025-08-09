@@ -1,17 +1,17 @@
-import type { Command } from './index'
-import { useGoto } from '@/composables/goto'
+import type { Command } from "./index";
+import { useGoto } from "@/composables/goto";
 
 export class CommandGoToSettingsTheme implements Command {
-    gotoSettingsTheme: () => void
+  gotoSettingsTheme: () => void;
 
-    name = '切换皮肤'
+  name = "切换皮肤";
 
-    constructor() {
-        const { gotoSettingsTheme } = useGoto()
-        this.gotoSettingsTheme = gotoSettingsTheme
-    }
+  constructor() {
+    const { gotoSettingsTheme } = useGoto();
+    this.gotoSettingsTheme = gotoSettingsTheme;
+  }
 
-    execute() {
-        this.gotoSettingsTheme()
-    }
+  execute() {
+    this.gotoSettingsTheme();
+  }
 }

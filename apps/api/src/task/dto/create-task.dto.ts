@@ -1,8 +1,8 @@
-import { TaskStatus } from '@prisma/client'
+import { TaskStatus } from "@prisma/client";
 
 export class CreateTaskDto {
-    title: string
-    content: string
-    status: TaskStatus
-    projectId: string
+  title: string;
+  content: string;
+  status: TaskStatus;
+  projectId: string;
 }

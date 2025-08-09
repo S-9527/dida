@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module } from "@nestjs/common";
 import { TasksModule } from "../task/task.module";
 import { ProjectsModule } from "../project/project.module";
 import { UsersModule } from "../user/user.module";
@@ -13,9 +13,9 @@ import { PrismaModule } from "../prisma/prisma.module";
     PrismaModule,
     JwtModule.register({
       global: true,
-      secret: 'dida',
+      secret: "dida",
       signOptions: {
-        expiresIn: '7d',
+        expiresIn: "7d",
       },
     }),
   ],

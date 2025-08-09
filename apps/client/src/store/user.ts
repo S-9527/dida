@@ -1,47 +1,51 @@
-import { defineStore } from 'pinia'
-import { reactive } from 'vue'
-import { fetchSignIn, fetchSignUp } from '@/api/user'
-import type { UserResponse } from '@/api/types'
+import { defineStore } from "pinia";
+import { reactive } from "vue";
+import { fetchSignIn, fetchSignUp } from "@/api/user";
+import type { UserResponse } from "@/api/types";
 import { setToken } from "@/utils/token.ts";
 
 interface User {
-    username: string
-    nickname: string
+  username: string;
+  nickname: string;
 }
 
-export const useUserStore = defineStore('user', () => {
-    const user = reactive<User>({
-        username: '',
-        nickname: '',
-    })
+export const useUserStore = defineStore("user", () => {
+  const user = reactive<User>({
+    username: "",
+    nickname: "",
+  });
 
-    function setupUser(userResponse: UserResponse) {
-        user.username = userResponse.username
-        user.nickname = userResponse.username
+  function setupUser(userResponse: UserResponse) {
+    user.username = userResponse.username;
+    user.nickname = userResponse.username;
 
-        setToken(userResponse.token)
-    }
+    setToken(userResponse.token);
+  }
 
-    async function signIn(username: string, password: string) {
-        const userResponse = await fetchSignIn(username, password)
-        setupUser(userResponse)
-    }
+  async function signIn(username: string, password: string) {
+    const userResponse = await fetchSignIn(username, password);
+    setupUser(userResponse);
+  }
 
-    async function signUp({
-                              username,
-                              password,
-                              confirmPassword,
-                          }: {
-        username: string
-        password: string
-        confirmPassword: string
-    }) {
-        const userResponse = await fetchSignUp({ username, password, confirmPassword })
-        setupUser(userResponse)
-    }
+  async function signUp({
+    username,
+    password,
+    confirmPassword,
+  }: {
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }) {
+    const userResponse = await fetchSignUp({
+      username,
+      password,
+      confirmPassword,
+    });
+    setupUser(userResponse);
+  }
 
-    return {
-        signIn,
-        signUp,
-    }
-})
+  return {
+    signIn,
+    signUp,
+  };
+});

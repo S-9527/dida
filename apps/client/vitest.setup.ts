@@ -1,32 +1,31 @@
-import 'fake-indexeddb/auto'
-import { config } from '@vue/test-utils'
+import "fake-indexeddb/auto";
+import { config } from "@vue/test-utils";
 import {
-    VueRouterMock,
-    createRouterMock,
-    injectRouterMock,
-} from 'vue-router-mock'
-import { beforeEach, vi } from 'vitest'
+  VueRouterMock,
+  createRouterMock,
+  injectRouterMock,
+} from "vue-router-mock";
+import { beforeEach, vi } from "vitest";
 
 function setupRouterMock() {
-    const router = createRouterMock({
-        spy: {
-            create: fn => vi.fn(fn),
-            reset: spy => spy.mockClear(),
-        },
-    })
+  const router = createRouterMock({
+    spy: {
+      create: (fn) => vi.fn(fn),
+      reset: (spy) => spy.mockClear(),
+    },
+  });
 
-    beforeEach(() => {
-        router.reset()
-        injectRouterMock(router)
-    })
+  beforeEach(() => {
+    router.reset();
+    injectRouterMock(router);
+  });
 
-    config.plugins.VueWrapper.install(VueRouterMock)
+  config.plugins.VueWrapper.install(VueRouterMock);
 }
 
-setupRouterMock()
+setupRouterMock();
 
-const originalConsoleWarn = console.warn
+const originalConsoleWarn = console.warn;
 console.warn = (log: string) => {
-    if (!log.includes('[Vue Router warn]'))
-        return originalConsoleWarn(log)
-}
+  if (!log.includes("[Vue Router warn]")) return originalConsoleWarn(log);
+};

@@ -1,7 +1,7 @@
-import type { RouterMockOptions } from 'vue-router-mock'
-import { createRouterMock } from 'vue-router-mock'
-import { beforeEach, vi } from 'vitest'
-import { setRouterInstance } from '@/router'
+import type { RouterMockOptions } from "vue-router-mock";
+import { createRouterMock } from "vue-router-mock";
+import { beforeEach, vi } from "vitest";
+import { setRouterInstance } from "@/router";
 
 /**
  * 当需要处理依赖于 @router/index.ts 的 router 对象时 需要调用
@@ -12,19 +12,19 @@ import { setRouterInstance } from '@/router'
  * 所以有了这样一个方法
  */
 export function setupRouterMock(options?: RouterMockOptions) {
-    const router = createRouterMock({
-        spy: {
-            create: fn => vi.fn(fn),
-            reset: spy => spy.mockClear(),
-        },
-        ...options,
-    })
+  const router = createRouterMock({
+    spy: {
+      create: (fn) => vi.fn(fn),
+      reset: (spy) => spy.mockClear(),
+    },
+    ...options,
+  });
 
-    setRouterInstance(router)
+  setRouterInstance(router);
 
-    beforeEach(() => {
-        router.reset()
-    })
+  beforeEach(() => {
+    router.reset();
+  });
 
-    return router
+  return router;
 }

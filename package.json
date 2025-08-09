@@ -9,6 +9,8 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@antfu/eslint-config": "^5.2.0",
+    "eslint": "^9.33.0",
     "prettier": "^3.6.2",
     "turbo": "^2.5.5",
     "typescript": "5.8.3"
@@ -16,5 +18,8 @@
   "packageManager": "pnpm@9.0.0",
   "engines": {
     "node": ">=18"
+  },
+  "eslintConfig": {
+    "extends": "@antfu"
   }
 }
