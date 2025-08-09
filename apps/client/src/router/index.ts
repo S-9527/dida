@@ -1,17 +1,13 @@
-import Task from "../view/Task.vue";
-import Login from "../view/Login.vue";
 import type { App } from "vue";
-import {
-  createRouter,
-  createWebHashHistory,
-  Router,
-  RouteRecordRaw,
-} from "vue-router";
+import type { RouteRecordRaw, Router } from "vue-router";
+import { createRouter, createWebHashHistory } from "vue-router";
+import { RouteNames } from "./const";
 import { SettingsRoute } from "./settings";
-import { RouteNames } from "./const.ts";
-import { messageRedirectToSignIn } from "@/composables/message.ts";
-import { finishLoading, startLoading } from "@/composables/loadingBar.ts";
-import { checkHaveToken } from "@/utils/token.ts";
+import { messageRedirectToSignIn } from "@/composables/message";
+import { finishLoading, startLoading } from "@/composables/loadingBar";
+import { checkHaveToken } from "@/utils/token";
+import Task from "@/pages/Task.vue";
+import Login from "@/pages/Login.vue";
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -38,7 +34,7 @@ export const routes: RouteRecordRaw[] = [
   SettingsRoute,
 ];
 
-export const setupRouterGuard = (router: Router) => {
+export function setupRouterGuard(router: Router) {
   router.beforeEach(() => {
     startLoading();
   });
@@ -47,19 +43,16 @@ export const setupRouterGuard = (router: Router) => {
   });
 
   router.beforeEach((to, from, next) => {
-    if (to.matched.some((record) => record.meta.requiresAuth)) {
-      if (checkHaveToken()) {
-        next();
-      } else {
-        messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }));
-      }
+    if (to.matched.some((r) => r.meta.requiresAuth)) {
+      if (checkHaveToken()) next();
+      else messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }));
     } else {
       next();
     }
   });
-};
+}
 
-export let router: Router;
+let router: Router;
 export const setupRouter = async (app: App) => {
   router = createRouter({
     history: createWebHashHistory(),

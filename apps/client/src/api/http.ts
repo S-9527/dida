@@ -1,11 +1,8 @@
 import type { AxiosInstance, AxiosResponse } from "axios";
 import axios from "axios";
-import {
-  messageError,
-  messageRedirectToSignIn,
-} from "@/composables/message.ts";
-import { checkHaveToken, getToken } from "@/utils/token.ts";
-import { goToLogin } from "@/composables/goto.ts";
+import { checkHaveToken, getToken } from "@/utils/token";
+import { messageError, messageRedirectToSignIn } from "@/composables/message";
+import { goToLogin } from "@/composables";
 
 export const http: AxiosInstance = axios.create({
   baseURL: "http://localhost:3000",

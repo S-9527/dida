@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import Item from './Item.vue'
-import { Themes } from '@/composables/settings'
+import Item from "./Item.vue";
+import { Themes } from "@/composables/settings";
 </script>
 
 <template>
@@ -9,7 +9,13 @@ import { Themes } from '@/composables/settings'
       当前可选择的皮肤
     </div>
     <div class="flex justify-start items-center gap-18px mt-20px">
-      <Item v-for="theme in Themes" :key="theme.name" :label="theme.label" :color="theme.color" :name="theme.name" />
+      <Item
+        v-for="theme in Themes"
+        :key="theme.name"
+        :label="theme.label"
+        :color="theme.color"
+        :name="theme.name"
+      />
     </div>
   </div>
 </template>

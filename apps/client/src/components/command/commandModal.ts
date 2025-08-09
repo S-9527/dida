@@ -1,6 +1,7 @@
 import { onMounted, onUnmounted, ref } from "vue";
-import { useIsMac } from "@/composables/misc.ts";
-const showCommandModal = ref<boolean>(false);
+import { useIsMac } from "@/composables";
+
+const showCommandModal = ref(false);
 
 export function useCommandModal() {
   function openCommandModal() {
@@ -12,8 +13,8 @@ export function useCommandModal() {
   }
 
   function registerKeyboardShortcut() {
-    // Command + K Or Command + / will show command in macOS
-    // Ctrl + K Or Ctrl + / in Windows
+    // Command + K will show command in MacOS
+    // Ctrl + K in Windows
     const isMac = useIsMac();
     const keydownHandler = (e: KeyboardEvent) => {
       if (e.key === "k" && (isMac.value ? e.metaKey : e.ctrlKey)) {

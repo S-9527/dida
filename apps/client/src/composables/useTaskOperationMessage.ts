@@ -2,7 +2,7 @@ import type { MessageReactive } from "naive-ui";
 import { h } from "vue";
 import type { Task } from "@/store/tasks";
 import { useTasksStore } from "@/store";
-import { messageInfo } from "@/composables/message.ts";
+import { messageInfo } from "@/composables/message";
 
 enum TaskOperationStatus {
   Complete = "已完成",
@@ -11,8 +11,7 @@ enum TaskOperationStatus {
 }
 
 export function useTaskOperationMessage() {
-  const taskStore = useTasksStore();
-
+  const tasksStore = useTasksStore();
   let messageReactive: MessageReactive | null;
 
   function createMessageView(content: string, onClick?: () => void) {
@@ -42,7 +41,7 @@ export function useTaskOperationMessage() {
 
   function showCompleteMessage(task: Task) {
     const onClick = () => {
-      taskStore.cancelCompleteTask(task);
+      tasksStore.cancelCompleteTask(task);
       removeMessage();
     };
     const content = `${task.title} ${TaskOperationStatus.Complete}`;

@@ -7,7 +7,6 @@ describe("search commands", () => {
     const { resetSearchCommands } = useSearchCommands();
     resetSearchCommands();
   });
-
   beforeAll(() => {
     const { addCommand } = useCommand();
 
@@ -21,9 +20,9 @@ describe("search commands", () => {
       execute() {},
     });
   });
-
   it("should be search a command", () => {
     const { searchCommands, filteredCommands } = useSearchCommands();
+
     searchCommands("主页");
 
     expect(filteredCommands.value.length).toBe(1);

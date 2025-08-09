@@ -1,55 +1,47 @@
-<template>
-  <NTree
-      v-model:selected-keys="selectedKey"
-      :default-expanded-keys="defaultExpandedKeys"
-      block-line
-      expand-on-click
-      :data="data"
-      :node-props="nodeProps"
-  />
-  <ProjectCreatedView v-model:show="showProjectCreatedView" />
-</template>
-
 <script setup lang="ts">
-import { NTree, TreeOption } from 'naive-ui'
-import { computed, h, ref, watchEffect } from 'vue'
-import 'vue3-emoji-picker/css'
 import { Icon } from "@iconify/vue";
+import type { TreeOption } from "naive-ui";
+import { NTree } from "naive-ui";
+import { computed, h, ref, watchEffect } from "vue";
+import "vue3-emoji-picker/css";
 import ProjectCreatedView from "./ProjectCreatedView.vue";
-import { useTaskLeftListStore } from "@/components/task/taskLeftList.ts";
+import { useTaskLeftListStore } from "./taskLeftList";
+
+const taskLeftListStore = useTaskLeftListStore();
+const treeListProjectChildren = ref<TreeOption[]>([]);
+const showProjectCreatedView = ref(false);
 
 const selectedKey = computed({
   get() {
-    return [taskLeftListStore.selectedKey]
+    return [taskLeftListStore.selectedKey];
   },
   set(val) {
-    taskLeftListStore.selectedKey = val[0]
+    taskLeftListStore.selectedKey = val[0];
   },
-})
+});
+
+const defaultExpandedKeys = [taskLeftListStore.listProjectRootNode.name];
 
 const createRootNodeSuffix = (onclick: (e: Event) => void) => {
-  return () => h(Icon, {
-    icon: 'ic:baseline-plus',
-    width: '20',
-    class: 'invisible rounded-1 hover:bg-gray-2',
-    onclick,
-  })
-}
-
-const taskLeftListStore = useTaskLeftListStore()
-
-const defaultExpandedKeys = [taskLeftListStore.listProjectRootNode.name]
-
-const treeListProjectChildren = ref<TreeOption[]>([])
-const showProjectCreatedView = ref(false)
+  return () =>
+    h(Icon, {
+      icon: "ic:baseline-plus",
+      width: "20",
+      class: "invisible rounded-1 hover:bg-gray-2",
+      onclick,
+    });
+};
 
 watchEffect(() => {
-  treeListProjectChildren.value = taskLeftListStore.listProjectChildrenNodes.map((project) => ({
-    key: project.name,
-    label: project.name,
-    isLeaf: true,
-  }))
-})
+  treeListProjectChildren.value =
+    taskLeftListStore.listProjectChildrenNodes.map((project) => {
+      return {
+        key: project.name,
+        label: project.name,
+        isLeaf: true,
+      };
+    });
+});
 
 const data = ref<any[]>([
   {
@@ -59,24 +51,40 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeListProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      showProjectCreatedView.value = true
-      e.stopPropagation()
+      e.stopPropagation();
+      showProjectCreatedView.value = true;
     }),
-  }
-])
+  },
+]);
+
 const nodeProps = ({ option }: { option: TreeOption }) => {
   return {
-    class: option.placeholder ? 'placeholder' : '',
-  }
-}
+    class: option.placeholder ? "placeholder" : "",
+  };
+};
 </script>
 
+<template>
+  <NTree
+    v-model:selected-keys="selectedKey"
+    :default-expanded-keys="defaultExpandedKeys"
+    block-line
+    expand-on-click
+    :data="data"
+    :node-props="nodeProps"
+  />
+  <ProjectCreatedView v-model:show="showProjectCreatedView" />
+</template>
+
 <style>
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
+.n-tree.n-tree--block-line
+  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
   background-color: transparent;
 }
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
-  background-color: var(--n-node-color-active)
+
+.n-tree.n-tree--block-line
+  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
+  background-color: var(--n-node-color-active);
 }
 
 .n-tree-node-wrapper .placeholder .n-tree-node-indent {
@@ -101,14 +109,16 @@ const nodeProps = ({ option }: { option: TreeOption }) => {
 }
 
 .dark .n-tree-node-wrapper .placeholder {
-  background-color: rgb(59,59,59, 1);
+  background-color: rgb(59, 59, 59, 1);
 }
 
 .dark .placeholder .n-tree-node-content__text {
-  color: rgba(156,163,175,0.5);
+  color: rgba(156, 163, 175, 0.5);
 }
 
-.n-tree.n-tree--block-line .n-tree-node:not(.n-tree-node--disabled):hover .iconify {
+.n-tree.n-tree--block-line
+  .n-tree-node:not(.n-tree-node--disabled):hover
+  .iconify {
   visibility: visible;
 }
 </style>

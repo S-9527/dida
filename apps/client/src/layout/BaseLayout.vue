@@ -1,3 +1,8 @@
+<script setup lang="ts">
+import TheHeader from "@/components/header/TheHeader.vue";
+import Navbar from "@/components/navbar/Navbar.vue";
+</script>
+
 <template>
   <div>
     <TheHeader />
@@ -9,10 +14,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-import TheHeader from '@/components/header/TheHeader.vue'
-import Navbar from "@/components/navbar/Navbar.vue";
-</script>
-
-<style scoped></style>

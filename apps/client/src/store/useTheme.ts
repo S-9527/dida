@@ -2,9 +2,9 @@ import { defineStore } from "pinia";
 import { computed, ref } from "vue";
 import { useDark, useLocalStorage, useToggle } from "@vueuse/core";
 import { darkTheme } from "naive-ui";
-import { Theme, Themes } from "@/composables/settings/theme.ts";
+import { Theme, Themes } from "@/composables/settings";
 
-export const useThemeStore = defineStore("theme", () => {
+export const useThemeStore = defineStore("themeStore", () => {
   const isDark = useDark();
   const toggleDark = useToggle(isDark);
   const naiveTheme = computed(() => (isDark.value ? darkTheme : null));
@@ -40,10 +40,9 @@ export const useThemeStore = defineStore("theme", () => {
 
 let globalThemeStore: ReturnType<typeof useThemeStore>;
 
+// To avoid using store before initializing Pinia.
 export const getGlobalThemeStore = () => {
-  if (!globalThemeStore) {
-    globalThemeStore = useThemeStore();
-  }
+  if (!globalThemeStore) globalThemeStore = useThemeStore();
 
   return globalThemeStore;
 };

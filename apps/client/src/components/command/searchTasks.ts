@@ -1,12 +1,12 @@
-import Fuse, { FuseResult } from "fuse.js";
+import Fuse from "fuse.js";
 import { ref } from "vue";
-import type { TasksSelector } from "@/store";
 import {
-  completeSmartProject,
   TaskStatus,
+  completeSmartProject,
   useListProjectsStore,
   useTasksStore,
 } from "@/store";
+import type { TasksSelector } from "@/store";
 
 interface SearchTaskItem {
   id: string;
@@ -16,7 +16,7 @@ interface SearchTaskItem {
   from: TasksSelector | undefined;
 }
 
-const filteredTasks = ref<FuseResult<SearchTaskItem>[]>([]);
+const filteredTasks = ref<Fuse.FuseResult<SearchTaskItem>[]>([]);
 const fuse = new Fuse([] as SearchTaskItem[], {
   keys: ["title", "desc"],
 });
@@ -25,15 +25,15 @@ export function useSearchTasks() {
   async function searchTasks(input: string) {
     const tasksStore = useTasksStore();
     const projectsStore = useListProjectsStore();
-    const tasks = await tasksStore.findAllTasksNotRemoved();
 
+    const tasks = await tasksStore.findAllTasksNotRemoved();
     const fuseTasks = tasks.map((task) => {
       const done = task.status === TaskStatus.COMPLETED;
       const from = done
         ? completeSmartProject
         : projectsStore.findProject(task.projectId);
       return {
-        id: task.id,
+        id: task.id!,
         title: task.title,
         desc: task.content,
         done,

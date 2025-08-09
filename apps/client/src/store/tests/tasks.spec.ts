@@ -1,13 +1,10 @@
 import { assertType, beforeEach, describe, expect, it, vi } from "vitest";
 import { createPinia, setActivePinia } from "pinia";
-import type { Task } from "@/store";
-import {
-  TaskStatus,
-  useTasksStore,
-  useTasksSelectorStore,
-  completeSmartProject,
-} from "@/store";
-import { liveListProject } from "@/tests/fixture/projects.ts";
+import type { Task } from "../tasks";
+import { TaskStatus, useTasksStore } from "@/store";
+import { useTasksSelectorStore } from "@/store";
+import { completeSmartProject } from "@/store";
+import { liveListProject } from "@/tests/fixture";
 import {
   fetchAllTasks,
   fetchCompleteTask,
@@ -18,10 +15,10 @@ import {
   fetchUpdateTaskContent,
   fetchUpdateTaskPosition,
   fetchUpdateTaskTitle,
-} from "@/api/task.ts";
+} from "@/api";
 import type { TaskResponse } from "@/api/types";
 
-vi.mock("@/api/task.ts");
+vi.mock("@/api");
 
 let id = 0;
 let position = 0;
@@ -112,20 +109,6 @@ describe("tasks store", () => {
     expect(fetchCompleteTask).toBeCalledWith(task.id);
   });
 
-  it("should update tasks", () => {
-    const tasksStore = useTasksStore();
-
-    tasksStore.updateTasks([createTaskResponse("吃饭")]);
-
-    const task = tasksStore.tasks[0];
-    expect(task.title).toBe("吃饭");
-    expect(task).toHaveProperty("id");
-    expect(task).toHaveProperty("content");
-    expect(task).toHaveProperty("status");
-    expect(task).toHaveProperty("projectId");
-    expect(task).toHaveProperty("position");
-  });
-
   it("should restore task", async () => {
     const tasksStore = useTasksStore();
     const task = (await tasksStore.addTask("吃饭")) as Task;
@@ -146,6 +129,20 @@ describe("tasks store", () => {
     expect(task.projectId).toBe(liveListProject.id);
     expect(tasksStore.tasks.length).toBe(0);
     expect(fetchMoveTaskToProject).toBeCalledWith(task.id, liveListProject.id);
+  });
+
+  it("should update tasks", () => {
+    const tasksStore = useTasksStore();
+
+    tasksStore.updateTasks([createTaskResponse("吃饭")]);
+
+    const task = tasksStore.tasks[0];
+    expect(task.title).toBe("吃饭");
+    expect(task).toHaveProperty("id");
+    expect(task).toHaveProperty("content");
+    expect(task).toHaveProperty("status");
+    expect(task).toHaveProperty("projectId");
+    expect(task).toHaveProperty("position");
   });
 
   describe("cancel complete task", () => {

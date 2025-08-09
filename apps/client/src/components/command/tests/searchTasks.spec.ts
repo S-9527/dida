@@ -1,13 +1,12 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { createTestingPinia } from "@pinia/testing";
 import { useSearchTasks } from "../searchTasks";
 import {
   completeSmartProject,
   useListProjectsStore,
   useTasksStore,
 } from "@/store";
-import { createTestingPinia } from "@pinia/testing";
-import { tasks } from "@/tests/fixture/tasks.ts";
-import { liveListProject } from "@/tests/fixture/projects.ts";
+import { liveListProject, tasks } from "@/tests/fixture";
 
 describe("search tasks", () => {
   beforeEach(() => {
@@ -26,11 +25,12 @@ describe("search tasks", () => {
     );
 
     const { resetSearchTasks } = useSearchTasks();
+
     resetSearchTasks();
   });
-
   it("should be search a task by title", async () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
+
     await searchTasks("吃饭");
 
     expect(filteredTasks.value.length).toBe(1);
@@ -40,12 +40,11 @@ describe("search tasks", () => {
     expect(item).toHaveProperty("desc");
     expect(item).toHaveProperty("done");
     expect(item).toHaveProperty("from");
-
-    expect(filteredTasks.value.length).toBe(1);
   });
 
   it("should be search a task by desc", async () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
+
     await searchTasks("吃什么");
 
     expect(filteredTasks.value.length).toBe(1);
@@ -54,12 +53,13 @@ describe("search tasks", () => {
 
   it("should not be found when the task does not exist", async () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
+
     await searchTasks("运动");
 
     expect(filteredTasks.value.length).toBe(0);
   });
 
-  it("should be task’s project is listProject when status is active", async () => {
+  it("should be task's project is listProject when status is active", async () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
 
     await searchTasks("吃饭");
@@ -67,8 +67,7 @@ describe("search tasks", () => {
     expect(filteredTasks.value[0].item.done).toBe(false);
     expect(filteredTasks.value[0].item.from?.name).toBe("生活");
   });
-
-  it("should be task’s project is completeSmartProject when status is complete", async () => {
+  it("should be task's project is completeSmartProject when status is complete", async () => {
     const { searchTasks, filteredTasks } = useSearchTasks();
 
     await searchTasks("写代码");
@@ -83,6 +82,7 @@ describe("search tasks", () => {
     const { searchTasks, filteredTasks, resetSearchTasks } = useSearchTasks();
 
     await searchTasks("吃饭");
+
     resetSearchTasks();
 
     expect(filteredTasks.value.length).toBe(0);

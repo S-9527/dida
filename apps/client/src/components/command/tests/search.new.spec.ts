@@ -8,8 +8,7 @@ import {
   useListProjectsStore,
   useTasksStore,
 } from "@/store";
-import { liveListProject } from "@/tests/fixture/projects";
-import { tasks } from "@/tests/fixture/tasks";
+import { liveListProject, tasks } from "@/tests/fixture";
 import { useCommand } from "@/composables/command";
 
 describe("search new ", () => {
@@ -44,6 +43,38 @@ describe("search new ", () => {
     );
   });
 
+  describe("ui state", () => {
+    it("should be loading is true when search is start", async () => {
+      const { search, loading } = useSearch();
+
+      search.value = "吃饭";
+
+      await vi.advanceTimersToNextTimerAsync();
+
+      expect(loading.value).toBe(true);
+    });
+
+    it("should be loading is false when search is complete", async () => {
+      const { search, loading } = useSearch();
+
+      search.value = "吃饭";
+
+      await vi.runAllTimersAsync();
+
+      expect(loading.value).toBe(false);
+    });
+
+    it("should be searching is true when search is complete", async () => {
+      const { search, searching } = useSearch();
+
+      search.value = "吃饭";
+
+      await vi.runAllTimersAsync();
+
+      expect(searching.value).toBe(true);
+    });
+  });
+
   describe("search tasks", () => {
     it("should be search a task by title", async () => {
       const { search } = useSearch();
@@ -58,8 +89,8 @@ describe("search new ", () => {
       expect(item.title).toBe("吃饭");
       expect(item).toHaveProperty("id");
       expect(item).toHaveProperty("desc");
-      expect(item).toHaveProperty("from");
       expect(item).toHaveProperty("done");
+      expect(item).toHaveProperty("from");
     });
 
     it("should be search a task by desc", async () => {
@@ -93,7 +124,6 @@ describe("search new ", () => {
       expect(filteredTasks.value[0].item.done).toBe(false);
       expect(filteredTasks.value[0].item.from?.name).toBe("生活");
     });
-
     it("should be task's project is completeSmartProject when status is complete", async () => {
       const { search } = useSearch();
       const { filteredTasks } = useSearchTasks();

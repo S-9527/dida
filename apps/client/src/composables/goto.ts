@@ -1,24 +1,27 @@
 import { useRouter } from "vue-router";
-import { RouteNames } from "@/router/const.ts";
+import { RouteNames } from "@/router/const";
 import { getRouterInstance } from "@/router";
 
 export function useGoto() {
   const router = useRouter();
 
-  const gotoHome = () =>
+  function gotoHome() {
     router.push({
       name: RouteNames.HOME,
     });
+  }
 
-  const gotoSettings = () =>
+  function gotoSettings() {
     router.push({
       name: RouteNames.SETTINGS,
     });
+  }
 
-  const gotoSettingsTheme = () =>
+  function gotoSettingsTheme() {
     router.push({
       name: RouteNames.SETTINGS_THEME,
     });
+  }
 
   return {
     gotoHome,
@@ -32,6 +35,7 @@ export function openGithub() {
   window.open(GITHUB_URL);
 }
 
+// 服务于在 setup 之外调用的场景
 export function goToLogin() {
   return getRouterInstance().replace({
     name: RouteNames.LOGIN,

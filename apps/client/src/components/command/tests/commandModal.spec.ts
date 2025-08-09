@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { computed } from "vue";
 import { useCommandModal } from "../commandModal";
-import { useSetup } from "@/tests/helper/component";
-import { fireEvent } from "@/tests/helper/fireEvent";
+import { fireEvent, useSetup } from "@/tests/helper";
 import * as misc from "@/composables/misc";
 
 describe("command modal", () => {
@@ -10,9 +9,9 @@ describe("command modal", () => {
     const { closeCommandModal } = useCommandModal();
     closeCommandModal();
   });
-
   it("should be open command modal", () => {
     const { openCommandModal, showCommandModal } = useCommandModal();
+
     openCommandModal();
 
     expect(showCommandModal.value).toBe(true);
@@ -34,12 +33,13 @@ describe("command modal", () => {
       registerKeyboardShortcut();
     });
 
-    fireEvent.keydown({
+    fireEvent.keyDown({
       key: "k",
       metaKey: true,
     });
 
     expect(showCommandModal.value).toBe(true);
+
     wrapper.unmount();
   });
 
@@ -51,12 +51,13 @@ describe("command modal", () => {
       registerKeyboardShortcut();
     });
 
-    fireEvent.keydown({
+    fireEvent.keyDown({
       key: "k",
       ctrlKey: true,
     });
 
     expect(showCommandModal.value).toBe(true);
+
     wrapper.unmount();
   });
 });

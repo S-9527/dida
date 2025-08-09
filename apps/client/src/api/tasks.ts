@@ -1,7 +1,7 @@
 import { http } from "./http";
-import type { Task } from "@/store/tasks";
-import { TaskStatus } from "@/store/tasks";
-import { TaskResponse } from "@/api/types.ts";
+import type { TaskResponse } from "./types";
+import type { Task } from "@/store";
+import { TaskStatus } from "@/store";
 
 export function fetchAllTasks({
   pId,
@@ -44,7 +44,6 @@ export function fetchCompleteTask(taskId: Task["id"]) {
     status: TaskStatus.COMPLETED,
   });
 }
-
 export function fetchRestoreTask(taskId: Task["id"]) {
   return http.patch<TaskResponse>(`/tasks/${taskId}`, {
     status: TaskStatus.ACTIVE,

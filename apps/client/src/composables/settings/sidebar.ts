@@ -9,6 +9,7 @@ interface SidebarItem {
   path: string;
 }
 
+// 如何添加一个新的 sidebar？请详细阅读 https://github.com/cuixueshe/dida/pull/52
 export const sidebars: SidebarItem[] = [
   {
     title: Sidebars.Theme,

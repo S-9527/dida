@@ -1,5 +1,5 @@
-import { CommandGoToHome } from "./CommandGoToHome.ts";
-import { CommandGoToSettingsTheme } from "./CommandGoToSettingsTheme.ts";
+import { CommandGoToHome } from "./CommandGoToHome";
+import { CommandGoToSettingsTheme } from "./CommandGoToSettingsTheme";
 export interface Command {
   name: string;
   execute: () => void;

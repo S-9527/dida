@@ -1,23 +1,36 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { Icon } from "@iconify/vue";
 import {
-  NButton, NCard, NForm, NFormItem, NInput, NModal, NPopover,
-} from 'naive-ui'
-import EmojiPicker from 'vue3-emoji-picker'
-import { Icon } from '@iconify/vue'
-import { useProjectCreatedView } from './projectCreateView'
+  NButton,
+  NCard,
+  NForm,
+  NFormItem,
+  NInput,
+  NModal,
+  NPopover,
+  NSpace,
+} from "naive-ui";
+import { computed, ref } from "vue";
+import EmojiPicker from "vue3-emoji-picker";
+import { useProjectCreatedView } from "./projectCreatedView";
 import { useListProjectsStore } from "@/store";
-import 'vue3-emoji-picker/css'
+import "vue3-emoji-picker/css";
 
 const props = defineProps({
   show: { type: Boolean },
-})
-
-const emits = defineEmits(['update:show', 'close', 'closed', 'cancel', 'confirm'])
-const inputElement = ref<HTMLInputElement>()
-const projectsStore = useListProjectsStore()
+});
+const emits = defineEmits([
+  "update:show",
+  "close",
+  "closed",
+  "cancel",
+  "confirm",
+]);
+const inputElement = ref<HTMLInputElement>();
+const projectsStore = useListProjectsStore();
 
 const {
+  cleanupInput,
   emojiValue,
   formRules,
   formValue,
@@ -29,80 +42,68 @@ const {
   isHover,
   isSavable,
   isShowPopover,
-  cleanupInput,
-} = useProjectCreatedView(inputElement)
+} = useProjectCreatedView(inputElement);
 
-const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
-
-type Actions = 'close' | 'cancel' | 'confirm'
+const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig();
+type Actions = "close" | "cancel" | "confirm";
 const isShowModal = computed({
   get() {
-    return props.show
+    return props.show;
   },
   set(val) {
-    emits('update:show', val)
+    emits("update:show", val);
   },
-})
+});
 const handleActions = (action: Actions) => {
-  emits(action)
-  cleanupInput()
-  isShowModal.value = false
-  emits('closed')
-}
+  emits(action);
+  cleanupInput();
+  isShowModal.value = false;
+  emits("closed");
+};
 
 function handleSave() {
-  let projectName = formValue.value.projectName
-  emojiValue.value && (projectName = emojiValue.value + projectName)
-  projectsStore.createProject(projectName)
-  handleActions('confirm')
+  let projectName = formValue.value.projectName;
+  emojiValue.value && (projectName = emojiValue.value + projectName);
+  projectsStore.createProject(projectName);
+  handleActions("confirm");
 }
-
-function toggleShowModal() {
-  isShowModal.value = true
-}
-
-defineExpose({
-  toggleShowModal,
-})
 </script>
 
 <template>
   <NModal
-      v-model:show="isShowModal"
-      transform-origin="center"
-      :mask-closable="!isSavable"
-      @esc="cleanupInput"
-      @close="handleActions('close')"
+    v-model:show="isShowModal"
+    transform-origin="center"
+    :mask-closable="!isSavable"
+    @esc="handleActions('close')"
+    @close="handleActions('close')"
   >
     <NCard
-        style="width: 600px"
-        size="huge"
-        role="dialog"
-        aria-modal="true"
-        :bordered="false"
+      style="width: 600px"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
+      :bordered="false"
     >
       <template #header>
-        <div class="flex font-bold justify-center">
-          添加清单
-        </div>
+        <div class="flex font-bold justify-center">添加清单</div>
       </template>
 
       <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
         <NForm :model="formValue" :rules="formRules">
           <NFormItem path="projectName">
             <NInput
-                ref="inputElement"
-                v-model:value="formValue.projectName"
-                placeholder="名称"
+              ref="inputElement"
+              v-model:value="formValue.projectName"
+              placeholder="名称"
             >
               <template #prefix>
                 <NPopover
-                    v-if="isHover"
-                    placement="bottom"
-                    trigger="click"
-                    :show="isShowPopover"
-                    :show-arrow="false"
-                    @update:show="handleUpdateShow"
+                  v-if="isHover"
+                  placement="bottom"
+                  trigger="click"
+                  :show="isShowPopover"
+                  :show-arrow="false"
+                  @update:show="handleUpdateShow"
                 >
                   <template #trigger>
                     <NButton text @click="isShowPopover = !isShowPopover">
@@ -113,11 +114,11 @@ defineExpose({
                     </NButton>
                   </template>
                   <EmojiPicker
-                      picker-type="inputValue"
-                      :native="true"
-                      :static-texts="EMOJI_STATIC_TEXTS"
-                      :group-names="EMOJI_GROUPS_NAMES"
-                      @select="handleSelectEmoji"
+                    picker-type="inputValue"
+                    :native="true"
+                    :static-texts="EMOJI_STATIC_TEXTS"
+                    :group-names="EMOJI_GROUPS_NAMES"
+                    @select="handleSelectEmoji"
                   />
                 </NPopover>
                 <NButton v-else text>
@@ -132,16 +133,13 @@ defineExpose({
       </div>
 
       <template #footer>
-        <div class="flex justify-end">
-          <NButton class="mr-3" @click="handleActions('cancel')">
-            关闭
-          </NButton>
+        <NSpace justify="end">
+          <NButton @click="handleActions('cancel')"> 关闭 </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
             保存
           </NButton>
-        </div>
+        </NSpace>
       </template>
     </NCard>
   </NModal>
 </template>
-

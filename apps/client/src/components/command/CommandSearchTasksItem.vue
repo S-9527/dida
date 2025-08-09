@@ -39,8 +39,9 @@ const goTo = async () => {
     >
       <NCheckbox :checked="props.done" disabled size="large" />
       <NEllipsis
+        style="width: 660px"
         :tooltip="false"
-        class="w-660px text-18px ml-10px text-ellipsis overflow-hidden"
+        class="text-18px ml-10px text-ellipsis overflow-hidden"
         :class="{ 'line-through': props.done }"
       >
         {{ title }}
@@ -49,7 +50,11 @@ const goTo = async () => {
         {{ from?.name }}
       </div>
     </div>
-    <NEllipsis :tooltip="false" class="w-660px w-full mt-5px ml-30px pr-80px">
+    <NEllipsis
+      style="width: 660px"
+      :tooltip="false"
+      class="w-full mt-5px ml-30px pr-80px"
+    >
       {{ desc }}
     </NEllipsis>
   </div>

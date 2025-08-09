@@ -1,13 +1,15 @@
 <script setup lang="ts">
-import { openGithub, useGoto } from "@/composables/goto.ts";
+import { openGithub, useGoto } from "@/composables/goto";
 
-const { gotoHome, gotoSettings } = useGoto()
+const { gotoHome, gotoSettings } = useGoto();
 </script>
 
 <template>
-  <div class="w-full base-color h-40px px-1% flex justify-between items-center text-16px">
+  <div
+    class="w-full base-color h-40px px-1% flex justify-between items-center text-16px"
+  >
     <div class="cursor-pointer" aria-label="Go Home" @click="gotoHome()">
-      Vue3 DiDa Todo List
+      DiDa
     </div>
     <div class="flex items-center justify-start">
       <button class="mx-2 !outline-none" @click="gotoSettings()">

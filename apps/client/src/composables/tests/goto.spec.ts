@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
 import { GITHUB_URL, goToLogin, openGithub, useGoto } from "../goto";
-import { useSetup } from "@/tests/helper/component.ts";
+import { useSetup } from "@/tests/helper";
 import { RouteNames } from "@/router/const";
 import { setupRouterMock } from "@/tests/helper/router";
 

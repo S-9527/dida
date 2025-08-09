@@ -1,10 +1,10 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
 import { TaskStatus } from "./tasks";
-import { fetchAllProjects, fetchCreateProject } from "@/api/project";
-import { fetchAllTasks } from "@/api/task";
-import { TasksSelectorType, useTasksSelectorStore } from "@/store";
-import { ProjectResponse } from "@/api/types.ts";
+import { TasksSelectorType } from "./tasksSelector";
+import { fetchAllProjects, fetchAllTasks, fetchCreateProject } from "@/api";
+import { useTasksSelectorStore } from "@/store";
+import type { ProjectResponse } from "@/api/types";
 
 export interface ListProject {
   id: string;
@@ -17,7 +17,7 @@ export const useListProjectsStore = defineStore("newProjects", () => {
   const projects = ref<ListProject[]>([]);
 
   async function init() {
-    const rawProjects: any = await fetchAllProjects();
+    const rawProjects = await fetchAllProjects();
     projects.value = rawProjects.map(mapProjectResponseToProject);
 
     if (projects.value.length > 0) {

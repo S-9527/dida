@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import { NCard, NTabPane, NTabs } from 'naive-ui'
-import SignUp from '@/components/login/SignUp.vue'
-import SignIn from '@/components/login/SignIn.vue'
+import { NCard, NTabPane, NTabs } from "naive-ui";
+import SignUp from "@/components/login/SignUp.vue";
+import SignIn from "@/components/login/SignIn.vue";
 </script>
 
 <template>
   <div>
     <NCard>
       <NTabs
-          class="card-tabs"
-          default-value="signIn"
-          size="large"
-          animated
-          pane-wrapper-style="margin: 0 -4px"
-          pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
+        class="card-tabs"
+        default-value="signIn"
+        size="large"
+        animated
+        pane-wrapper-style="margin: 0 -4px"
+        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;"
       >
         <NTabPane name="signIn" tab="登录">
           <SignIn />

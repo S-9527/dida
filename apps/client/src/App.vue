@@ -1,24 +1,23 @@
+<script setup lang="ts">
+import { NConfigProvider } from "naive-ui";
+import { useRoute } from "vue-router";
+import BaseLayout from "./layout/BaseLayout.vue";
+import { useCommand } from "@/composables/command";
+import { useThemeStore } from "@/store";
+
+const route = useRoute();
+const themeStore = useThemeStore();
+const { initCommands } = useCommand();
+initCommands();
+</script>
+
 <template>
-  <NConfigProvider :theme="naiveTheme">
+  <NConfigProvider :theme="themeStore.naiveTheme">
     <BaseLayout v-if="route.meta.layout !== false">
-      <router-view></router-view>
+      <RouterView />
     </BaseLayout>
-    <router-view v-else></router-view>
+    <RouterView v-else />
   </NConfigProvider>
 </template>
-
-<script setup lang="ts">
-import { NConfigProvider } from 'naive-ui';
-import BaseLayout from "@/layout/BaseLayout.vue";
-import { useThemeStore } from '@/store'
-import { useCommand } from "@/composables/command";
-import { useRoute } from "vue-router";
-
-const route = useRoute()
-const { naiveTheme } = useThemeStore()
-const { initCommands } = useCommand()
-
-initCommands()
-</script>
 
 <style scoped></style>

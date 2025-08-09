@@ -10,11 +10,8 @@ import {
   fetchUpdateTaskContent,
   fetchUpdateTaskPosition,
   fetchUpdateTaskTitle,
-} from "@/api/task.ts";
-import {
-  TasksSelectorType,
-  useTasksSelectorStore,
-} from "@/store/taskSelector.ts";
+} from "@/api";
+import { TasksSelectorType, useTasksSelectorStore } from "@/store";
 import { TaskResponse } from "@/api/types.ts";
 
 export enum TaskStatus {
@@ -38,14 +35,15 @@ export const useTasksStore = defineStore("tasksStore", () => {
   const tasks = ref<Task[]>([]);
   const currentActiveTask = ref<Task>();
 
-  async function updateTasks(_tasks: TaskResponse[]) {
-    tasks.value = _tasks.map(mapTaskResponseToTask);
+  function updateTasks(rawTasks: TaskResponse[]) {
+    tasks.value = rawTasks.map(mapTaskResponseToTask);
   }
 
   async function addTask(title: string): Promise<Task | undefined> {
     if (!tasksSelectorStore.currentSelector) return;
+
     if (
-      tasksSelectorStore.currentSelector.type !== TasksSelectorType.listProject
+      tasksSelectorStore.currentSelector.type === TasksSelectorType.smartProject
     )
       return;
 
@@ -53,10 +51,10 @@ export const useTasksStore = defineStore("tasksStore", () => {
       title,
       tasksSelectorStore.currentSelector.id,
     );
+
     const task = mapTaskResponseToTask(newRawTask);
     tasks.value.unshift(task);
     changeActiveTask(task);
-
     return task;
   }
 
@@ -84,13 +82,16 @@ export const useTasksStore = defineStore("tasksStore", () => {
     _removeTask(task);
     changeActiveTask(undefined);
   }
+
   async function cancelCompleteTask(task: Task) {
     function taskPositionRestorer(task: Task) {
+      // only one task
       if (tasks.value.length === 0) {
         tasks.value.push(task);
         return;
       }
 
+      // add to last position
       const lastTask = tasks.value[tasks.value.length - 1];
       if (task.position < lastTask.position) {
         tasks.value.push(task);
@@ -142,11 +143,8 @@ export const useTasksStore = defineStore("tasksStore", () => {
     task.position = newPosition;
   }
 
-  async function findAllTasksNotRemoved() {
-    const activeTasks = await fetchAllTasks({
-      status: TaskStatus.ACTIVE,
-    });
-
+  async function findAllTasksNotRemoved(): Promise<Task[]> {
+    const activeTasks = await fetchAllTasks({ status: TaskStatus.ACTIVE });
     const completedTasks = await fetchAllTasks({
       status: TaskStatus.COMPLETED,
     });
@@ -172,16 +170,17 @@ export const useTasksStore = defineStore("tasksStore", () => {
     currentActiveTask,
     addTask,
     removeTask,
-    updateTasks,
-    changeActiveTask,
     completeTask,
     restoreTask,
     moveTaskToProject,
+
+    updateTasks,
+    changeActiveTask,
     cancelCompleteTask,
+    findAllTasksNotRemoved,
     updateTaskTitle,
     updateTaskContent,
     updateTaskPosition,
-    findAllTasksNotRemoved,
   };
 });
 

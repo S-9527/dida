@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { useDrag } from "../drag";
-import { fireEvent } from "@/tests/helper/fireEvent.ts";
+import { fireEvent } from "@/tests/helper";
 
 describe("drag", () => {
   afterEach(() => {
@@ -58,7 +58,6 @@ describe("drag", () => {
   describe("move range", () => {
     it("should not move when you are on the left edge", () => {
       const el = document.createElement("div");
-
       const moveSpy = vi.fn();
 
       useDrag({
@@ -75,7 +74,6 @@ describe("drag", () => {
 
     it("should not move when you are on the right edge", () => {
       const el = document.createElement("div");
-
       const moveSpy = vi.fn();
 
       useDrag({

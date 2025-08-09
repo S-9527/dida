@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { reactive } from "vue";
 import { fetchSignIn, fetchSignUp } from "@/api/user";
 import type { UserResponse } from "@/api/types";
-import { setToken } from "@/utils/token.ts";
+import { setToken } from "@/utils/token";
 
 interface User {
   username: string;

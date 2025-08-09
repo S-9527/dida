@@ -12,7 +12,7 @@ interface ResponseData {
   message?: string;
 }
 
-const mock = new MockAdapter(http);
+const mock: MockAdapter = new MockAdapter(http);
 
 function mockReply(statusCode: number, response?: ResponseData): void {
   mock.onGet("/tasks").reply(statusCode, response ?? {});
@@ -28,11 +28,10 @@ describe("http", () => {
     mock.reset();
   });
 
-  it("should set headers Authorization when token exist", async () => {
-    const token = "Authorization";
+  it("should set headers Authorization when token exists", async () => {
+    const token = "mynameistoken";
     setToken(token);
     mockReply(200, { code: 0 });
-
     await triggerApiRequest();
 
     expect(mock.history.get[0].headers?.Authorization).toBe(`Bearer ${token}`);
@@ -56,7 +55,7 @@ describe("http", () => {
     expect(messageError).toBeCalledWith(message);
   });
 
-  it("should redirect to signing when http code is 401", async () => {
+  it("should redirect to signin when http code is 401", async () => {
     mockReply(401);
 
     await expect(() => http.get("/tasks")).rejects.toThrow();

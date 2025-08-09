@@ -7,6 +7,7 @@ import { delay } from "@/utils";
 const search = ref("");
 const loading = ref(false);
 const searching = ref(false);
+
 let isInitialized = false;
 
 export function useSearch() {
@@ -16,6 +17,7 @@ export function useSearch() {
   function init() {
     if (!isInitialized) {
       isInitialized = true;
+
       watchDebounced(
         () => search.value,
         async (v) => {
@@ -42,15 +44,15 @@ export function useSearch() {
     }
   }
 
+  const isSearchCommand = computed(() => {
+    return search.value.startsWith(">");
+  });
+
   function resetSearch() {
     search.value = "";
     loading.value = false;
     searching.value = false;
   }
-
-  const isSearchCommand = computed(() => {
-    return search.value.startsWith(">");
-  });
 
   async function handleSearch(input: string) {
     if (isSearchCommand.value) {

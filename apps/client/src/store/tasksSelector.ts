@@ -7,8 +7,7 @@ import {
   useTasksStore,
 } from "@/store";
 
-export type TasksSelector = ListProject | SmartProject | undefined;
-
+export type TasksSelector = ListProject | SmartProject;
 export enum TasksSelectorType {
   listProject = "listProject",
   smartProject = "smartProject",
