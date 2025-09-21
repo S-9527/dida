@@ -42,12 +42,15 @@ export function setupRouterGuard(router: Router) {
     finishLoading();
   });
 
-  router.beforeEach((to, from, next) => {
+  router.beforeEach((to, _from) => {
     if (to.matched.some((r) => r.meta.requiresAuth)) {
-      if (checkHaveToken()) next();
-      else messageRedirectToSignIn(() => next({ name: RouteNames.LOGIN }));
-    } else {
-      next();
+      if (checkHaveToken()) {
+        return true;
+      }
+
+      messageRedirectToSignIn(() => {
+        router.push({ name: RouteNames.LOGIN });
+      });
     }
   });
 }
