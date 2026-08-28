@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { Module } from '@nestjs/common'
 import { JwtModule } from '@nestjs/jwt'
 import { PrismaModule } from '../prisma/prisma.module'
@@ -13,7 +14,7 @@ import { UsersModule } from '../user/user.module'
     PrismaModule,
     JwtModule.register({
       global: true,
-      secret: 'dida',
+      secret: process.env.JWT_SECRET || 'dida-dev-only-secret',
       signOptions: {
         expiresIn: '7d',
       },

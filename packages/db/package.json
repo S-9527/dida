@@ -16,17 +16,22 @@
     "clean": "rm -rf dist",
     "generate": "prisma generate",
     "migrate": "prisma migrate dev",
+    "migrate:deploy": "prisma migrate deploy",
     "db:push": "prisma db push",
+    "db:seed": "tsx prisma/seed.ts",
     "db:studio": "prisma studio",
     "check-types": "tsc --noEmit -p tsconfig.json"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.10.0",
     "@prisma/client": "^7.10.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
     "@dida/tsconfig": "workspace:*",
-    "prisma": "^7.10.0"
+    "@types/bcrypt": "^6.0.0",
+    "prisma": "^7.10.0",
+    "tsx": "^4.19.0"
   }
 }

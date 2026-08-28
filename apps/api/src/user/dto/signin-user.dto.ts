@@ -3,7 +3,7 @@ import { IsNotEmpty, IsString, Length } from 'class-validator'
 export class SigninUserDto {
   @IsString()
   @IsNotEmpty()
-  @Length(5, 25)
+  @Length(3, 25)
   username: string
 
   @IsString()

@@ -23,12 +23,12 @@ export class LoginGuard implements CanActivate {
 
     const authorization = request.header('authorization') || ''
 
-    const bearer = authorization.split(' ')
+    const [scheme, headerToken] = authorization.split(' ')
+    const cookieToken = (request as Request & { cookies?: Record<string, string> }).cookies?.dida_token
+    const token = (scheme === 'Bearer' && headerToken) ? headerToken : cookieToken
 
-    if (!bearer || bearer.length < 2)
+    if (!token)
       throw new UnauthorizedException('登录 token 错误')
-
-    const token = bearer[1]
 
     try {
       const info = this.jwtService.verify(token)

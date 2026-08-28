@@ -1,8 +1,10 @@
-import type { PrismaService } from '../prisma/prisma.service'
-import type { SigninUserDto } from './dto/signin-user.dto'
-import type { SignupUserDto } from './dto/signup-user.dto'
 import { HttpException, Injectable, Logger } from '@nestjs/common'
-import { md5 } from '../utils/md5'
+import * as bcrypt from 'bcrypt'
+import { PrismaService } from '../prisma/prisma.service'
+import { SigninUserDto } from './dto/signin-user.dto'
+import { SignupUserDto } from './dto/signup-user.dto'
+
+const SALT_ROUNDS = 10
 
 @Injectable()
 export class UsersService {
@@ -20,7 +22,8 @@ export class UsersService {
     if (!user)
       throw new HttpException('Invalid username or password', 200)
 
-    if (user.password !== md5(signinUserDto.password))
+    const passwordMatches = await bcrypt.compare(signinUserDto.password, user.password)
+    if (!passwordMatches)
       throw new HttpException('Invalid username or password', 200)
 
     return user
@@ -37,10 +40,11 @@ export class UsersService {
       throw new HttpException('用户已存在', 200)
 
     try {
+      const password = await bcrypt.hash(signupUserDto.password, SALT_ROUNDS)
       return await this.prisma.client.user.create({
         data: {
           username: signupUserDto.username,
-          password: md5(signupUserDto.password),
+          password,
         },
       })
     }

@@ -11,11 +11,14 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  username  String   @unique
+  id        String    @id @default(cuid())
+  username  String    @unique
   password  String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+
+  projects Project[]
+  tasks    Task[]
 
   @@map("users")
 }
@@ -23,11 +26,14 @@ model User {
 model Project {
   id        String   @id @default(cuid())
   name      String
+  userId    String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   tasks Task[]
 
+  @@index([userId])
   @@map("projects")
 }
 
@@ -38,11 +44,14 @@ model Task {
   status    TaskStatus @default(ACTIVE)
   position  Int?
   projectId String
+  userId    String
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
 
   project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  @@index([userId])
   @@map("tasks")
 }
 

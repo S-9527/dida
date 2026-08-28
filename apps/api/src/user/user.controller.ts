@@ -1,15 +1,25 @@
-import type { SigninUserDto } from './dto/signin-user.dto'
-import type { SignupUserDto } from './dto/signup-user.dto'
-import type { UsersService } from './user.service'
+import type { Response } from 'express'
+import type { AuthUser } from '../core/current-user.decorator'
+import process from 'node:process'
 import {
   Body,
   Controller,
+  Get,
   HttpException,
   Inject,
   Post,
-  ValidationPipe,
+  Res,
+  UseGuards,
 } from '@nestjs/common'
 import { JwtService } from '@nestjs/jwt'
+import { CurrentUser as CurrentUserDecorator } from '../core/current-user.decorator'
+import { LoginGuard } from '../core/login.guard'
+import { SigninUserDto } from './dto/signin-user.dto'
+import { SignupUserDto } from './dto/signup-user.dto'
+import { UsersService } from './user.service'
+
+const TOKEN_COOKIE = 'dida_token'
+const isDev = process.env.NODE_ENV !== 'production'
 
 @Controller('users')
 export class UsersController {
@@ -18,8 +28,23 @@ export class UsersController {
 
   constructor(private readonly usersService: UsersService) {}
 
+  @Get('me')
+  @UseGuards(LoginGuard)
+  me(@CurrentUserDecorator() user: AuthUser) {
+    return { username: user.username }
+  }
+
+  @Post('signout')
+  signout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie(TOKEN_COOKIE, this.cookieOptions())
+    return { username: '' }
+  }
+
   @Post('signin')
-  async signin(@Body(ValidationPipe) signinUserDto: SigninUserDto) {
+  async signin(
+    @Body() signinUserDto: SigninUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     const user = await this.usersService.signin(signinUserDto)
 
     if (!user) {
@@ -27,11 +52,15 @@ export class UsersController {
     }
 
     const token = await this.signToken(user)
-    return this.mapResponse(user, token)
+    res.cookie(TOKEN_COOKIE, token, this.cookieOptions())
+    return { user: { username: user.username } }
   }
 
   @Post('signup')
-  async signup(@Body(ValidationPipe) signupUserDto: SignupUserDto) {
+  async signup(
+    @Body() signupUserDto: SignupUserDto,
+    @Res({ passthrough: true }) res: Response,
+  ) {
     if (signupUserDto.password !== signupUserDto.confirmPassword) {
       throw new HttpException('两次输入的密码不一致', 200)
     }
@@ -43,7 +72,8 @@ export class UsersController {
     }
 
     const token = await this.signToken(user)
-    return this.mapResponse(user, token)
+    res.cookie(TOKEN_COOKIE, token, this.cookieOptions())
+    return { user: { username: user.username } }
   }
 
   private async signToken(user) {
@@ -55,10 +85,12 @@ export class UsersController {
     })
   }
 
-  private mapResponse(user, token) {
+  private cookieOptions() {
     return {
-      user: { username: user.username },
-      token,
+      httpOnly: true,
+      sameSite: 'lax' as const,
+      secure: !isDev,
+      maxAge: 7 * 24 * 60 * 60 * 1000,
     }
   }
 }
