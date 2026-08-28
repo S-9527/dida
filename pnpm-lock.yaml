@@ -120,9 +120,6 @@ importers:
 
   apps/client:
     dependencies:
-      '@imengyu/vue3-context-menu':
-        specifier: ^1.4.0
-        version: 1.4.0
       axios:
         specifier: ^1.11.0
         version: 1.11.0
@@ -1066,9 +1063,6 @@ packages:
     resolution: {integrity: sha512-RL85Bm/DAe8y6rT6pux7D2FJSiUEM/TPfyK7GrbAOfTSwrhvwJW+S5yijdGcmtXouA8MtuH9C7l4hiSE4mLMjg==}
     peerDependencies:
       vue: '>=3'
-
-  '@imengyu/vue3-context-menu@1.4.0':
-    resolution: {integrity: sha512-tb3664I5ETW50kSg6WiSF2NBxIh3pX+BTf4Ra3wfiLSc22e1qVWPRvU06uI3PbxSEir9JIHc3YGRWjD4sJurwg==}
 
   '@inquirer/ansi@1.0.2':
     resolution: {integrity: sha512-S8qNSZiYzFd0wAcyG5AXCvUHC5Sr7xpZ9wZ2py9XR88jUz8wooStVx5M6dRzczbBWjic9NP7+rY0Xi7qqK/aMQ==}
@@ -7532,8 +7526,6 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
       vue: 3.5.42(typescript@5.8.3)
-
-  '@imengyu/vue3-context-menu@1.4.0': {}
 
   '@inquirer/ansi@1.0.2': {}
 

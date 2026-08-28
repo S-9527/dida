@@ -1,6 +1,7 @@
 export { useCommandModalStore } from './commandModal'
 export type { Command } from './commands'
 export { useCommandsStore } from './commands'
+export { useContextMenuStore } from './contextMenu'
 export type { ListProject } from './listProjects'
 export { loadListProjectTasks, useListProjectsStore } from './listProjects'
 export { useSearchStore } from './search'

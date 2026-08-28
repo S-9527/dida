@@ -11,7 +11,6 @@
     "test": "vitest"
   },
   "dependencies": {
-    "@imengyu/vue3-context-menu": "^1.4.0",
     "axios": "^1.11.0",
     "ink-mde": "^0.32.0",
     "lodash-es": "^4.17.21",

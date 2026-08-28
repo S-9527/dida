@@ -2,6 +2,7 @@
 import { NConfigProvider } from 'naive-ui'
 import { useRoute } from 'vue-router'
 import { useCommandsStore, useThemeStore } from '@/store'
+import ContextMenu from './components/ContextMenu.vue'
 import BaseLayout from './layout/BaseLayout.vue'
 
 const route = useRoute()
@@ -17,6 +18,7 @@ commandsStore.initCommands()
       <RouterView />
     </BaseLayout>
     <RouterView v-else />
+    <ContextMenu />
   </NConfigProvider>
 </template>
 

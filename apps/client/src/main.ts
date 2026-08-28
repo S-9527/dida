@@ -1,9 +1,7 @@
-import ContextMenu from '@imengyu/vue3-context-menu'
 import { createPinia } from 'pinia'
 import { createApp } from 'vue'
 import App from './App.vue'
 import { setupRouter } from './router'
-import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
 import './style/tokens.css'
@@ -11,7 +9,7 @@ import './style/base.css'
 import './style/overrides.css'
 
 (async function setupApp() {
-  const app = createApp(App).use(createPinia()).use(ContextMenu)
+  const app = createApp(App).use(createPinia())
   await setupRouter(app)
   // This must be placed at bottom of app initialization, before mount.
   resolveNaiveAndTailwindConflict()

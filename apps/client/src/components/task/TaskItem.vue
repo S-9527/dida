@@ -37,8 +37,7 @@ const checkboxClass = computed(() => {
 })
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
-  tasksStore.changeActiveTask(task)
-  showContextMenu(e)
+  showContextMenu(e, task)
 }
 
 function handleClickTask(task: Task) {
