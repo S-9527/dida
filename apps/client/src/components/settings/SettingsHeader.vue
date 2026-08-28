@@ -1,15 +1,17 @@
 <script setup lang="ts">
-import { NSpace } from "naive-ui";
-import { useGoto } from "@/composables/goto";
+import { NSpace } from 'naive-ui'
+import { useGoto } from '@/composables/goto'
 
-const { gotoHome } = useGoto();
+const { gotoHome } = useGoto()
 </script>
 
 <template>
   <NSpace justify="space-between" item-style="center">
-    <h1 class="text-3xl">设置</h1>
+    <h1 class="text-3xl">
+      设置
+    </h1>
     <button
-      class="w-100px h-40px rounded-md bg-blue-500 text-white text-16px hover:bg-blue-400 active:bg-blue-700 transition-colors"
+      class="h-40px w-100px rounded-md bg-blue-500 text-16px text-white transition-colors active:bg-blue-700 hover:bg-blue-400"
       @click="() => gotoHome()"
     >
       完成

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { openGithub, useGoto } from "@/composables/goto";
+import { openGithub, useGoto } from '@/composables/goto'
 
-const { gotoHome, gotoSettings } = useGoto();
+const { gotoHome, gotoSettings } = useGoto()
 </script>
 
 <template>
   <div
-    class="w-full base-color h-40px px-1% flex justify-between items-center text-16px"
+    class="h-40px w-full flex items-center justify-between base-color px-1% text-16px"
   >
     <div class="cursor-pointer" aria-label="Go Home" @click="gotoHome()">
       DiDa

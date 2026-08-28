@@ -1,39 +1,39 @@
-import { beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { useSearchCommands } from "../searchCommands";
-import { useCommand } from "@/composables/command";
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import { useCommand } from '@/composables/command'
+import { useSearchCommands } from '../searchCommands'
 
-describe("search commands", () => {
-  beforeEach(() => {
-    const { resetSearchCommands } = useSearchCommands();
-    resetSearchCommands();
-  });
+describe('search commands', () => {
   beforeAll(() => {
-    const { addCommand } = useCommand();
+    const { addCommand } = useCommand()
 
     addCommand({
-      name: "回到主页",
+      name: '回到主页',
       execute() {},
-    });
+    })
 
     addCommand({
-      name: "切换皮肤",
+      name: '切换皮肤',
       execute() {},
-    });
-  });
-  it("should be search a command", () => {
-    const { searchCommands, filteredCommands } = useSearchCommands();
+    })
+  })
+  beforeEach(() => {
+    const { resetSearchCommands } = useSearchCommands()
+    resetSearchCommands()
+  })
+  it('should be search a command', () => {
+    const { searchCommands, filteredCommands } = useSearchCommands()
 
-    searchCommands("主页");
+    searchCommands('主页')
 
-    expect(filteredCommands.value.length).toBe(1);
-    expect(filteredCommands.value[0].name).toBe("回到主页");
-  });
+    expect(filteredCommands.value.length).toBe(1)
+    expect(filteredCommands.value[0].name).toBe('回到主页')
+  })
 
-  it("should be search all commands ", () => {
-    const { searchCommands, filteredCommands } = useSearchCommands();
+  it('should be search all commands ', () => {
+    const { searchCommands, filteredCommands } = useSearchCommands()
 
-    searchCommands("");
+    searchCommands('')
 
-    expect(filteredCommands.value.length).toBe(2);
-  });
-});
+    expect(filteredCommands.value.length).toBe(2)
+  })
+})

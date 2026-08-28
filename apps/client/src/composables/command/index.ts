@@ -1,24 +1,25 @@
-import { CommandGoToHome } from "./CommandGoToHome";
-import { CommandGoToSettingsTheme } from "./CommandGoToSettingsTheme";
+import { CommandGoToHome } from './CommandGoToHome'
+import { CommandGoToSettingsTheme } from './CommandGoToSettingsTheme'
+
 export interface Command {
-  name: string;
-  execute: () => void;
+  name: string
+  execute: () => void
 }
 
-let commands: Command[] = [];
+let commands: Command[] = []
 
 export function useCommand() {
   function initCommands() {
-    commands.push(new CommandGoToHome());
-    commands.push(new CommandGoToSettingsTheme());
+    commands.push(new CommandGoToHome())
+    commands.push(new CommandGoToSettingsTheme())
   }
 
   function resetCommand() {
-    commands = [];
+    commands = []
   }
 
   function addCommand(command: Command) {
-    commands.push(command);
+    commands.push(command)
   }
 
   return {
@@ -26,5 +27,5 @@ export function useCommand() {
     initCommands,
     resetCommand,
     addCommand,
-  };
+  }
 }

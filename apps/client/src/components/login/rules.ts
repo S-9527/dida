@@ -1,58 +1,58 @@
-import type { FormItemRule } from "naive-ui";
+import type { FormItemRule } from 'naive-ui'
 import {
   validatePasswordLength,
   validatePasswordSame,
   validateUsernameLength,
-} from "./validator";
+} from './validator'
 
 export function createUsernameRule() {
   return [
     {
       required: true,
-      message: "请输入帐号",
-      trigger: "blur",
+      message: '请输入帐号',
+      trigger: 'blur',
     },
     {
       validator(_rule: FormItemRule, value: string) {
-        return validateUsernameLength(value);
+        return validateUsernameLength(value)
       },
-      message: "长度要大于 5 小于 25",
-      trigger: "blur",
+      message: '长度要大于 5 小于 25',
+      trigger: 'blur',
     },
-  ];
+  ]
 }
 
 export function createPasswordRule() {
   return [
     {
       required: true,
-      message: "请输入密码",
-      trigger: "blur",
+      message: '请输入密码',
+      trigger: 'blur',
     },
 
     {
       validator(_rule: FormItemRule, value: string) {
-        return validatePasswordLength(value);
+        return validatePasswordLength(value)
       },
-      message: "长度要大于 6 小于 30",
-      trigger: "blur",
+      message: '长度要大于 6 小于 30',
+      trigger: 'blur',
     },
-  ];
+  ]
 }
 
 export function createConfirmPasswordRule(formValue: { password: string }) {
   return [
     {
       required: true,
-      message: "请再次输入密码",
-      trigger: ["input", "blur"],
+      message: '请再次输入密码',
+      trigger: ['input', 'blur'],
     },
     {
       validator: (_rule: FormItemRule, value: string) => {
-        return validatePasswordSame(formValue.password, value);
+        return validatePasswordSame(formValue.password, value)
       },
-      message: "两次密码输入不一致",
-      trigger: ["blur", "password-input"],
+      message: '两次密码输入不一致',
+      trigger: ['blur', 'password-input'],
     },
-  ];
+  ]
 }

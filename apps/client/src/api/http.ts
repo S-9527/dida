@@ -1,45 +1,45 @@
-import type { AxiosInstance, AxiosResponse } from "axios";
-import axios from "axios";
-import { checkHaveToken, getToken } from "@/utils/token";
-import { messageError, messageRedirectToSignIn } from "@/composables/message";
-import { goToLogin } from "@/composables";
+import type { AxiosInstance, AxiosResponse } from 'axios'
+import axios from 'axios'
+import { goToLogin } from '@/composables'
+import { messageError, messageRedirectToSignIn } from '@/composables/message'
+import { checkHaveToken, getToken } from '@/utils/token'
 
 export const http: AxiosInstance = axios.create({
-  baseURL: "http://localhost:3000",
+  baseURL: 'http://localhost:3000',
   timeout: 10000,
-  headers: { "Content-Type": "application/json" },
-});
+  headers: { 'Content-Type': 'application/json' },
+})
 
 http.interceptors.request.use((config) => {
   if (checkHaveToken()) {
-    config.headers.Authorization = `Bearer ${getToken()}`;
+    config.headers.Authorization = `Bearer ${getToken()}`
   }
 
-  return config;
-});
+  return config
+})
 
 http.interceptors.response.use(
   (response: AxiosResponse) => {
-    const { code, message, data } = response.data;
+    const { code, message, data } = response.data
     if (code === 0) {
-      return data;
+      return data
     }
 
-    messageError(message);
-    return Promise.reject(new Error(message));
+    messageError(message)
+    return Promise.reject(new Error(message))
   },
   (error) => {
     if (error.response.status) {
-      handleError(error.response);
-      return Promise.reject(error);
+      handleError(error.response)
+      return Promise.reject(error)
     }
   },
-);
+)
 
 function handleError(response: AxiosResponse) {
   switch (response.status) {
     case 401:
-      messageRedirectToSignIn(goToLogin);
-      break;
+      messageRedirectToSignIn(goToLogin)
+      break
   }
 }

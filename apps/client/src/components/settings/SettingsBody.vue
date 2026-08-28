@@ -3,11 +3,11 @@ import SettingsSidebar from './SettingsSidebar.vue'
 </script>
 
 <template>
-  <div class="flex justify-between items-center min-h-400px rounded-5px overflow-hidden">
-    <div class="w-1/5 dark:bg-#1f1f1f bg-white min-h-400px">
+  <div class="min-h-400px flex items-center justify-between overflow-hidden rounded-5px">
+    <div class="min-h-400px w-1/5 bg-white dark:bg-#1f1f1f">
       <SettingsSidebar />
     </div>
-    <div class="w-4/5 dark:bg-#2e2e2e bg-white min-h-400px">
+    <div class="min-h-400px w-4/5 bg-white dark:bg-#2e2e2e">
       <router-view />
     </div>
   </div>

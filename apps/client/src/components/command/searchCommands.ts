@@ -1,33 +1,33 @@
-import Fuse from "fuse.js";
-import { ref } from "vue";
-import type { Command } from "@/composables/command";
-import { useCommand } from "@/composables/command";
+import type { Command } from '@/composables/command'
+import Fuse from 'fuse.js'
+import { ref } from 'vue'
+import { useCommand } from '@/composables/command'
 
-const filteredCommands = ref<Command[]>([]);
+const filteredCommands = ref<Command[]>([])
 const fuse = new Fuse([] as Command[], {
-  keys: ["name"],
-});
+  keys: ['name'],
+})
 
 export function useSearchCommands() {
-  const { commands } = useCommand();
+  const { commands } = useCommand()
 
   function searchCommands(input: string) {
     if (!input) {
-      resetSearchCommands();
-      return;
+      resetSearchCommands()
+      return
     }
 
-    fuse.setCollection(commands);
-    filteredCommands.value = fuse.search(input).map((i) => i.item);
+    fuse.setCollection(commands)
+    filteredCommands.value = fuse.search(input).map(i => i.item)
   }
 
   function resetSearchCommands() {
-    filteredCommands.value = commands;
+    filteredCommands.value = commands
   }
 
   return {
     filteredCommands,
     searchCommands,
     resetSearchCommands,
-  };
+  }
 }

@@ -1,45 +1,45 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { NPopover } from "naive-ui";
-import { ref } from "vue";
-import { useTaskLeftListStore } from "./taskLeftList";
-import type { SmartProjectName } from "@/store";
-import { useSettingsStore, useSmartProjects } from "@/store";
+import type { SmartProjectName } from '@/store'
+import { Icon } from '@iconify/vue'
+import { NPopover } from 'naive-ui'
+import { ref } from 'vue'
+import { useSettingsStore, useSmartProjects } from '@/store'
+import { useTaskLeftListStore } from './taskLeftList'
 
 export interface TaskListType {
-  key: number;
-  icon: string;
-  title: `${SmartProjectName}`;
-  option?: string;
+  key: number
+  icon: string
+  title: `${SmartProjectName}`
+  option?: string
 }
 
 function useProjectMoreActions() {
-  const showMoreIconIndex = ref<number>(-1);
-  const showWitchPopover = ref<number>(-1);
+  const showMoreIconIndex = ref<number>(-1)
+  const showWitchPopover = ref<number>(-1)
 
   const openPopover = (key: number) => {
-    showWitchPopover.value = key;
-  };
+    showWitchPopover.value = key
+  }
 
   return {
     showMoreIconIndex,
     showWitchPopover,
     openPopover,
-  };
+  }
 }
 
-const taskLeftListStore = useTaskLeftListStore();
-const settingsStore = useSettingsStore();
-const selected = "bg-[#E7F5EE] dark:bg-[#233633]";
+const taskLeftListStore = useTaskLeftListStore()
+const settingsStore = useSettingsStore()
+const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
 
-const smartProjects = useSmartProjects();
-const { showMoreIconIndex, showWitchPopover, openPopover } =
-  useProjectMoreActions();
+const smartProjects = useSmartProjects()
+const { showMoreIconIndex, showWitchPopover, openPopover }
+  = useProjectMoreActions()
 
-const handleTaskItemClick = (projectName: string) => {
-  smartProjects.selectProject(projectName as SmartProjectName);
-  taskLeftListStore.selectedKey = projectName;
-};
+function handleTaskItemClick(projectName: string) {
+  smartProjects.selectProject(projectName as SmartProjectName)
+  taskLeftListStore.selectedKey = projectName
+}
 </script>
 
 <template>
@@ -82,7 +82,7 @@ const handleTaskItemClick = (projectName: string) => {
             class="color-[#9D9FA3]"
             dark="color-white"
             @click="
-              ($event) => {
+              ($event: MouseEvent) => {
                 $event.stopPropagation();
                 openPopover(key);
               }
@@ -92,10 +92,8 @@ const handleTaskItemClick = (projectName: string) => {
         <ul w-180px cursor-pointer>
           <li
             hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-            pl-4
-            text-14px
-            h-20px
-            lh-20px
+
+            h-20px pl-4 text-14px lh-20px
             @click="settingsStore.setHideSmartProject(item)"
           >
             隐藏

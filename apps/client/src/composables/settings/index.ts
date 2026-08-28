@@ -1,4 +1,4 @@
 export { sidebars } from './sidebar'
-export { smartProjects, setHideSmartProject, SmartProjectOptionValue } from './smartProject'
+export { setHideSmartProject, SmartProjectOptionValue, smartProjects } from './smartProject'
 export type { VisibleOption } from './smartProject'
-export { Themes, Theme } from './theme'
+export { Theme, Themes } from './theme'

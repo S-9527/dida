@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import { NSelect } from "naive-ui";
-import { useSettingsStore } from "@/store";
+import { Icon } from '@iconify/vue'
+import { NSelect } from 'naive-ui'
+import { useSettingsStore } from '@/store'
 
-const settingsStore = useSettingsStore();
+const settingsStore = useSettingsStore()
 </script>
 
 <template>
@@ -11,11 +11,8 @@ const settingsStore = useSettingsStore();
     <li
       v-for="(item, key) in settingsStore.settingsSmartProjects"
       :key="key"
-      pl-4
-      pr-2
-      h-60px
-      flex
-      items-center
+
+      h-60px flex items-center pl-4 pr-2
     >
       <div w-120px flex items-center>
         <Icon

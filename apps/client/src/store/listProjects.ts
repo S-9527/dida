@@ -1,64 +1,64 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
-import { TaskStatus } from "./tasks";
-import { TasksSelectorType } from "./tasksSelector";
-import { fetchAllProjects, fetchAllTasks, fetchCreateProject } from "@/api";
-import { useTasksSelectorStore } from "@/store";
-import type { ProjectResponse } from "@/api/types";
+import type { ProjectResponse } from '@/api/types'
+import { defineStore } from 'pinia'
+import { ref } from 'vue'
+import { fetchAllProjects, fetchAllTasks, fetchCreateProject } from '@/api'
+import { useTasksSelectorStore } from '@/store'
+import { TaskStatus } from './tasks'
+import { TasksSelectorType } from './tasksSelector'
 
 export interface ListProject {
-  id: string;
-  name: string;
-  type: TasksSelectorType.listProject;
+  id: string
+  name: string
+  type: TasksSelectorType.listProject
 }
 
-export const useListProjectsStore = defineStore("newProjects", () => {
-  const tasksSelectorStore = useTasksSelectorStore();
-  const projects = ref<ListProject[]>([]);
+export const useListProjectsStore = defineStore('newProjects', () => {
+  const tasksSelectorStore = useTasksSelectorStore()
+  const projects = ref<ListProject[]>([])
 
   async function init() {
-    const rawProjects = await fetchAllProjects();
-    projects.value = rawProjects.map(mapProjectResponseToProject);
+    const rawProjects = await fetchAllProjects()
+    projects.value = rawProjects.map(mapProjectResponseToProject)
 
     if (projects.value.length > 0) {
-      tasksSelectorStore.setCurrentSelector(projects.value[0]);
+      tasksSelectorStore.setCurrentSelector(projects.value[0])
     }
   }
 
-  function selectProject(project: ListProject): void;
-  function selectProject(projectId: ListProject["id"]): void;
-  function selectProject(projectName: ListProject["name"]): void;
+  function selectProject(project: ListProject): void
+  function selectProject(projectId: ListProject['id']): void
+  function selectProject(projectName: ListProject['name']): void
   function selectProject(projectOrNameOrId: ListProject | string): void {
-    let project: ListProject | undefined;
-
-    project =
-      typeof projectOrNameOrId === "string"
+    const project: ListProject | undefined
+      = typeof projectOrNameOrId === 'string'
         ? findProject(projectOrNameOrId)
-        : projectOrNameOrId;
+        : projectOrNameOrId
 
-    if (project) tasksSelectorStore.setCurrentSelector(project);
+    if (project)
+      tasksSelectorStore.setCurrentSelector(project)
   }
 
   function findProject(projectIdOrName: string): ListProject | undefined {
     return projects.value.find(
-      (p) => p.name === projectIdOrName || p.id === projectIdOrName,
-    );
+      p => p.name === projectIdOrName || p.id === projectIdOrName,
+    )
   }
 
   async function createProject(name: string) {
-    if (!name) return;
+    if (!name)
+      return
 
-    const rawProject = await fetchCreateProject(name);
-    const newProject = mapProjectResponseToProject(rawProject);
-    projects.value.push(newProject);
+    const rawProject = await fetchCreateProject(name)
+    const newProject = mapProjectResponseToProject(rawProject)
+    projects.value.push(newProject)
 
-    selectProject(newProject);
+    selectProject(newProject)
   }
 
   function checkProjectIsExist(projectName: string) {
     return projects.value.some((p) => {
-      return p.name === projectName;
-    });
+      return p.name === projectName
+    })
   }
 
   return {
@@ -68,20 +68,20 @@ export const useListProjectsStore = defineStore("newProjects", () => {
     selectProject,
     findProject,
     checkProjectIsExist,
-  };
-});
+  }
+})
 
 function mapProjectResponseToProject(rawProject: ProjectResponse): ListProject {
   return {
     id: rawProject.id,
     name: rawProject.name,
     type: TasksSelectorType.listProject,
-  };
+  }
 }
 
 export async function loadListProjectTasks(pId: string) {
   return await fetchAllTasks({
     pId,
     status: TaskStatus.ACTIVE,
-  });
+  })
 }

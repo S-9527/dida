@@ -1,69 +1,69 @@
-import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createRouterMock } from "vue-router-mock";
-import { routes, setupRouterGuard } from "../index";
-import { RouteNames } from "../const";
-import { cleanToken, setToken } from "@/utils/token";
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createRouterMock } from 'vue-router-mock'
+import { cleanToken, setToken } from '@/utils/token'
+import { RouteNames } from '../const'
+import { routes, setupRouterGuard } from '../index'
 
-describe("router ", () => {
+describe('router ', () => {
   beforeEach(() => {
-    cleanToken();
-  });
+    cleanToken()
+  })
 
-  describe("requires auth", async () => {
-    it("go to task page when have token", async () => {
-      setToken("token");
-
-      const router = createRouterMock({
-        spy: {
-          create: (fn) => vi.fn(fn),
-          reset: (spy) => spy.mockClear(),
-        },
-        useRealNavigation: true,
-        routes,
-      });
-
-      setupRouterGuard(router);
-
-      await router.push({ name: RouteNames.TASK });
-
-      expect(router.currentRoute.value.name).toBe(RouteNames.TASK);
-    });
-
-    it("go to login page when have not token", async () => {
-      vi.useFakeTimers();
+  describe('requires auth', async () => {
+    it('go to task page when have token', async () => {
+      setToken('token')
 
       const router = createRouterMock({
         spy: {
-          create: (fn) => vi.fn(fn),
-          reset: (spy) => spy.mockClear(),
+          create: fn => vi.fn(fn),
+          reset: spy => spy.mockClear(),
         },
         useRealNavigation: true,
         routes,
-      });
+      })
 
-      setupRouterGuard(router);
+      setupRouterGuard(router)
 
-      router.push({ name: RouteNames.TASK });
-      await vi.runAllTimersAsync();
+      await router.push({ name: RouteNames.TASK })
 
-      expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN);
-    });
-  });
+      expect(router.currentRoute.value.name).toBe(RouteNames.TASK)
+    })
 
-  it("go to login page when do not requires auth", async () => {
+    it('go to login page when have not token', async () => {
+      vi.useFakeTimers()
+
+      const router = createRouterMock({
+        spy: {
+          create: fn => vi.fn(fn),
+          reset: spy => spy.mockClear(),
+        },
+        useRealNavigation: true,
+        routes,
+      })
+
+      setupRouterGuard(router)
+
+      router.push({ name: RouteNames.TASK })
+      await vi.runAllTimersAsync()
+
+      expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN)
+    })
+  })
+
+  it('go to login page when do not requires auth', async () => {
     const router = createRouterMock({
       spy: {
-        create: (fn) => vi.fn(fn),
-        reset: (spy) => spy.mockClear(),
+        create: fn => vi.fn(fn),
+        reset: spy => spy.mockClear(),
       },
       useRealNavigation: true,
       routes,
-    });
+    })
 
-    setupRouterGuard(router);
+    setupRouterGuard(router)
 
-    await router.push({ name: RouteNames.LOGIN });
+    await router.push({ name: RouteNames.LOGIN })
 
-    expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN);
-  });
-});
+    expect(router.currentRoute.value.name).toBe(RouteNames.LOGIN)
+  })
+})

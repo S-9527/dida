@@ -1,55 +1,55 @@
-import { defineStore } from "pinia";
-import { TaskStatus } from "./tasks";
-import { TasksSelectorType } from "./tasksSelector";
-import { fetchAllTasks } from "@/api";
-import { useTasksSelectorStore } from "@/store";
+import { defineStore } from 'pinia'
+import { fetchAllTasks } from '@/api'
+import { useTasksSelectorStore } from '@/store'
+import { TaskStatus } from './tasks'
+import { TasksSelectorType } from './tasksSelector'
 
 export interface SmartProject {
-  name: string;
-  type: TasksSelectorType.smartProject;
+  name: string
+  type: TasksSelectorType.smartProject
 }
 
 function createSmartProject(name: string): SmartProject {
   return {
     name,
     type: TasksSelectorType.smartProject,
-  };
+  }
 }
 
 export enum SmartProjectName {
-  Complete = "已完成",
-  Trash = "垃圾桶",
+  Complete = '已完成',
+  Trash = '垃圾桶',
 }
 export const completeSmartProject = createSmartProject(
   SmartProjectName.Complete,
-);
-export const trashSmartProject = createSmartProject(SmartProjectName.Trash);
-export const smartProjects = [completeSmartProject, trashSmartProject];
+)
+export const trashSmartProject = createSmartProject(SmartProjectName.Trash)
+export const smartProjects = [completeSmartProject, trashSmartProject]
 
-export const useSmartProjects = defineStore("smartProjects", () => {
-  const tasksSelectorStore = useTasksSelectorStore();
+export const useSmartProjects = defineStore('smartProjects', () => {
+  const tasksSelectorStore = useTasksSelectorStore()
 
   function selectProject(projectName: SmartProjectName) {
     switch (projectName) {
       case SmartProjectName.Complete:
-        tasksSelectorStore.setCurrentSelector(completeSmartProject);
-        break;
+        tasksSelectorStore.setCurrentSelector(completeSmartProject)
+        break
       case SmartProjectName.Trash:
-        tasksSelectorStore.setCurrentSelector(trashSmartProject);
-        break;
+        tasksSelectorStore.setCurrentSelector(trashSmartProject)
+        break
     }
   }
 
   return {
     selectProject,
-  };
-});
+  }
+})
 
 export async function loadSmartProjectTasks(smartProjectName: string) {
-  const status =
-    smartProjectName === "已完成" ? TaskStatus.COMPLETED : TaskStatus.REMOVED;
+  const status
+    = smartProjectName === '已完成' ? TaskStatus.COMPLETED : TaskStatus.REMOVED
   return await fetchAllTasks({
     status,
-    sortBy: "updatedAt",
-  });
+    sortBy: 'updatedAt',
+  })
 }

@@ -1,3 +1,6 @@
+import type { Project } from '@dida/db'
+import type { CreateProjectDto } from './dto/create-project.dto'
+import type { ProjectsService } from './project.service'
 import {
   Body,
   Controller,
@@ -5,12 +8,9 @@ import {
   Param,
   Post,
   ValidationPipe,
-} from "@nestjs/common";
-import { ProjectsService } from "./project.service";
-import { Project } from "@prisma/client";
-import { CreateProjectDto } from "./dto/create-project.dto";
+} from '@nestjs/common'
 
-@Controller("projects")
+@Controller('projects')
 export class ProjectsController {
   constructor(private readonly projectsService: ProjectsService) {}
 
@@ -18,16 +18,16 @@ export class ProjectsController {
   async create(
     @Body(ValidationPipe) createProjectDto: CreateProjectDto,
   ): Promise<Project> {
-    return this.projectsService.create(createProjectDto);
+    return this.projectsService.create(createProjectDto)
   }
 
   @Get()
   findAll() {
-    return this.projectsService.findAll();
+    return this.projectsService.findAll()
   }
 
-  @Get(":id")
-  async findOne(@Param("id") id: string): Promise<Project> {
-    return this.projectsService.findOne(id);
+  @Get(':id')
+  async findOne(@Param('id') id: string): Promise<Project> {
+    return this.projectsService.findOne(id)
   }
 }

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
+import { Icon } from '@iconify/vue'
 import {
   NButton,
   NCard,
@@ -9,25 +9,25 @@ import {
   NModal,
   NPopover,
   NSpace,
-} from "naive-ui";
-import { computed, ref } from "vue";
-import EmojiPicker from "vue3-emoji-picker";
-import { useProjectCreatedView } from "./projectCreatedView";
-import { useListProjectsStore } from "@/store";
-import "vue3-emoji-picker/css";
+} from 'naive-ui'
+import { computed, ref } from 'vue'
+import EmojiPicker from 'vue3-emoji-picker'
+import { useListProjectsStore } from '@/store'
+import { useProjectCreatedView } from './projectCreatedView'
+import 'vue3-emoji-picker/css'
 
 const props = defineProps({
   show: { type: Boolean },
-});
+})
 const emits = defineEmits([
-  "update:show",
-  "close",
-  "closed",
-  "cancel",
-  "confirm",
-]);
-const inputElement = ref<HTMLInputElement>();
-const projectsStore = useListProjectsStore();
+  'update:show',
+  'close',
+  'closed',
+  'cancel',
+  'confirm',
+])
+const inputElement = ref<HTMLInputElement>()
+const projectsStore = useListProjectsStore()
 
 const {
   cleanupInput,
@@ -42,30 +42,30 @@ const {
   isHover,
   isSavable,
   isShowPopover,
-} = useProjectCreatedView(inputElement);
+} = useProjectCreatedView(inputElement)
 
-const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig();
-type Actions = "close" | "cancel" | "confirm";
+const { EMOJI_STATIC_TEXTS, EMOJI_GROUPS_NAMES } = getDefaultEmojiConfig()
+type Actions = 'close' | 'cancel' | 'confirm'
 const isShowModal = computed({
   get() {
-    return props.show;
+    return props.show
   },
   set(val) {
-    emits("update:show", val);
+    emits('update:show', val)
   },
-});
-const handleActions = (action: Actions) => {
-  emits(action);
-  cleanupInput();
-  isShowModal.value = false;
-  emits("closed");
-};
+})
+function handleActions(action: Actions) {
+  emits(action)
+  cleanupInput()
+  isShowModal.value = false
+  emits('closed')
+}
 
 function handleSave() {
-  let projectName = formValue.value.projectName;
-  emojiValue.value && (projectName = emojiValue.value + projectName);
-  projectsStore.createProject(projectName);
-  handleActions("confirm");
+  let projectName = formValue.value.projectName
+  emojiValue.value && (projectName = emojiValue.value + projectName)
+  projectsStore.createProject(projectName)
+  handleActions('confirm')
 }
 </script>
 
@@ -85,7 +85,9 @@ function handleSave() {
       :bordered="false"
     >
       <template #header>
-        <div class="flex font-bold justify-center">添加清单</div>
+        <div class="flex justify-center font-bold">
+          添加清单
+        </div>
       </template>
 
       <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
@@ -134,7 +136,9 @@ function handleSave() {
 
       <template #footer>
         <NSpace justify="end">
-          <NButton @click="handleActions('cancel')"> 关闭 </NButton>
+          <NButton @click="handleActions('cancel')">
+            关闭
+          </NButton>
           <NButton type="success" :disabled="!isSavable" @click="handleSave">
             保存
           </NButton>

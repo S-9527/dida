@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { NConfigProvider } from "naive-ui";
-import { useRoute } from "vue-router";
-import BaseLayout from "./layout/BaseLayout.vue";
-import { useCommand } from "@/composables/command";
-import { useThemeStore } from "@/store";
+import { NConfigProvider } from 'naive-ui'
+import { useRoute } from 'vue-router'
+import { useCommand } from '@/composables/command'
+import { useThemeStore } from '@/store'
+import BaseLayout from './layout/BaseLayout.vue'
 
-const route = useRoute();
-const themeStore = useThemeStore();
-const { initCommands } = useCommand();
-initCommands();
+const route = useRoute()
+const themeStore = useThemeStore()
+const { initCommands } = useCommand()
+initCommands()
 </script>
 
 <template>

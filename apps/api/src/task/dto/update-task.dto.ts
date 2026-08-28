@@ -1,24 +1,24 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-import { TaskStatus } from "@prisma/client";
+import { TaskStatus } from '@dida/db'
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator'
 
 export class UpdateTaskDto {
   @IsOptional()
   @IsString()
-  title?: string;
+  title?: string
 
   @IsOptional()
   @IsString()
-  content?: string;
+  content?: string
 
   @IsOptional()
   @IsString()
-  projectId?: string;
+  projectId?: string
 
   @IsOptional()
   @IsEnum(TaskStatus)
-  status?: TaskStatus;
+  status?: TaskStatus
 
   @IsOptional()
   @IsNumber()
-  position?: number;
+  position?: number
 }

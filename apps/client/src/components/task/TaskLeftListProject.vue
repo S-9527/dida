@@ -1,47 +1,47 @@
 <script setup lang="ts">
-import { Icon } from "@iconify/vue";
-import type { TreeOption } from "naive-ui";
-import { NTree } from "naive-ui";
-import { computed, h, ref, watchEffect } from "vue";
-import "vue3-emoji-picker/css";
-import ProjectCreatedView from "./ProjectCreatedView.vue";
-import { useTaskLeftListStore } from "./taskLeftList";
+import type { TreeOption } from 'naive-ui'
+import { Icon } from '@iconify/vue'
+import { NTree } from 'naive-ui'
+import { computed, h, ref, watchEffect } from 'vue'
+import ProjectCreatedView from './ProjectCreatedView.vue'
+import { useTaskLeftListStore } from './taskLeftList'
+import 'vue3-emoji-picker/css'
 
-const taskLeftListStore = useTaskLeftListStore();
-const treeListProjectChildren = ref<TreeOption[]>([]);
-const showProjectCreatedView = ref(false);
+const taskLeftListStore = useTaskLeftListStore()
+const treeListProjectChildren = ref<TreeOption[]>([])
+const showProjectCreatedView = ref(false)
 
 const selectedKey = computed({
   get() {
-    return [taskLeftListStore.selectedKey];
+    return [taskLeftListStore.selectedKey]
   },
   set(val) {
-    taskLeftListStore.selectedKey = val[0];
+    taskLeftListStore.selectedKey = val[0]
   },
-});
+})
 
-const defaultExpandedKeys = [taskLeftListStore.listProjectRootNode.name];
+const defaultExpandedKeys = [taskLeftListStore.listProjectRootNode.name]
 
-const createRootNodeSuffix = (onclick: (e: Event) => void) => {
+function createRootNodeSuffix(onclick: (e: Event) => void) {
   return () =>
     h(Icon, {
-      icon: "ic:baseline-plus",
-      width: "20",
-      class: "invisible rounded-1 hover:bg-gray-2",
+      icon: 'ic:baseline-plus',
+      width: '20',
+      class: 'invisible rounded-1 hover:bg-gray-2',
       onclick,
-    });
-};
+    })
+}
 
 watchEffect(() => {
-  treeListProjectChildren.value =
-    taskLeftListStore.listProjectChildrenNodes.map((project) => {
+  treeListProjectChildren.value
+    = taskLeftListStore.listProjectChildrenNodes.map((project) => {
       return {
         key: project.name,
         label: project.name,
         isLeaf: true,
-      };
-    });
-});
+      }
+    })
+})
 
 const data = ref<any[]>([
   {
@@ -51,17 +51,17 @@ const data = ref<any[]>([
     isLeaf: false,
     children: treeListProjectChildren,
     suffix: createRootNodeSuffix((e: Event) => {
-      e.stopPropagation();
-      showProjectCreatedView.value = true;
+      e.stopPropagation()
+      showProjectCreatedView.value = true
     }),
   },
-]);
+])
 
-const nodeProps = ({ option }: { option: TreeOption }) => {
+function nodeProps({ option }: { option: TreeOption }) {
   return {
-    class: option.placeholder ? "placeholder" : "",
-  };
-};
+    class: option.placeholder ? 'placeholder' : '',
+  }
+}
 </script>
 
 <template>

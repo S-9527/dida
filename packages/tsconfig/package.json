@@ -1,0 +1,7 @@
+{
+  "name": "@dida/tsconfig",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Shared TypeScript configs for the dida monorepo",
+  "files": ["*.json"]
+}

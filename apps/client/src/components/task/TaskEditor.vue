@@ -1,27 +1,28 @@
 <script setup lang="ts">
-import InkMde from "ink-mde/vue";
-import { debounce } from "lodash-es";
-import { useTasksStore, useThemeStore } from "@/store";
+import InkMde from 'ink-mde/vue'
+import { debounce } from 'lodash-es'
+import { useTasksStore, useThemeStore } from '@/store'
 
-const tasksStore = useTasksStore();
-const themeStore = useThemeStore();
+const tasksStore = useTasksStore()
+const themeStore = useThemeStore()
 
 function handleInput(e: Event) {
-  if (tasksStore.currentActiveTask)
+  if (tasksStore.currentActiveTask) {
     tasksStore.updateTaskTitle(
       tasksStore.currentActiveTask,
-      (e.target as HTMLElement).innerText,
-    );
+      (e.target as HTMLElement).textContent ?? '',
+    )
+  }
 }
 
 function handleAfterUpdate(doc: string) {
   if (tasksStore.currentActiveTask)
-    tasksStore.updateTaskContent(tasksStore.currentActiveTask, doc);
+    tasksStore.updateTaskContent(tasksStore.currentActiveTask, doc)
 }
 
-const waitTime = 700;
-const debounceHandleInput = debounce(handleInput, waitTime);
-const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime);
+const waitTime = 700
+const debounceHandleInput = debounce(handleInput, waitTime)
+const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime)
 </script>
 
 <template>
@@ -44,13 +45,13 @@ const debounceHandleAfterUpdate = debounce(handleAfterUpdate, waitTime);
         />
       </div>
     </div>
-    <div v-else class="flex flex-col w-full h-full justify-center items-center">
+    <div v-else class="h-full w-full flex flex-col items-center justify-center">
       <img
         src="@/assets/empty-task-detail-icon.svg"
         alt="Empty Task Detail Icon"
-        class="w-192px h-200px"
-      />
-      <span class="text-[16px] pb-30">点击任务标题查看详情</span>
+        class="h-200px w-192px"
+      >
+      <span class="pb-30 text-[16px]">点击任务标题查看详情</span>
     </div>
   </div>
 </template>

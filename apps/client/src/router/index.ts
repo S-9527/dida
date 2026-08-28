@@ -1,22 +1,22 @@
-import type { App } from "vue";
-import type { RouteRecordRaw, Router } from "vue-router";
-import { createRouter, createWebHashHistory } from "vue-router";
-import { RouteNames } from "./const";
-import { SettingsRoute } from "./settings";
-import { messageRedirectToSignIn } from "@/composables/message";
-import { finishLoading, startLoading } from "@/composables/loadingBar";
-import { checkHaveToken } from "@/utils/token";
-import Task from "@/pages/Task.vue";
-import Login from "@/pages/Login.vue";
+import type { App } from 'vue'
+import type { Router, RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHashHistory } from 'vue-router'
+import { finishLoading, startLoading } from '@/composables/loadingBar'
+import { messageRedirectToSignIn } from '@/composables/message'
+import Login from '@/pages/Login.vue'
+import Task from '@/pages/Task.vue'
+import { checkHaveToken } from '@/utils/token'
+import { RouteNames } from './const'
+import { SettingsRoute } from './settings'
 
 export const routes: RouteRecordRaw[] = [
   {
-    path: "/",
-    redirect: "/task",
+    path: '/',
+    redirect: '/task',
     name: RouteNames.HOME,
   },
   {
-    path: "/task",
+    path: '/task',
     component: Task,
     name: RouteNames.TASK,
     meta: {
@@ -24,7 +24,7 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   {
-    path: "/login",
+    path: '/login',
     component: Login,
     name: RouteNames.LOGIN,
     meta: {
@@ -32,45 +32,45 @@ export const routes: RouteRecordRaw[] = [
     },
   },
   SettingsRoute,
-];
+]
 
 export function setupRouterGuard(router: Router) {
   router.beforeEach(() => {
-    startLoading();
-  });
+    startLoading()
+  })
   router.afterEach(() => {
-    finishLoading();
-  });
+    finishLoading()
+  })
 
   router.beforeEach((to, _from) => {
-    if (to.matched.some((r) => r.meta.requiresAuth)) {
+    if (to.matched.some(r => r.meta.requiresAuth)) {
       if (checkHaveToken()) {
-        return true;
+        return true
       }
 
       messageRedirectToSignIn(() => {
-        router.push({ name: RouteNames.LOGIN });
-      });
+        router.push({ name: RouteNames.LOGIN })
+      })
     }
-  });
+  })
 }
 
-let router: Router;
-export const setupRouter = async (app: App) => {
+let router: Router
+export async function setupRouter(app: App) {
   router = createRouter({
     history: createWebHashHistory(),
     routes,
-  });
+  })
 
-  app.use(router);
-  setupRouterGuard(router);
-  await router.isReady();
-};
+  app.use(router)
+  setupRouterGuard(router)
+  await router.isReady()
+}
 
 export function setRouterInstance(routerInstance: Router) {
-  router = routerInstance;
+  router = routerInstance
 }
 
 export function getRouterInstance() {
-  return router;
+  return router
 }

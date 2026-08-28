@@ -1,11 +1,11 @@
-import { http } from "./http";
-import type { UserResponse } from "./types";
+import type { UserResponse } from './types'
+import { http } from './http'
 
 export function fetchSignIn(username: string, password: string) {
-  return http.post<UserResponse, UserResponse>("/users/signin", {
+  return http.post<UserResponse, UserResponse>('/users/signin', {
     username,
     password,
-  });
+  })
 }
 
 export function fetchSignUp({
@@ -13,13 +13,13 @@ export function fetchSignUp({
   password,
   confirmPassword,
 }: {
-  username: string;
-  password: string;
-  confirmPassword: string;
+  username: string
+  password: string
+  confirmPassword: string
 }) {
-  return http.post<UserResponse, UserResponse>("/users/signup", {
+  return http.post<UserResponse, UserResponse>('/users/signup', {
     username,
     password,
     confirmPassword,
-  });
+  })
 }

@@ -1,51 +1,51 @@
 <script setup lang="ts">
-import { NButton, NForm, NFormItem, NInput } from "naive-ui";
+import type { FormInst } from 'naive-ui'
 
-import { reactive, ref } from "vue";
-import type { FormInst } from "naive-ui";
+import { NButton, NForm, NFormItem, NInput } from 'naive-ui'
+import { reactive, ref } from 'vue'
+import { useGoto } from '@/composables/goto'
+import { useUserStore } from '@/store'
 import {
   createConfirmPasswordRule,
   createPasswordRule,
   createUsernameRule,
-} from "./rules";
-import { useUserStore } from "@/store";
-import { useGoto } from "@/composables/goto";
+} from './rules'
 
 interface SignUpFormValue {
-  username: string;
-  password: string;
-  confirmPassword: string;
+  username: string
+  password: string
+  confirmPassword: string
 }
 
-const userStore = useUserStore();
-const { gotoHome } = useGoto();
+const userStore = useUserStore()
+const { gotoHome } = useGoto()
 
-const formRef = ref<FormInst | null>(null);
+const formRef = ref<FormInst | null>(null)
 const formValue = reactive<SignUpFormValue>({
-  username: "",
-  password: "",
-  confirmPassword: "",
-});
+  username: '',
+  password: '',
+  confirmPassword: '',
+})
 
 const rules = {
   username: createUsernameRule(),
   password: createPasswordRule(),
   confirmPassword: createConfirmPasswordRule(formValue),
-};
+}
 
 function handleSignUp(e: MouseEvent) {
-  e.preventDefault();
+  e.preventDefault()
   formRef.value?.validate(async (errors) => {
     if (!errors) {
       await userStore.signUp({
         username: formValue.username,
         password: formValue.password,
         confirmPassword: formValue.confirmPassword,
-      });
+      })
 
-      gotoHome();
+      gotoHome()
     }
-  });
+  })
 }
 </script>
 
@@ -73,9 +73,8 @@ function handleSignUp(e: MouseEvent) {
       <NButton
         attr-type="button"
         type="primary"
-        block
-        secondary
-        strong
+
+        secondary strong block
         @click="handleSignUp"
       >
         注册

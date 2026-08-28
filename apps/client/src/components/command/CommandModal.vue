@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { NModal } from 'naive-ui'
 import { watch } from 'vue'
-import { useSearch } from './search'
-import CommandBody from './CommandModalBody.vue'
 import { useCommandModal } from './commandModal'
+import CommandBody from './CommandModalBody.vue'
+import { useSearch } from './search'
 
 const { resetSearch } = useSearch()
 const { registerKeyboardShortcut, showCommandModal } = useCommandModal()

@@ -1,12 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it } from 'vitest'
 import {
   createConfirmPasswordRule,
   createPasswordRule,
   createUsernameRule,
-} from "../rules";
+} from '../rules'
 
-describe("rules", () => {
-  it("create username rules", () => {
+describe('rules', () => {
+  it('create username rules', () => {
     expect(createUsernameRule()).toMatchInlineSnapshot(`
       [
         {
@@ -20,10 +20,10 @@ describe("rules", () => {
           "validator": [Function],
         },
       ]
-    `);
-  });
+    `)
+  })
 
-  it("create createPasswordRule rules ", () => {
+  it('create createPasswordRule rules ', () => {
     expect(createPasswordRule()).toMatchInlineSnapshot(`
       [
         {
@@ -37,11 +37,11 @@ describe("rules", () => {
           "validator": [Function],
         },
       ]
-    `);
-  });
+    `)
+  })
 
-  it("create createConfirmPasswordRule rules ", () => {
-    expect(createConfirmPasswordRule({ password: "" })).toMatchInlineSnapshot(`
+  it('create createConfirmPasswordRule rules ', () => {
+    expect(createConfirmPasswordRule({ password: '' })).toMatchInlineSnapshot(`
       [
         {
           "message": "请再次输入密码",
@@ -60,6 +60,6 @@ describe("rules", () => {
           "validator": [Function],
         },
       ]
-    `);
-  });
-});
+    `)
+  })
+})

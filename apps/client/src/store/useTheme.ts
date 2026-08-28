@@ -1,31 +1,31 @@
-import { defineStore } from "pinia";
-import { computed, ref } from "vue";
-import { useDark, useLocalStorage, useToggle } from "@vueuse/core";
-import { darkTheme } from "naive-ui";
-import { Theme, Themes } from "@/composables/settings";
+import { useDark, useLocalStorage, useToggle } from '@vueuse/core'
+import { darkTheme } from 'naive-ui'
+import { defineStore } from 'pinia'
+import { computed, ref } from 'vue'
+import { Theme, Themes } from '@/composables/settings'
 
-export const useThemeStore = defineStore("themeStore", () => {
-  const isDark = useDark();
-  const toggleDark = useToggle(isDark);
-  const naiveTheme = computed(() => (isDark.value ? darkTheme : null));
+export const useThemeStore = defineStore('themeStore', () => {
+  const isDark = useDark()
+  const toggleDark = useToggle(isDark)
+  const naiveTheme = computed(() => (isDark.value ? darkTheme : null))
 
-  const currentThemeName = isDark.value ? Theme.Dark : Theme.Light;
+  const currentThemeName = isDark.value ? Theme.Dark : Theme.Light
   const currentTheme = ref(
-    Themes.find((item) => item.name === currentThemeName),
-  );
+    Themes.find(item => item.name === currentThemeName),
+  )
 
-  const sideBarWidth = 48;
-  const taskLeftListViewPadding = 10;
+  const sideBarWidth = 48
+  const taskLeftListViewPadding = 10
 
   function changeTheme(theme: Theme) {
-    const themeItem = Themes.find((item) => item.name === theme);
+    const themeItem = Themes.find(item => item.name === theme)
     if (themeItem) {
-      themeItem.handler();
-      currentTheme.value = themeItem;
+      themeItem.handler()
+      currentTheme.value = themeItem
     }
   }
 
-  useLocalStorage("isDark", isDark);
+  useLocalStorage('isDark', isDark)
 
   return {
     currentTheme,
@@ -35,14 +35,15 @@ export const useThemeStore = defineStore("themeStore", () => {
     naiveTheme,
     sideBarWidth,
     taskLeftListViewPadding,
-  };
-});
+  }
+})
 
-let globalThemeStore: ReturnType<typeof useThemeStore>;
+let globalThemeStore: ReturnType<typeof useThemeStore>
 
 // To avoid using store before initializing Pinia.
-export const getGlobalThemeStore = () => {
-  if (!globalThemeStore) globalThemeStore = useThemeStore();
+export function getGlobalThemeStore() {
+  if (!globalThemeStore)
+    globalThemeStore = useThemeStore()
 
-  return globalThemeStore;
-};
+  return globalThemeStore
+}

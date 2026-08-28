@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { useSearchCommands } from "./searchCommands";
-import { useCommandModal } from "./commandModal";
-import type { Command } from "@/composables/command";
+import type { Command } from '@/composables/command'
+import { useCommandModal } from './commandModal'
+import { useSearchCommands } from './searchCommands'
 
-const { closeCommandModal } = useCommandModal();
-const { filteredCommands } = useSearchCommands();
+const { closeCommandModal } = useCommandModal()
+const { filteredCommands } = useSearchCommands()
 
-const handleClick = (command: Command) => {
-  command.execute();
-  closeCommandModal();
-};
+function handleClick(command: Command) {
+  command.execute()
+  closeCommandModal()
+}
 </script>
 
 <template>
@@ -17,7 +17,7 @@ const handleClick = (command: Command) => {
     <div
       v-for="(item, key) in filteredCommands"
       :key="key"
-      class="hover:bg-gray-400/5 leading-30px px-2 cursor-pointer"
+      class="cursor-pointer px-2 leading-30px hover:bg-gray-400/5"
       @click="handleClick(item)"
     >
       {{ item.name }}

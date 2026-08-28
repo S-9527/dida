@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { NEmpty, NInput } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { useSearch } from './search'
+import { NEmpty, NInput } from 'naive-ui'
 import CommandSearchCommands from './CommandSearchCommands.vue'
 import CommandSearchTasks from './CommandSearchTasks.vue'
+import { useSearch } from './search'
 
 const { isSearchCommand, search, loading, searching } = useSearch()
 </script>
 
 <template>
-  <div class="base-color w-200 h-120 rounded p-sm ">
+  <div class="h-120 w-200 rounded base-color p-sm">
     <div class="flex">
       <Icon :icon="loading ? 'eos-icons:loading' : 'material-symbols:search'" width="30" />
       <NInput

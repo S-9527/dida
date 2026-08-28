@@ -1,86 +1,78 @@
 <script setup lang="ts">
-import type { Ref } from "vue";
-import { computed, ref } from "vue";
-import { Icon } from "@iconify/vue";
-import draggable from "vuedraggable";
-import TaskItem from "./TaskItem.vue";
+import { Icon } from '@iconify/vue'
+import { computed, ref, useTemplateRef } from 'vue'
+import draggable from 'vuedraggable'
+import { useTaskLeftMenu } from '@/composables'
 import {
   TasksSelectorType,
   useTasksSelectorStore,
   useTasksStore,
   useThemeStore,
-} from "@/store";
-import { useTaskLeftMenu } from "@/composables";
+} from '@/store'
+import TaskItem from './TaskItem.vue'
 
-const tasksStore = useTasksStore();
-const tasksSelectorStore = useTasksSelectorStore();
-const themeStore = useThemeStore();
-const { toggleTaskLeftMenu, taskLeftMenuVisible } = useTaskLeftMenu();
+const tasksStore = useTasksStore()
+const tasksSelectorStore = useTasksSelectorStore()
+const themeStore = useThemeStore()
+const { toggleTaskLeftMenu, taskLeftMenuVisible } = useTaskLeftMenu()
 
-function useInput() {
-  const inputRef: Ref<HTMLInputElement | null> = ref(null);
+const inputRef = useTemplateRef<HTMLInputElement>('inputRef')
 
-  function onFocus() {
-    inputRef.value!.focus();
-  }
-
-  return {
-    inputRef,
-    onFocus,
-  };
+function onFocus() {
+  inputRef.value?.focus()
 }
 
-const taskTitle = ref("");
-const dragging = ref(false);
+const taskTitle = ref('')
+const dragging = ref(false)
 
 const placeholderText = computed(() => {
-  return `添加任务至“${tasksSelectorStore.currentSelector?.name}”，回车即可保存`;
-});
+  return `添加任务至“${tasksSelectorStore.currentSelector?.name}”，回车即可保存`
+})
 const isPlaceholder = computed(() => {
-  return taskTitle.value.length === 0;
-});
+  return taskTitle.value.length === 0
+})
 
 function addTask() {
-  if (!taskTitle.value) return;
-  else tasksStore.addTask(taskTitle.value);
+  if (!taskTitle.value)
+    return
+  else tasksStore.addTask(taskTitle.value)
 
-  taskTitle.value = "";
+  taskTitle.value = ''
 }
 
 function handleInputChange(event: any) {
-  taskTitle.value = event.target.value;
+  taskTitle.value = event.target.value
 }
 
 const shouldShowTodoAdd = computed(() => {
   return (
     tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
-  );
-});
+  )
+})
 
 const shouldEnabledDrag = computed(() => {
   return (
     tasksSelectorStore.currentSelector?.type === TasksSelectorType.listProject
-  );
-});
-
-const { inputRef, onFocus } = useInput();
+  )
+})
 
 function handleEndDrag(e: any) {
-  dragging.value = false;
+  dragging.value = false
 
-  const currentTask = tasksStore.tasks[e.newIndex];
-  const currentIndex = tasksStore.tasks.length - 1 - e.newIndex;
-  tasksStore.updateTaskPosition(currentTask!, currentIndex);
+  const currentTask = tasksStore.tasks[e.newIndex]
+  const currentIndex = tasksStore.tasks.length - 1 - e.newIndex
+  tasksStore.updateTaskPosition(currentTask!, currentIndex)
 
   if (e.newIndex > e.oldIndex) {
     for (let i = e.oldIndex; i < e.newIndex; i++) {
-      const exchangedIndex = tasksStore.tasks.length - 1 - i;
-      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex);
+      const exchangedIndex = tasksStore.tasks.length - 1 - i
+      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex)
     }
-  } else {
+  }
+  else {
     for (let i = e.newIndex + 1; i < e.oldIndex + 1; i++) {
-      const exchangedIndex = tasksStore.tasks.length - 1 - i;
-      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex);
+      const exchangedIndex = tasksStore.tasks.length - 1 - i
+      tasksStore.updateTaskPosition(tasksStore.tasks[i], exchangedIndex)
     }
   }
 }
@@ -98,7 +90,7 @@ function handleEndDrag(e: any) {
         width="30"
         @click="toggleTaskLeftMenu"
       />
-      <h1 class="text-4xl ml-5px">
+      <h1 class="ml-5px text-4xl">
         {{ tasksSelectorStore.currentSelector?.name }}
       </h1>
     </div>
@@ -111,18 +103,18 @@ function handleEndDrag(e: any) {
         ref="inputRef"
         :value="taskTitle"
         type="text"
-        class="w-100% min-w-300px h-38px rounded-6px p-4px pl-12px pr-12px outline-none border-1 b-transparent bg-gray-100 dark:bg-#3B3B3B"
+        class="h-38px min-w-300px w-100% border-1 b-transparent rounded-6px bg-gray-100 p-4px pl-12px pr-12px outline-none dark:bg-#3B3B3B"
         @input="handleInputChange"
         @keypress.enter="addTask"
-      />
+      >
       <div
         v-show="isPlaceholder"
-        class="w-100% min-w-300px absolute top-0 flex items-center h-38px p-4px pl-12px pr-12px border-1 b-transparent select-none color-gray:50"
+        class="absolute top-0 h-38px min-w-300px w-100% flex select-none items-center border-1 b-transparent p-4px pl-12px pr-12px color-gray:50"
       >
         <Icon
           icon="ic:baseline-plus"
           width="20"
-          class="color-gray:50 pr-4px box-content"
+          class="box-content pr-4px color-gray:50"
         />
         {{ placeholderText }}
       </div>
@@ -153,7 +145,7 @@ function handleEndDrag(e: any) {
       </template>
     </draggable>
     <!-- 暂时性修复 contenteditable 的 bug #9 -->
-    <div class="w-full h-1px" contenteditable="false" />
+    <div class="h-1px w-full" contenteditable="false" />
   </div>
 </template>
 

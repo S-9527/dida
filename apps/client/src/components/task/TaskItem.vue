@@ -1,67 +1,69 @@
 <script setup lang="ts">
-import { NPopover } from "naive-ui";
-import { ref } from "vue";
+import type { Task } from '@/store'
+import { NPopover } from 'naive-ui'
+import { ref } from 'vue'
 import {
   useTaskOperationMessage,
   useTaskRightContextMenu,
-} from "@/composables";
-import { TaskStatus, useTasksStore, useThemeStore } from "@/store";
-import type { Task } from "@/store";
+} from '@/composables'
+import { TaskStatus, useTasksStore, useThemeStore } from '@/store'
 
 interface Props {
-  task: Task;
-  isShowDragIcon: boolean;
+  task: Task
+  isShowDragIcon: boolean
 }
 
-const props = defineProps<Props>();
-const tasksStore = useTasksStore();
-const themeStore = useThemeStore();
-const { isHover, hoverEvents } = useHandleHover();
+const props = defineProps<Props>()
+const tasksStore = useTasksStore()
+const themeStore = useThemeStore()
+const { isHover, hoverEvents } = useHandleHover()
 
-const { showCompleteMessage } = useTaskOperationMessage();
-const { showContextMenu } = useTaskRightContextMenu();
+const { showCompleteMessage } = useTaskOperationMessage()
+const { showContextMenu } = useTaskRightContextMenu()
 
 const checkboxColors: Record<TaskStatus, string> = {
-  [TaskStatus.ACTIVE]: "bg-transparent",
-  [TaskStatus.COMPLETED]: "bg-#007A78",
-  [TaskStatus.REMOVED]: "bg-#ccc",
-};
+  [TaskStatus.ACTIVE]: 'bg-transparent',
+  [TaskStatus.COMPLETED]: 'bg-#007A78',
+  [TaskStatus.REMOVED]: 'bg-#ccc',
+}
 function useHandleHover() {
-  const isHover = ref(false);
+  const isHover = ref(false)
   const hoverEvents: Record<string, () => void> = {
     mouseover: () => (isHover.value = true),
     mousemove: () => (isHover.value = true),
     mouseleave: () => (isHover.value = false),
-  };
+  }
   return {
     isHover,
     hoverEvents,
-  };
+  }
 }
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
-  tasksStore.changeActiveTask(task);
-  showContextMenu(e);
+  tasksStore.changeActiveTask(task)
+  showContextMenu(e)
 }
 
 function handleClickTask(task: Task) {
-  tasksStore.changeActiveTask(task);
+  tasksStore.changeActiveTask(task)
 }
 
 function handleInput(e: Event, task: Task) {
-  const newTitle = (e.target as HTMLElement).innerText;
-  tasksStore.updateTaskTitle(task, newTitle);
+  const newTitle = (e.target as HTMLElement).textContent ?? ''
+  tasksStore.updateTaskTitle(task, newTitle)
 }
 
-function handleCompleteTodo(e: Event) {
+function handleCompleteTodo() {
   if (props.task.status === TaskStatus.ACTIVE) {
-    tasksStore.completeTask(props.task);
-    showCompleteMessage(props.task);
-  } else if (props.task.status === TaskStatus.COMPLETED) {
-    tasksStore.restoreTask(props.task);
-  } else if (props.task.status === TaskStatus.REMOVED) {
+    tasksStore.completeTask(props.task)
+    showCompleteMessage(props.task)
+  }
+  else if (props.task.status === TaskStatus.COMPLETED) {
+    tasksStore.restoreTask(props.task)
+  }
+  else if (props.task.status === TaskStatus.REMOVED) {
     // eslint-disable-next-line no-console
-    console.log("在垃圾桶里面的 task 不可以直接恢复");
+    console.log('在垃圾桶里面的 task 不可以直接恢复')
   }
 }
 </script>
@@ -69,24 +71,18 @@ function handleCompleteTodo(e: Event) {
 <template>
   <div
     :data-id="props.task.id"
-    class="flex flex-row w-full items-center"
+    class="w-full flex flex-row items-center"
     @click.right="handleRightClickTask($event, task)"
     v-on="hoverEvents"
   >
     <i
       v-if="isHover && props.isShowDragIcon"
-      class="cursor-move text-gray dark:text-white flex-shrink-0 i-mdi-format-align-justify opacity-75 hover:opacity-100"
+      class="i-mdi-format-align-justify flex-shrink-0 cursor-move text-gray opacity-75 dark:text-white hover:opacity-100"
     />
-    <i v-else class="w-1.2em h-1.2em flex-shrink-0" />
+    <i v-else class="h-1.2em w-1.2em flex-shrink-0" />
     <div
-      flex
-      justify-start
-      items-center
-      gap-5px
-      h-40px
-      py-5px
-      flex-1
-      pl-10px
+
+      h-40px flex flex-1 items-center justify-start gap-5px py-5px pl-10px
       :class="[
         themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
         tasksStore.currentActiveTask?.id === task.id
@@ -98,12 +94,12 @@ function handleCompleteTodo(e: Event) {
     >
       <template v-if="task.status === TaskStatus.REMOVED">
         <!-- 临时加的提示 后面要去掉 -->
-        <div class="flex justify-start items-center gap-5px">
+        <div class="flex items-center justify-start gap-5px">
           <NPopover trigger="hover">
             <template #trigger>
               <button
                 :class="[checkboxColors[task.status]]"
-                class="w-5 h-5 rounded-1"
+                class="h-5 w-5 rounded-1"
                 @click="handleCompleteTodo"
               />
             </template>
@@ -117,7 +113,7 @@ function handleCompleteTodo(e: Event) {
       <template v-else>
         <button
           :class="[checkboxColors[task.status]]"
-          class="w-5 h-5 rounded-1 border border-solid border-black opacity-75 dark:border-white hover:opacity-100"
+          class="h-5 w-5 border border-black rounded-1 border-solid opacity-75 dark:border-white hover:opacity-100"
           @click="handleCompleteTodo"
         />
         <div

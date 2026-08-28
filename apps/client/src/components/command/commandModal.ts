@@ -1,34 +1,34 @@
-import { onMounted, onUnmounted, ref } from "vue";
-import { useIsMac } from "@/composables";
+import { onMounted, onUnmounted, ref } from 'vue'
+import { useIsMac } from '@/composables'
 
-const showCommandModal = ref(false);
+const showCommandModal = ref(false)
 
 export function useCommandModal() {
   function openCommandModal() {
-    showCommandModal.value = true;
+    showCommandModal.value = true
   }
 
   function closeCommandModal() {
-    showCommandModal.value = false;
+    showCommandModal.value = false
   }
 
   function registerKeyboardShortcut() {
     // Command + K will show command in MacOS
     // Ctrl + K in Windows
-    const isMac = useIsMac();
+    const isMac = useIsMac()
     const keydownHandler = (e: KeyboardEvent) => {
-      if (e.key === "k" && (isMac.value ? e.metaKey : e.ctrlKey)) {
-        e.preventDefault();
-        openCommandModal();
+      if (e.key === 'k' && (isMac.value ? e.metaKey : e.ctrlKey)) {
+        e.preventDefault()
+        openCommandModal()
       }
-    };
+    }
 
     onMounted(() => {
-      window.addEventListener("keydown", keydownHandler);
-    });
+      window.addEventListener('keydown', keydownHandler)
+    })
     onUnmounted(() => {
-      window.removeEventListener("keydown", keydownHandler);
-    });
+      window.removeEventListener('keydown', keydownHandler)
+    })
   }
 
   return {
@@ -36,5 +36,5 @@ export function useCommandModal() {
     openCommandModal,
     closeCommandModal,
     registerKeyboardShortcut,
-  };
+  }
 }

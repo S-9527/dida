@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import type { MenuOption } from "naive-ui";
-import { NMenu } from "naive-ui";
-import { h } from "vue";
-import { RouterLink, useRoute } from "vue-router";
-import { sidebars } from "@/composables/settings";
+import type { MenuOption } from 'naive-ui'
+import { NMenu } from 'naive-ui'
+import { h } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import { sidebars } from '@/composables/settings'
 
-const options: MenuOption[] = sidebars.map((sidebar) => ({
+const options: MenuOption[] = sidebars.map(sidebar => ({
   label: () =>
     h(
       RouterLink,
@@ -13,15 +13,15 @@ const options: MenuOption[] = sidebars.map((sidebar) => ({
       { default: () => sidebar.title },
     ),
   key: sidebar.path.slice(1),
-}));
+}))
 
-const route = useRoute();
+const route = useRoute()
 
-const getCurrentMenu = () => {
-  const path = route.path;
-  const pathArr = path.split("/");
-  return pathArr[pathArr.length - 1];
-};
+function getCurrentMenu() {
+  const path = route.path
+  const pathArr = path.split('/')
+  return pathArr[pathArr.length - 1]
+}
 </script>
 
 <template>

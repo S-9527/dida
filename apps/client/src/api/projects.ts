@@ -1,5 +1,5 @@
-import { http } from './http'
 import type { ProjectResponse } from './types'
+import { http } from './http'
 
 export function fetchAllProjects() {
   return http.get<ProjectResponse[], ProjectResponse[]>('/projects')
