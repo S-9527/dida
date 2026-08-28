@@ -2,20 +2,12 @@ import type { AxiosInstance, AxiosResponse } from 'axios'
 import axios from 'axios'
 import { goToLogin } from '@/composables'
 import { messageError, messageRedirectToSignIn } from '@/composables/message'
-import { checkHaveToken, getToken } from '@/utils/token'
 
 export const http: AxiosInstance = axios.create({
   baseURL: 'http://localhost:3000',
   timeout: 10000,
+  withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
-})
-
-http.interceptors.request.use((config) => {
-  if (checkHaveToken()) {
-    config.headers.Authorization = `Bearer ${getToken()}`
-  }
-
-  return config
 })
 
 http.interceptors.response.use(

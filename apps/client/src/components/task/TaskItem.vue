@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Task } from '@/store'
+import { Icon } from '@iconify/vue'
 import { NPopover } from 'naive-ui'
-import { ref } from 'vue'
+import { computed } from 'vue'
 import {
   useTaskOperationMessage,
   useTaskRightContextMenu,
 } from '@/composables'
-import { TaskStatus, useTasksStore, useThemeStore } from '@/store'
+import { TaskStatus, useTasksStore } from '@/store'
 
 interface Props {
   task: Task
@@ -15,29 +16,25 @@ interface Props {
 
 const props = defineProps<Props>()
 const tasksStore = useTasksStore()
-const themeStore = useThemeStore()
-const { isHover, hoverEvents } = useHandleHover()
 
 const { showCompleteMessage } = useTaskOperationMessage()
 const { showContextMenu } = useTaskRightContextMenu()
 
-const checkboxColors: Record<TaskStatus, string> = {
-  [TaskStatus.ACTIVE]: 'bg-transparent',
-  [TaskStatus.COMPLETED]: 'bg-#007A78',
-  [TaskStatus.REMOVED]: 'bg-#ccc',
-}
-function useHandleHover() {
-  const isHover = ref(false)
-  const hoverEvents: Record<string, () => void> = {
-    mouseover: () => (isHover.value = true),
-    mousemove: () => (isHover.value = true),
-    mouseleave: () => (isHover.value = false),
-  }
-  return {
-    isHover,
-    hoverEvents,
-  }
-}
+const isActive = computed(() => {
+  return tasksStore.currentActiveTask?.id === props.task.id
+})
+
+const checkboxClass = computed(() => {
+  const base
+    = 'flex h-16px w-16px flex-shrink-0 items-center justify-center rounded-full border-2 transition-colors duration-150'
+
+  if (props.task.status === TaskStatus.COMPLETED)
+    return `${base} border-accent bg-accent text-white`
+  if (props.task.status === TaskStatus.REMOVED)
+    return `${base} border-line bg-inset text-ink-3`
+
+  return `${base} border-line-strong bg-transparent hover:border-accent hover:text-accent`
+})
 
 function handleRightClickTask(e: MouseEvent, task: Task) {
   tasksStore.changeActiveTask(task)
@@ -71,60 +68,60 @@ function handleCompleteTodo() {
 <template>
   <div
     :data-id="props.task.id"
-    class="w-full flex flex-row items-center"
+    class="group relative w-full flex items-center gap-8px"
     @click.right="handleRightClickTask($event, task)"
-    v-on="hoverEvents"
   >
     <i
-      v-if="isHover && props.isShowDragIcon"
-      class="i-mdi-format-align-justify flex-shrink-0 cursor-move text-gray opacity-75 dark:text-white hover:opacity-100"
+      v-if="props.isShowDragIcon"
+      class="i-mdi-format-align-justify flex-shrink-0 cursor-move text-ink-3 opacity-0 transition-opacity duration-100 group-hover:opacity-100"
     />
-    <i v-else class="h-1.2em w-1.2em flex-shrink-0" />
-    <div
+    <i v-else class="h-14px w-14px flex-shrink-0" />
 
-      h-40px flex flex-1 items-center justify-start gap-5px py-5px pl-10px
-      :class="[
-        themeStore.isDark ? 'hover:bg-[#474747]/50' : 'hover:bg-[#ECF1FF]/50',
-        tasksStore.currentActiveTask?.id === task.id
-          ? themeStore.isDark
-            ? '!bg-[#474747]'
-            : '!bg-[#ECF1FF]'
-          : '',
-      ]"
+    <div
+      class="min-h-40px min-w-0 flex flex-1 items-center gap-10px rounded-lg py-6px pl-6px pr-10px transition-colors duration-100"
+      :class="{
+        'hover:bg-hover': !isActive,
+        'bg-active': isActive,
+        'opacity-60': props.task.status === TaskStatus.REMOVED,
+      }"
     >
-      <template v-if="task.status === TaskStatus.REMOVED">
-        <!-- 临时加的提示 后面要去掉 -->
-        <div class="flex items-center justify-start gap-5px">
-          <NPopover trigger="hover">
-            <template #trigger>
-              <button
-                :class="[checkboxColors[task.status]]"
-                class="h-5 w-5 rounded-1"
-                @click="handleCompleteTodo"
-              />
-            </template>
-            <div>在垃圾桶里面的 Task 是不可以直接被恢复的哦</div>
-          </NPopover>
-        </div>
-        <div class="w-full" @click="handleClickTask(task)">
-          {{ task.title }}
-        </div>
-      </template>
-      <template v-else>
-        <button
-          :class="[checkboxColors[task.status]]"
-          class="h-5 w-5 border border-black rounded-1 border-solid opacity-75 dark:border-white hover:opacity-100"
-          @click="handleCompleteTodo"
+      <NPopover
+        v-if="props.task.status === TaskStatus.REMOVED"
+        trigger="hover"
+        :show-arrow="false"
+      >
+        <template #trigger>
+          <button :class="checkboxClass" aria-label="已删除">
+            <Icon icon="carbon-trash-can" width="12" />
+          </button>
+        </template>
+        <span class="text-12px">在垃圾桶里面的 Task 是不可以直接被恢复的哦</span>
+      </NPopover>
+
+      <button
+        v-else
+        :class="checkboxClass"
+        aria-label="切换完成状态"
+        @click="handleCompleteTodo"
+      >
+        <Icon
+          v-if="props.task.status === TaskStatus.COMPLETED"
+          icon="carbon-checkmark-filled"
+          width="11"
         />
-        <div
-          class="w-full cursor-pointer focus:outline-0"
-          contenteditable="true"
-          @input="handleInput($event, task)"
-          @focus="handleClickTask(task)"
-        >
-          {{ task.title }}
-        </div>
-      </template>
+      </button>
+
+      <div
+        class="min-w-0 flex-1 cursor-pointer break-words text-14px"
+        :class="{
+          'text-ink-3 line-through': props.task.status !== TaskStatus.ACTIVE,
+        }"
+        contenteditable="true"
+        @input="handleInput($event, task)"
+        @focus="handleClickTask(task)"
+      >
+        {{ task.title }}
+      </div>
     </div>
   </div>
 </template>

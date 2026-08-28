@@ -4,11 +4,14 @@ import Item from './Item.vue'
 </script>
 
 <template>
-  <div class="p-8">
-    <div class="text-14px text-dark/70 font-light dark:text-white/70">
+  <div>
+    <h2 class="text-16px font-medium">
+      外观
+    </h2>
+    <p class="mt-2px text-13px text-ink-3">
       当前可选择的皮肤
-    </div>
-    <div class="mt-20px flex items-center justify-start gap-18px">
+    </p>
+    <div class="mt-20px flex items-start gap-18px">
       <Item
         v-for="theme in Themes"
         :key="theme.name"
@@ -19,5 +22,3 @@ import Item from './Item.vue'
     </div>
   </div>
 </template>
-
-<style scoped></style>

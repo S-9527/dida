@@ -1,5 +1,5 @@
 {
-  "name": "dida",
+  "name": "@dida/client",
   "private": true,
   "type": "module",
   "scripts": {
@@ -13,7 +13,6 @@
   "dependencies": {
     "@imengyu/vue3-context-menu": "^1.4.0",
     "axios": "^1.11.0",
-    "dexie": "^4.0.4",
     "ink-mde": "^0.32.0",
     "lodash-es": "^4.17.21",
     "naive-ui": "^2.38.1",
@@ -37,7 +36,6 @@
     "@vueuse/core": "^10.9.0",
     "axios-mock-adapter": "^1.22.0",
     "fake-indexeddb": "^5.0.2",
-    "flush-promises": "^1.0.2",
     "fuse.js": "^7.0.0",
     "happy-dom": "^18.0.1",
     "typescript": "^5.8.3",

@@ -1,8 +1,8 @@
 import type { MenuItem, MenuOptions } from '@imengyu/vue3-context-menu'
 import ContextMenu from '@imengyu/vue3-context-menu'
-import { reactive, toRefs } from 'vue'
+import { toRefs } from 'vue'
 import { useListProjectsStore, useTasksStore } from '@/store'
-import { useTaskOperationMessage } from './useTaskOperationMessage.ts'
+import { useTaskOperationMessage } from './taskOperationMessage'
 
 export function useTaskRightContextMenu() {
   const { moveTaskToProject, removeTask } = useTasksStore()
@@ -10,7 +10,7 @@ export function useTaskRightContextMenu() {
   const { showRemoveMessage, showMoveMessage } = useTaskOperationMessage()
   const listProjectsStore = useListProjectsStore()
 
-  function createMenuData(x: number, y: number): any {
+  function createMenuData(x: number, y: number): MenuOptions {
     function createMoveItem(): MenuItem {
       function getMoveListProjects() {
         return listProjectsStore.projects
@@ -44,11 +44,11 @@ export function useTaskRightContextMenu() {
       }
     }
 
-    return reactive<MenuOptions>({
+    return {
       x,
       y,
       items: [createMoveItem(), createRemoveItem()],
-    })
+    }
   }
 
   function showContextMenu(e: MouseEvent) {

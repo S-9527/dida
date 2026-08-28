@@ -6,7 +6,9 @@ import { setupRouter } from './router'
 import '@imengyu/vue3-context-menu/lib/vue3-context-menu.css'
 import '@unocss/reset/tailwind.css'
 import 'uno.css'
-import './style/overrides.css';
+import './style/tokens.css'
+import './style/base.css'
+import './style/overrides.css'
 
 (async function setupApp() {
   const app = createApp(App).use(createPinia()).use(ContextMenu)

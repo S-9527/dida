@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import type { Theme } from '@/composables/settings'
+import { Icon } from '@iconify/vue'
 import { computed } from 'vue'
 import { useThemeStore } from '@/store'
-import Selected from './Selected.vue'
 
 const props = defineProps<{
   color: string
@@ -18,24 +18,32 @@ function changeTheme() {
   if (checked.value)
     return
 
-  // 这里转换是因为目前 defineProps 仍然不支持 import type
   store.changeTheme(props.name as Theme)
 }
 </script>
 
 <template>
-  <div class="flex flex-col items-center justify-center gap-12px">
-    <div
-      class="h-60px w-60px flex cursor-pointer items-center justify-center rounded-5px"
+  <div class="flex flex-col items-center gap-10px">
+    <button
+      class="relative h-64px w-64px overflow-hidden border-2 rounded-xl transition-all duration-150"
       :style="{ background: color }"
+      :class="
+        checked
+          ? 'border-accent shadow-elev-2'
+          : 'border-line hover:border-line-strong'
+      "
+      :aria-label="`切换到${label}`"
       @click="changeTheme"
     >
-      <Selected v-if="checked" />
-    </div>
-    <div class="text-12px">
+      <span
+        v-if="checked"
+        class="absolute right-6px top-6px h-20px w-20px flex items-center justify-center rounded-full bg-accent text-white"
+      >
+        <Icon icon="carbon-checkmark-filled" width="12" />
+      </span>
+    </button>
+    <span class="text-12px" :class="checked ? 'font-medium text-ink' : 'text-ink-3'">
       {{ label }}
-    </div>
+    </span>
   </div>
 </template>
-
-<style scoped></style>

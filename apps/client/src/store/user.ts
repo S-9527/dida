@@ -1,8 +1,8 @@
 import type { UserResponse } from '@/api/types'
 import { defineStore } from 'pinia'
 import { reactive } from 'vue'
-import { fetchSignIn, fetchSignUp } from '@/api/user'
-import { setToken } from '@/utils/token'
+import { fetchSignIn, fetchSignOut, fetchSignUp } from '@/api/user'
+import { cleanToken, setToken } from '@/utils/token'
 
 interface User {
   username: string
@@ -19,7 +19,14 @@ export const useUserStore = defineStore('user', () => {
     user.username = userResponse.username
     user.nickname = userResponse.username
 
-    setToken(userResponse.token)
+    setToken(userResponse.username)
+  }
+
+  async function logout() {
+    await fetchSignOut()
+    user.username = ''
+    user.nickname = ''
+    cleanToken()
   }
 
   async function signIn(username: string, password: string) {
@@ -45,7 +52,9 @@ export const useUserStore = defineStore('user', () => {
   }
 
   return {
+    user,
     signIn,
     signUp,
+    logout,
   }
 })

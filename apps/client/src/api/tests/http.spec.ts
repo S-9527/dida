@@ -1,7 +1,6 @@
 import MockAdapter from 'axios-mock-adapter'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { messageError, messageRedirectToSignIn } from '@/composables/message'
-import { setToken } from '@/utils/token'
 import { http } from '../http'
 
 vi.mock('@/composables/message')
@@ -28,13 +27,8 @@ describe('http', () => {
     mock.reset()
   })
 
-  it('should set headers Authorization when token exists', async () => {
-    const token = 'mynameistoken'
-    setToken(token)
-    mockReply(200, { code: 0 })
-    await triggerApiRequest()
-
-    expect(mock.history.get[0].headers?.Authorization).toBe(`Bearer ${token}`)
+  it('sends credentials so the httpOnly session cookie is included', () => {
+    expect(http.defaults.withCredentials).toBe(true)
   })
 
   it('should return data of the response when code is 0', async () => {

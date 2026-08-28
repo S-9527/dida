@@ -1,25 +1,28 @@
 <script setup lang="ts">
 import { NModal } from 'naive-ui'
 import { watch } from 'vue'
-import { useCommandModal } from './commandModal'
+import { useCommandModalStore, useSearchStore } from '@/store'
+import { registerKeyboardShortcut } from './commandModal'
 import CommandBody from './CommandModalBody.vue'
-import { useSearch } from './search'
 
-const { resetSearch } = useSearch()
-const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
+const searchStore = useSearchStore()
+const commandModalStore = useCommandModalStore()
 
 registerKeyboardShortcut()
 
-watch(() => showCommandModal.value, (v) => {
+watch(() => commandModalStore.showCommandModal, (v) => {
   if (!v)
-    resetSearch()
+    searchStore.resetSearch()
 })
 </script>
 
 <template>
-  <NModal v-model:show="showCommandModal" display-directive="show">
-    <CommandBody />
+  <NModal
+    v-model:show="commandModalStore.showCommandModal"
+    display-directive="show"
+    to="body"
+    style="margin-top: 10vh"
+  >
+    <CommandBody class="w-[min(680px,calc(100vw-32px))]" />
   </NModal>
 </template>
-
-<style scoped></style>

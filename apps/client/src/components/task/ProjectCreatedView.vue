@@ -2,13 +2,11 @@
 import { Icon } from '@iconify/vue'
 import {
   NButton,
-  NCard,
   NForm,
   NFormItem,
   NInput,
   NModal,
   NPopover,
-  NSpace,
 } from 'naive-ui'
 import { computed, ref } from 'vue'
 import EmojiPicker from 'vue3-emoji-picker'
@@ -77,22 +75,29 @@ function handleSave() {
     @esc="handleActions('close')"
     @close="handleActions('close')"
   >
-    <NCard
-      style="width: 600px"
-      size="huge"
+    <div
+      class="w-[min(520px,calc(100vw-32px))] overflow-hidden border border-line rounded-xl bg-panel shadow-elev-3"
       role="dialog"
       aria-modal="true"
-      :bordered="false"
     >
-      <template #header>
-        <div class="flex justify-center font-bold">
+      <div
+        class="flex items-center justify-between border-b border-line px-20px py-16px"
+      >
+        <h2 class="text-16px font-semibold">
           添加清单
-        </div>
-      </template>
+        </h2>
+        <button class="icon-btn" aria-label="关闭" @click="handleActions('close')">
+          <Icon icon="carbon-close" width="16" />
+        </button>
+      </div>
 
-      <div @mouseover="handleMouseOver" @mouseleave="handleMouseLeave">
-        <NForm :model="formValue" :rules="formRules">
-          <NFormItem path="projectName">
+      <div
+        class="p-20px"
+        @mouseover="handleMouseOver"
+        @mouseleave="handleMouseLeave"
+      >
+        <NForm :model="formValue" :rules="formRules" label-placement="top">
+          <NFormItem path="projectName" label="名称" class="mb-0">
             <NInput
               ref="inputElement"
               v-model:value="formValue.projectName"
@@ -134,16 +139,21 @@ function handleSave() {
         </NForm>
       </div>
 
-      <template #footer>
-        <NSpace justify="end">
-          <NButton @click="handleActions('cancel')">
-            关闭
-          </NButton>
-          <NButton type="success" :disabled="!isSavable" @click="handleSave">
-            保存
-          </NButton>
-        </NSpace>
-      </template>
-    </NCard>
+      <div
+        class="flex items-center justify-end gap-10px border-t border-line bg-inset px-20px py-12px"
+      >
+        <NButton class="h-30px rounded-lg px-12px" @click="handleActions('cancel')">
+          关闭
+        </NButton>
+        <NButton
+          type="primary"
+          class="h-30px rounded-lg px-12px"
+          :disabled="!isSavable"
+          @click="handleSave"
+        >
+          保存
+        </NButton>
+      </div>
+    </div>
   </NModal>
 </template>

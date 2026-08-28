@@ -5,7 +5,7 @@ import { finishLoading, startLoading } from '@/composables/loadingBar'
 import { messageRedirectToSignIn } from '@/composables/message'
 import Login from '@/pages/Login.vue'
 import Task from '@/pages/Task.vue'
-import { checkHaveToken } from '@/utils/token'
+import { ensureAuthState } from '@/utils/token'
 import { RouteNames } from './const'
 import { SettingsRoute } from './settings'
 
@@ -42,15 +42,17 @@ export function setupRouterGuard(router: Router) {
     finishLoading()
   })
 
-  router.beforeEach((to, _from) => {
+  router.beforeEach(async (to, _from) => {
     if (to.matched.some(r => r.meta.requiresAuth)) {
-      if (checkHaveToken()) {
+      const authState = await ensureAuthState()
+      if (authState === 'authenticated') {
         return true
       }
 
       messageRedirectToSignIn(() => {
         router.push({ name: RouteNames.LOGIN })
       })
+      return false
     }
   })
 }

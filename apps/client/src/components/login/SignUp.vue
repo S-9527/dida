@@ -50,36 +50,45 @@ function handleSignUp(e: MouseEvent) {
 </script>
 
 <template>
-  <NForm ref="formRef" :model="formValue" :rules="rules">
-    <NFormItem label="帐号" path="username">
-      <NInput v-model:value="formValue.username" placeholder="输入帐号" />
+  <NForm
+    ref="formRef"
+    :model="formValue"
+    :rules="rules"
+    class="flex flex-col gap-14px"
+  >
+    <NFormItem label="帐号" path="username" label-placement="top" class="mb-0">
+      <NInput v-model:value="formValue.username" placeholder="输入帐号" size="large" />
     </NFormItem>
-    <NFormItem label="密码" path="password">
+    <NFormItem label="密码" path="password" label-placement="top" class="mb-0">
       <NInput
         v-model:value="formValue.password"
         type="password"
         placeholder="输入密码"
+        size="large"
       />
     </NFormItem>
-
-    <NFormItem label="确认密码" path="confirmPassword">
+    <NFormItem
+      label="确认密码"
+      path="confirmPassword"
+      label-placement="top"
+      class="mb-0"
+    >
       <NInput
         v-model:value="formValue.confirmPassword"
         type="password"
         placeholder="确认密码"
+        size="large"
       />
     </NFormItem>
-    <NFormItem>
-      <NButton
-        attr-type="button"
-        type="primary"
-
-        secondary strong block
-        @click="handleSignUp"
-      >
-        注册
-      </NButton>
-    </NFormItem>
+    <NButton
+      attr-type="button"
+      type="primary"
+      size="large"
+      class="mt-6px h-36px w-full rounded-lg"
+      @click="handleSignUp"
+    >
+      注册
+    </NButton>
   </NForm>
 </template>
 

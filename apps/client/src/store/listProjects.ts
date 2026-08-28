@@ -2,9 +2,9 @@ import type { ProjectResponse } from '@/api/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { fetchAllProjects, fetchAllTasks, fetchCreateProject } from '@/api'
-import { useTasksSelectorStore } from '@/store'
 import { TaskStatus } from './tasks'
-import { TasksSelectorType } from './tasksSelector'
+import { useTasksSelectorStore } from './tasksSelector'
+import { TasksSelectorType } from './types'
 
 export interface ListProject {
   id: string
@@ -12,7 +12,7 @@ export interface ListProject {
   type: TasksSelectorType.listProject
 }
 
-export const useListProjectsStore = defineStore('newProjects', () => {
+export const useListProjectsStore = defineStore('listProjects', () => {
   const tasksSelectorStore = useTasksSelectorStore()
   const projects = ref<ListProject[]>([])
 

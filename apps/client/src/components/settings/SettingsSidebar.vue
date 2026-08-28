@@ -17,6 +17,19 @@ const options: MenuOption[] = sidebars.map(sidebar => ({
 
 const route = useRoute()
 
+const menuThemeOverrides = {
+  itemHeight: '34px',
+  itemBorderRadius: '8px',
+  paddingInline: '8px',
+  itemTextColor: 'var(--ink-2)',
+  itemTextColorHover: 'var(--ink-1)',
+  itemTextColorActive: 'var(--accent)',
+  itemColorHover: 'var(--bg-hover)',
+  itemColorActive: 'var(--accent-soft)',
+  itemFontWeightActive: '500',
+  fontSize: '13px',
+}
+
 function getCurrentMenu() {
   const path = route.path
   const pathArr = path.split('/')
@@ -25,7 +38,5 @@ function getCurrentMenu() {
 </script>
 
 <template>
-  <NMenu :options="options" :default-value="getCurrentMenu()" />
+  <NMenu :options="options" :default-value="getCurrentMenu()" :theme-overrides="menuThemeOverrides" />
 </template>
-
-<style scoped></style>

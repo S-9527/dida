@@ -1,5 +1,9 @@
 import type { FormItemRule } from 'naive-ui'
 import {
+  PASSWORD_MAX,
+  PASSWORD_MIN,
+  USERNAME_MAX,
+  USERNAME_MIN,
   validatePasswordLength,
   validatePasswordSame,
   validateUsernameLength,
@@ -16,7 +20,7 @@ export function createUsernameRule() {
       validator(_rule: FormItemRule, value: string) {
         return validateUsernameLength(value)
       },
-      message: '长度要大于 5 小于 25',
+      message: `长度要大于等于 ${USERNAME_MIN} 小于等于 ${USERNAME_MAX}`,
       trigger: 'blur',
     },
   ]
@@ -34,7 +38,7 @@ export function createPasswordRule() {
       validator(_rule: FormItemRule, value: string) {
         return validatePasswordLength(value)
       },
-      message: '长度要大于 6 小于 30',
+      message: `长度要大于等于 ${PASSWORD_MIN} 小于等于 ${PASSWORD_MAX}`,
       trigger: 'blur',
     },
   ]

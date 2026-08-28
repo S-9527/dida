@@ -6,7 +6,7 @@ export interface TaskResponse {
   content: string
   status: TaskStatus
   projectId: string
-  position: number
+  position: number | null
   createdAt: string
   updatedAt: string
 }
@@ -20,5 +20,4 @@ export interface ProjectResponse {
 
 export interface UserResponse {
   username: string
-  token: string
 }

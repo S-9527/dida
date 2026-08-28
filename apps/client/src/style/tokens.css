@@ -1,0 +1,76 @@
+:root {
+  /* surfaces */
+  --bg-app: #f5f6f7;
+  --bg-panel: #ffffff;
+  --bg-inset: #eff0f2;
+  --bg-hover: #ebecef;
+  --bg-active: #e1e3e8;
+
+  /* lines */
+  --border: #e4e5e9;
+  --border-strong: #d1d3d9;
+
+  /* text */
+  --ink-1: #16161a;
+  --ink-2: #5e5f66;
+  --ink-3: #9c9da3;
+
+  /* accent (naive-ui default blue) */
+  --accent: #2080f0;
+  --accent-hover: #3b8df1;
+  --accent-press: #1a6fd6;
+  --accent-soft: rgba(32, 128, 240, 0.08);
+
+  /* semantic */
+  --ok: #18a058;
+  --ok-soft: rgba(24, 160, 88, 0.12);
+  --warn: #f0a020;
+  --warn-soft: rgba(240, 160, 32, 0.12);
+  --err: #d03050;
+  --err-soft: rgba(208, 48, 80, 0.1);
+
+  /* effects */
+  --shadow-color: rgba(16, 17, 20, 0.1);
+  --shadow-elev-1: 0 1px 2px 0 var(--shadow-color);
+  --shadow-elev-2: 0 2px 8px -1px var(--shadow-color);
+  --shadow-elev-3: 0 16px 40px -12px var(--shadow-color);
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-2xl: 18px;
+
+  color-scheme: light;
+}
+
+html.dark {
+  --bg-app: #141417;
+  --bg-panel: #1c1c20;
+  --bg-inset: #232329;
+  --bg-hover: #2a2a31;
+  --bg-active: #32323a;
+
+  --border: #2c2c33;
+  --border-strong: #3a3a43;
+
+  --ink-1: #f1f1f3;
+  --ink-2: #a4a5ac;
+  --ink-3: #6d6e75;
+
+  --accent: #3b8df1;
+  --accent-hover: #569cf3;
+  --accent-press: #2c7de8;
+  --accent-soft: rgba(59, 141, 241, 0.16);
+
+  --ok: #18a058;
+  --ok-soft: rgba(24, 160, 88, 0.16);
+  --warn: #f0a020;
+  --warn-soft: rgba(240, 160, 32, 0.16);
+  --err: #d03050;
+  --err-soft: rgba(208, 48, 80, 0.16);
+
+  --shadow-color: rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+}

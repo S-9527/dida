@@ -4,7 +4,7 @@ import { defineStore } from 'pinia'
 import { computed, ref } from 'vue'
 import { Theme, Themes } from '@/composables/settings'
 
-export const useThemeStore = defineStore('themeStore', () => {
+export const useThemeStore = defineStore('theme', () => {
   const isDark = useDark()
   const toggleDark = useToggle(isDark)
   const naiveTheme = computed(() => (isDark.value ? darkTheme : null))

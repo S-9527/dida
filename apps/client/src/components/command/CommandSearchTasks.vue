@@ -1,22 +1,26 @@
 <script setup lang="ts">
 import { NEmpty, NScrollbar } from 'naive-ui'
+import { useSearchTasksStore } from '@/store'
 import SearchItem from './CommandSearchTasksItem.vue'
-import { useSearchTasks } from './searchTasks'
 
-const { filteredTasks } = useSearchTasks()
+const searchTasksStore = useSearchTasksStore()
 </script>
 
 <template>
-  <div class="max-h-400px flex flex-col gap-15px overflow-auto">
-    <NScrollbar style="max-height: 400px" trigger="none">
-      <SearchItem
-        v-for="item in filteredTasks"
-        :key="item.item.id"
-        v-bind="item.item"
-      />
+  <div>
+    <NScrollbar style="max-height: 380px" trigger="none">
+      <div class="flex flex-col gap-4px">
+        <SearchItem
+          v-for="item in searchTasksStore.filteredTasks"
+          :key="item.item.id"
+          v-bind="item.item"
+        />
+      </div>
     </NScrollbar>
-    <NEmpty v-show="!filteredTasks.length" description="没有找到哦" />
+    <NEmpty
+      v-if="!searchTasksStore.filteredTasks.length"
+      description="没有找到哦"
+      class="py-24px"
+    />
   </div>
 </template>
-
-<style scoped></style>

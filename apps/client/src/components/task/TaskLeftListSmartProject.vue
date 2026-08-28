@@ -3,105 +3,83 @@ import type { SmartProjectName } from '@/store'
 import { Icon } from '@iconify/vue'
 import { NPopover } from 'naive-ui'
 import { ref } from 'vue'
-import { useSettingsStore, useSmartProjects } from '@/store'
-import { useTaskLeftListStore } from './taskLeftList'
-
-export interface TaskListType {
-  key: number
-  icon: string
-  title: `${SmartProjectName}`
-  option?: string
-}
-
-function useProjectMoreActions() {
-  const showMoreIconIndex = ref<number>(-1)
-  const showWitchPopover = ref<number>(-1)
-
-  const openPopover = (key: number) => {
-    showWitchPopover.value = key
-  }
-
-  return {
-    showMoreIconIndex,
-    showWitchPopover,
-    openPopover,
-  }
-}
+import {
+  useSettingsStore,
+  useSmartProjectsStore,
+  useTaskLeftListStore,
+} from '@/store'
 
 const taskLeftListStore = useTaskLeftListStore()
 const settingsStore = useSettingsStore()
-const selected = 'bg-[#E7F5EE] dark:bg-[#233633]'
+const smartProjectsStore = useSmartProjectsStore()
 
-const smartProjects = useSmartProjects()
-const { showMoreIconIndex, showWitchPopover, openPopover }
-  = useProjectMoreActions()
+const hoverIndex = ref(-1)
+const popoverIndex = ref(-1)
 
-function handleTaskItemClick(projectName: string) {
-  smartProjects.selectProject(projectName as SmartProjectName)
+function openPopover(key: number) {
+  popoverIndex.value = key
+}
+
+function closePopover() {
+  popoverIndex.value = -1
+}
+
+function handleItemClick(projectName: SmartProjectName) {
+  smartProjectsStore.selectProject(projectName)
   taskLeftListStore.selectedKey = projectName
 }
 </script>
 
 <template>
-  <ul>
-    <li
-      v-for="(item, key) in settingsStore.visibleSmartProjects"
-      :key="key"
-      li_common
-      pl-4
-      pr-2
-      hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-      :class="taskLeftListStore.selectedKey === item.title ? selected : ''"
-      @click="handleTaskItemClick(item.title)"
-      @mouseenter="showMoreIconIndex = key"
-      @mouseleave="showMoreIconIndex = -1"
-    >
-      <div flex>
+  <div class="px-10px">
+    <div class="mb-6px px-6px section-label">
+      视图
+    </div>
+
+    <div class="flex flex-col gap-1px">
+      <div
+        v-for="(item, key) in settingsStore.visibleSmartProjects"
+        :key="item.title"
+        class="row row-hover"
+        :class="{ 'row-active': taskLeftListStore.selectedKey === item.title }"
+        @click="handleItemClick(item.title)"
+        @mouseenter="hoverIndex = key"
+        @mouseleave="hoverIndex = -1"
+      >
         <Icon
           :icon="item.icon"
-          width="20"
-          class="color-[#9D9FA3]"
-          dark="color-white-b"
+          width="17"
+          class="flex-shrink-0 text-ink-3"
         />
-        <span class="ml-2">{{ item.title }}</span>
+        <span class="min-w-0 flex-1 truncate">{{ item.title }}</span>
+
+        <NPopover
+          trigger="click"
+          :show="popoverIndex === key"
+          :show-arrow="false"
+          placement="bottom-start"
+          @clickoutside="closePopover"
+        >
+          <template #trigger>
+            <button
+              v-show="hoverIndex === key"
+              class="h-20px icon-btn w-20px flex-shrink-0"
+              aria-label="更多操作"
+              @click.stop="openPopover(key)"
+            >
+              <Icon icon="material-symbols:more-horiz" width="16" />
+            </button>
+          </template>
+          <div class="w-140px">
+            <button
+              class="row w-full row-hover"
+              @click="settingsStore.setHideSmartProject(item)"
+            >
+              <span>隐藏</span>
+            </button>
+          </div>
+        </NPopover>
       </div>
-
-      <NPopover
-        trigger="click"
-        style="padding: 5px 0 5px 0"
-        :show="showWitchPopover === key"
-        :show-arrow="false"
-        placement="bottom-start"
-        @clickoutside="showWitchPopover = -1"
-      >
-        <template #trigger>
-          <Icon
-            v-show="showMoreIconIndex === key"
-            icon="material-symbols:more-horiz"
-            width="20"
-            class="color-[#9D9FA3]"
-            dark="color-white"
-            @click="
-              ($event: MouseEvent) => {
-                $event.stopPropagation();
-                openPopover(key);
-              }
-            "
-          />
-        </template>
-        <ul w-180px cursor-pointer>
-          <li
-            hover="bg-[#F3F3F5] dark:bg-[#2D2D30]"
-
-            h-20px pl-4 text-14px lh-20px
-            @click="settingsStore.setHideSmartProject(item)"
-          >
-            隐藏
-          </li>
-        </ul>
-      </NPopover>
-    </li>
-  </ul>
+    </div>
+  </div>
 </template>
-
-<style scoped></style>

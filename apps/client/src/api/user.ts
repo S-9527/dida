@@ -23,3 +23,7 @@ export function fetchSignUp({
     confirmPassword,
   })
 }
+
+export function fetchSignOut() {
+  return http.post('/users/signout')
+}

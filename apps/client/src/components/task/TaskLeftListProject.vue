@@ -1,124 +1,73 @@
 <script setup lang="ts">
-import type { TreeOption } from 'naive-ui'
 import { Icon } from '@iconify/vue'
-import { NTree } from 'naive-ui'
-import { computed, h, ref, watchEffect } from 'vue'
+import { ref } from 'vue'
+import { useTaskLeftListStore } from '@/store'
 import ProjectCreatedView from './ProjectCreatedView.vue'
-import { useTaskLeftListStore } from './taskLeftList'
-import 'vue3-emoji-picker/css'
 
 const taskLeftListStore = useTaskLeftListStore()
-const treeListProjectChildren = ref<TreeOption[]>([])
 const showProjectCreatedView = ref(false)
+const isExpanded = ref(true)
 
-const selectedKey = computed({
-  get() {
-    return [taskLeftListStore.selectedKey]
-  },
-  set(val) {
-    taskLeftListStore.selectedKey = val[0]
-  },
-})
-
-const defaultExpandedKeys = [taskLeftListStore.listProjectRootNode.name]
-
-function createRootNodeSuffix(onclick: (e: Event) => void) {
-  return () =>
-    h(Icon, {
-      icon: 'ic:baseline-plus',
-      width: '20',
-      class: 'invisible rounded-1 hover:bg-gray-2',
-      onclick,
-    })
+function toggleExpanded() {
+  isExpanded.value = !isExpanded.value
 }
 
-watchEffect(() => {
-  treeListProjectChildren.value
-    = taskLeftListStore.listProjectChildrenNodes.map((project) => {
-      return {
-        key: project.name,
-        label: project.name,
-        isLeaf: true,
-      }
-    })
-})
-
-const data = ref<any[]>([
-  {
-    key: taskLeftListStore.listProjectRootNode.name,
-    label: taskLeftListStore.listProjectRootNode.name,
-    checkboxDisabled: false,
-    isLeaf: false,
-    children: treeListProjectChildren,
-    suffix: createRootNodeSuffix((e: Event) => {
-      e.stopPropagation()
-      showProjectCreatedView.value = true
-    }),
-  },
-])
-
-function nodeProps({ option }: { option: TreeOption }) {
-  return {
-    class: option.placeholder ? 'placeholder' : '',
-  }
+function selectProject(name: string) {
+  taskLeftListStore.selectedKey = name
 }
 </script>
 
 <template>
-  <NTree
-    v-model:selected-keys="selectedKey"
-    :default-expanded-keys="defaultExpandedKeys"
-    block-line
-    expand-on-click
-    :data="data"
-    :node-props="nodeProps"
-  />
+  <div class="px-10px">
+    <div class="mb-6px flex items-center justify-between px-6px">
+      <span class="section-label">清单</span>
+      <span class="text-11px text-ink-3">
+        {{ taskLeftListStore.listProjectChildrenNodes.length }}
+      </span>
+    </div>
+
+    <div class="row w-full">
+      <button
+        class="min-w-0 flex flex-1 items-center gap-4px text-left text-ink-2"
+        @click="toggleExpanded"
+      >
+        <Icon
+          :icon="isExpanded ? 'carbon-chevron-down' : 'carbon-chevron-right'"
+          width="12"
+          class="flex-shrink-0 text-ink-3"
+        />
+        <span>{{ taskLeftListStore.listProjectRootNode.name }}</span>
+      </button>
+      <button
+        class="h-20px icon-btn w-20px flex-shrink-0"
+        aria-label="新建清单"
+        @click="showProjectCreatedView = true"
+      >
+        <Icon icon="carbon-add" width="16" />
+      </button>
+    </div>
+
+    <div v-show="isExpanded" class="mt-2px flex flex-col gap-1px">
+      <div
+        v-if="!taskLeftListStore.listProjectChildrenNodes.length"
+        class="px-12px py-8px text-12px text-ink-3"
+      >
+        暂无清单，点击 + 创建
+      </div>
+      <div
+        v-for="project in taskLeftListStore.listProjectChildrenNodes"
+        :key="project.name"
+        class="row row-hover pl-20px"
+        :class="{
+          'row-active':
+            taskLeftListStore.selectedKey === project.name,
+        }"
+        @click="selectProject(project.name)"
+      >
+        <span class="min-w-0 flex-1 truncate">{{ project.name }}</span>
+      </div>
+    </div>
+  </div>
+
   <ProjectCreatedView v-model:show="showProjectCreatedView" />
 </template>
-
-<style>
-.n-tree.n-tree--block-line
-  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--pending {
-  background-color: transparent;
-}
-
-.n-tree.n-tree--block-line
-  .n-tree-node:not(.n-tree-node--disabled).n-tree-node--selected {
-  background-color: var(--n-node-color-active);
-}
-
-.n-tree-node-wrapper .placeholder .n-tree-node-indent {
-  display: none;
-}
-
-.n-tree-node-wrapper .placeholder .n-tree-node-switcher {
-  display: none;
-}
-
-.n-tree-node-wrapper .placeholder {
-  pointer-events: none;
-  padding: 6px 8px;
-  margin: 0 8px 0 20px;
-  background-color: rgb(25, 25, 25, 0.03);
-  border-radius: 4px;
-}
-
-.n-tree-node-wrapper .placeholder .n-tree-node-content__text {
-  color: rgb(25, 25, 25, 0.4);
-  font-size: 12px;
-}
-
-.dark .n-tree-node-wrapper .placeholder {
-  background-color: rgb(59, 59, 59, 1);
-}
-
-.dark .placeholder .n-tree-node-content__text {
-  color: rgba(156, 163, 175, 0.5);
-}
-
-.n-tree.n-tree--block-line
-  .n-tree-node:not(.n-tree-node--disabled):hover
-  .iconify {
-  visibility: visible;
-}
-</style>

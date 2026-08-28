@@ -225,11 +225,11 @@ describe('tasks store', () => {
       expect(fetchUpdateTaskPosition).toBeCalledWith(task.id, newPosition)
     })
 
-    it('should not update task content when it does not change', async () => {
+    it('should not update task position when it does not change', async () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
-      await tasksStore.updateTaskPosition(task, task.position)
+      await tasksStore.updateTaskPosition(task, task.position!)
 
       expect(fetchUpdateTaskPosition).not.toBeCalled()
     })
@@ -331,10 +331,9 @@ describe('tasks store', () => {
       const tasksStore = useTasksStore()
       const task = (await tasksStore.addTask('吃饭')) as Task
 
-      await tasksStore.updateTaskPosition(task, task.position)
+      await tasksStore.updateTaskPosition(task, task.position!)
 
       expect(fetchUpdateTaskPosition).not.toBeCalled()
-      expect(task.position).toBe(task.position)
     })
   })
 })

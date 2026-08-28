@@ -1,8 +1,11 @@
 <script setup lang="ts">
 import type { TasksSelector } from '@/store'
 import { NCheckbox, NEllipsis } from 'naive-ui'
-import { useTasksSelectorStore, useTasksStore } from '@/store'
-import { useCommandModal } from './commandModal'
+import {
+  useCommandModalStore,
+  useTasksSelectorStore,
+  useTasksStore,
+} from '@/store'
 
 interface Props {
   title: string
@@ -15,7 +18,7 @@ interface Props {
 const props = defineProps<Props>()
 const tasksStore = useTasksStore()
 const tasksSelectorStore = useTasksSelectorStore()
-const { closeCommandModal } = useCommandModal()
+const { closeCommandModal } = useCommandModalStore()
 
 async function goTo() {
   if (props.from) {
@@ -29,31 +32,26 @@ async function goTo() {
 
 <template>
   <div
-    class="w-full border-b-1px border-gray-500/8 p-3 hover:bg-cyan/2"
-    :class="{ 'text-gray-300 dark:text-gray-700': props.done }"
+    class="flex flex-col cursor-pointer gap-4px rounded-lg p-10px transition-colors duration-100 hover:bg-hover"
+    @click="goTo"
   >
-    <!-- TODO 添加高亮 -->
-    <div
-      class="w-full flex cursor-pointer items-center justify-start"
-      @click="goTo"
-    >
+    <div class="flex items-center gap-10px">
       <NCheckbox :checked="props.done" disabled size="large" />
       <NEllipsis
-        style="width: 660px"
+        class="min-w-0 flex-1 text-14px font-medium"
         :tooltip="false"
-        class="ml-10px overflow-hidden text-ellipsis text-18px"
-        :class="{ 'line-through': props.done }"
+        :class="{ 'line-through': props.done, 'text-ink-3': props.done }"
       >
         {{ title }}
       </NEllipsis>
-      <div class="w-80px flex items-center justify-center text-gray-500">
+      <span class="flex-shrink-0 text-11px text-ink-3">
         {{ from?.name }}
-      </div>
+      </span>
     </div>
     <NEllipsis
-      style="width: 660px"
+      v-if="desc"
+      class="ml-26px text-12px text-ink-2"
       :tooltip="false"
-      class="ml-30px mt-5px w-full pr-80px"
     >
       {{ desc }}
     </NEllipsis>

@@ -1,4 +1,4 @@
-import type { TaskResponse } from '@/api/types.ts'
+import type { TaskResponse } from '@/api/types'
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import {
@@ -12,7 +12,8 @@ import {
   fetchUpdateTaskPosition,
   fetchUpdateTaskTitle,
 } from '@/api'
-import { TasksSelectorType, useTasksSelectorStore } from '@/store'
+import { useTasksSelectorStore } from './tasksSelector'
+import { TasksSelectorType } from './types'
 
 export enum TaskStatus {
   ACTIVE = 'ACTIVE',
@@ -26,10 +27,10 @@ export interface Task {
   status: TaskStatus
   content: string
   projectId: string
-  position: number
+  position: number | null
 }
 
-export const useTasksStore = defineStore('tasksStore', () => {
+export const useTasksStore = defineStore('tasks', () => {
   const tasksSelectorStore = useTasksSelectorStore()
 
   const tasks = ref<Task[]>([])
@@ -90,15 +91,17 @@ export const useTasksStore = defineStore('tasksStore', () => {
         return
       }
 
+      const taskPosition = positionOf(task)
+
       // add to last position
       const lastTask = tasks.value[tasks.value.length - 1]
-      if (task.position < lastTask.position) {
+      if (taskPosition < positionOf(lastTask)) {
         tasks.value.push(task)
         return
       }
 
       for (let i = 0; i < tasks.value.length; i++) {
-        if (task.position > tasks.value[i].position) {
+        if (taskPosition > positionOf(tasks.value[i])) {
           const currentIndex = tasks.value.indexOf(tasks.value[i])
           tasks.value.splice(currentIndex, 0, task)
           return
@@ -195,4 +198,9 @@ function mapTaskResponseToTask(rawTask: TaskResponse): Task {
     projectId: rawTask.projectId,
     position: rawTask.position,
   }
+}
+
+// Unpositioned tasks sort as 0, matching how the API generates positions.
+function positionOf(task: Task): number {
+  return task.position ?? 0
 }

@@ -6,7 +6,7 @@ import {
   smartProjects,
 } from '@/composables/settings'
 
-export const useSettingsStore = defineStore('settingsStore', () => {
+export const useSettingsStore = defineStore('settings', () => {
   const settingsSmartProjects = reactive(smartProjects)
 
   const visibleSmartProjects = computed(() => {

@@ -1,3 +1,5 @@
+import { SmartProjectName } from '@/store/smartProjects'
+
 export interface VisibleOption {
   label: '显示'
   value: SmartProjectOptionValue
@@ -10,16 +12,16 @@ interface HiddenOption {
 
 type Options = Array<VisibleOption | HiddenOption>
 
-interface SettingsSmartProject {
-  title: string
-  options: Options
-  option: string
-  icon: string
-}
-
 export enum SmartProjectOptionValue {
   Visible = 'visible',
   Hidden = 'hidden',
+}
+
+interface SettingsSmartProject {
+  title: SmartProjectName
+  options: Options
+  option: SmartProjectOptionValue
+  icon: string
 }
 
 function createOptions() {
@@ -36,16 +38,16 @@ function createOptions() {
 }
 
 const completedSmartProject: SettingsSmartProject = {
-  title: '已完成',
+  title: SmartProjectName.Complete,
   options: createOptions(),
-  option: 'visible',
+  option: SmartProjectOptionValue.Visible,
   icon: 'material-symbols:check-box',
 }
 
-const trashSmartProject = {
-  title: '垃圾桶',
+const trashSmartProject: SettingsSmartProject = {
+  title: SmartProjectName.Trash,
   options: createOptions(),
-  option: 'visible',
+  option: SmartProjectOptionValue.Visible,
   icon: 'mdi:close-box',
 }
 

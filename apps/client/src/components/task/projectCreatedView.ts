@@ -4,15 +4,15 @@ import { computed, ref } from 'vue'
 import { useListProjectsStore } from '@/store'
 
 enum SkinStone {
-  NEUTRAL = 'neutral',
-  LIGHT = '1f3fc',
-  LIGHTER = '1f3fb',
+  Neutral = 'neutral',
+  Light = '1f3fc',
+  Lighter = '1f3fb',
   Medium = '1f3fd',
   MediumDark = '1f3fe',
   Deeper = '1f3ff',
 }
 
-interface EMoji {
+interface Emoji {
   i: string
   n: string[]
   r: string // with skin tone
@@ -82,7 +82,7 @@ export function useProjectCreatedView(
     }
 
     const emojiValue = ref()
-    function handleSelectEmoji(emoji: EMoji) {
+    function handleSelectEmoji(emoji: Emoji) {
       emojiValue.value = emoji.i
       isShowPopover.value = false
       inputElement.value?.focus()

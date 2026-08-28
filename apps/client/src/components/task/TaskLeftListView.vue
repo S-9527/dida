@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import TaskLeftListProject from '@/components/task/TaskLeftListProject.vue'
-import TaskLeftListSmartProject from '@/components/task/TaskLeftListSmartProject.vue'
+import TaskLeftListProject from './TaskLeftListProject.vue'
+import TaskLeftListSmartProject from './TaskLeftListSmartProject.vue'
 </script>
 
 <template>
-  <div>
-    <div>
+  <div class="h-full flex flex-col overflow-hidden">
+    <div class="flex-1 overflow-y-auto py-14px">
       <TaskLeftListProject />
     </div>
-    <TaskLeftListSmartProject />
+    <div class="border-t border-line py-14px">
+      <TaskLeftListSmartProject />
+    </div>
   </div>
 </template>
-
-<style scoped></style>

@@ -1,7 +1,7 @@
 import { watchOnce } from '@vueuse/core'
 import { defineStore } from 'pinia'
 import { ref, watch, watchEffect } from 'vue'
-import { useListProjectsStore } from '@/store/listProjects'
+import { useListProjectsStore } from './listProjects'
 
 interface Node {
   name: string

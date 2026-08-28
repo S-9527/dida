@@ -1,33 +1,36 @@
+import { createPinia, setActivePinia } from 'pinia'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { computed } from 'vue'
 import * as misc from '@/composables/misc'
+import { useCommandModalStore } from '@/store'
 import { fireEvent, useSetup } from '@/tests/helper'
-import { useCommandModal } from '../commandModal'
+import { registerKeyboardShortcut } from '../commandModal'
 
 describe('command modal', () => {
   beforeEach(() => {
-    const { closeCommandModal } = useCommandModal()
+    setActivePinia(createPinia())
+    const { closeCommandModal } = useCommandModalStore()
     closeCommandModal()
   })
   it('should be open command modal', () => {
-    const { openCommandModal, showCommandModal } = useCommandModal()
+    const commandModalStore = useCommandModalStore()
 
-    openCommandModal()
+    commandModalStore.openCommandModal()
 
-    expect(showCommandModal.value).toBe(true)
+    expect(commandModalStore.showCommandModal).toBe(true)
   })
 
   it('should be close command modal', () => {
-    const { closeCommandModal, showCommandModal } = useCommandModal()
+    const commandModalStore = useCommandModalStore()
 
-    closeCommandModal()
+    commandModalStore.closeCommandModal()
 
-    expect(showCommandModal.value).toBe(false)
+    expect(commandModalStore.showCommandModal).toBe(false)
   })
 
   it('should be open command modal when press cmd+k on Mac', () => {
     vi.spyOn(misc, 'useIsMac').mockReturnValue(computed(() => true))
-    const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
+    const commandModalStore = useCommandModalStore()
 
     const { wrapper } = useSetup(() => {
       registerKeyboardShortcut()
@@ -38,14 +41,14 @@ describe('command modal', () => {
       metaKey: true,
     })
 
-    expect(showCommandModal.value).toBe(true)
+    expect(commandModalStore.showCommandModal).toBe(true)
 
     wrapper.unmount()
   })
 
   it('should be open command modal when press ctrl+k on Win', () => {
     vi.spyOn(misc, 'useIsMac').mockReturnValue(computed(() => false))
-    const { registerKeyboardShortcut, showCommandModal } = useCommandModal()
+    const commandModalStore = useCommandModalStore()
 
     const { wrapper } = useSetup(() => {
       registerKeyboardShortcut()
@@ -56,7 +59,7 @@ describe('command modal', () => {
       ctrlKey: true,
     })
 
-    expect(showCommandModal.value).toBe(true)
+    expect(commandModalStore.showCommandModal).toBe(true)
 
     wrapper.unmount()
   })
