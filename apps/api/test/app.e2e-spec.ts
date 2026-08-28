@@ -73,7 +73,12 @@ describe('Auth guards (e2e)', () => {
         confirmPassword: 'password123',
       })
     expect(res.status).toBe(201)
-    expect(res.body.data.user.username).toBe(username)
+    expect(res.body.data.username).toBe(username)
+
+    const cookie = res.headers['set-cookie']?.[0] ?? ''
+    expect(cookie).toContain('dida_token=')
+    expect(cookie).toContain('HttpOnly')
+    expect(cookie).toContain('SameSite=Lax')
   })
 
   it('rejects signup when the two passwords differ', async () => {

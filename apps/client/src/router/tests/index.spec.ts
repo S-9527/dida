@@ -1,17 +1,17 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createRouterMock } from 'vue-router-mock'
-import { cleanToken, setToken } from '@/utils/token'
+import { markAnonymous, markAuthenticated } from '@/utils/token'
 import { RouteNames } from '../const'
 import { routes, setupRouterGuard } from '../index'
 
 describe('router ', () => {
   beforeEach(() => {
-    cleanToken()
+    markAnonymous()
   })
 
   describe('requires auth', async () => {
-    it('go to task page when have token', async () => {
-      setToken('token')
+    it('go to task page when authenticated', async () => {
+      markAuthenticated()
 
       const router = createRouterMock({
         spy: {
@@ -29,7 +29,7 @@ describe('router ', () => {
       expect(router.currentRoute.value.name).toBe(RouteNames.TASK)
     })
 
-    it('go to login page when have not token', async () => {
+    it('go to login page when anonymous', async () => {
       vi.useFakeTimers()
 
       const router = createRouterMock({

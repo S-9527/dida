@@ -6,23 +6,15 @@ export type AuthState = 'unknown' | 'authenticated' | 'anonymous'
 let state: AuthState = 'unknown'
 let pending: Promise<AuthState> | null = null
 
-export function getAuthState() {
-  return state
+export function markAuthenticated() {
+  state = 'authenticated'
 }
 
-export function checkHaveToken() {
-  return state === 'authenticated'
-}
-
-export function setToken(_token: string | null) {
-  state = _token ? 'authenticated' : 'anonymous'
-}
-
-export function cleanToken() {
+export function markAnonymous() {
   state = 'anonymous'
 }
 
-function setAuthState(next: AuthState) {
+function applyAuthState(next: AuthState) {
   state = next
   pending = null
   return next
@@ -40,10 +32,10 @@ export async function ensureAuthState(): Promise<AuthState> {
     pending = (async () => {
       try {
         const user = await http.get<UserResponse, UserResponse>('/users/me')
-        return setAuthState(user?.username ? 'authenticated' : 'anonymous')
+        return applyAuthState(user?.username ? 'authenticated' : 'anonymous')
       }
       catch {
-        return setAuthState('anonymous')
+        return applyAuthState('anonymous')
       }
     })()
   }

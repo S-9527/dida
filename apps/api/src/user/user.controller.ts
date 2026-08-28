@@ -53,7 +53,7 @@ export class UsersController {
 
     const token = await this.signToken(user)
     res.cookie(TOKEN_COOKIE, token, this.cookieOptions())
-    return { user: { username: user.username } }
+    return { username: user.username }
   }
 
   @Post('signup')
@@ -73,7 +73,7 @@ export class UsersController {
 
     const token = await this.signToken(user)
     res.cookie(TOKEN_COOKIE, token, this.cookieOptions())
-    return { user: { username: user.username } }
+    return { username: user.username }
   }
 
   private async signToken(user) {
